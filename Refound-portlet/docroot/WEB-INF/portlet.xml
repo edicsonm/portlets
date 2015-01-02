@@ -2,9 +2,9 @@
 
 <portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" version="2.0">
 	<portlet>
-		<portlet-name>Refound</portlet-name>
-		<display-name>|</display-name>
-		<portlet-class>au.com.billingbuddy.porlet.FormRefound</portlet-class>
+		<portlet-name>Refund</portlet-name>
+		<display-name>Refund</display-name>
+		<portlet-class>au.com.billingbuddy.porlet.FormRefund</portlet-class>
 		<init-param>
 			<name>view-template</name>
 			<value>/jsp/view.jsp</value>
@@ -15,9 +15,9 @@
 		</supports>
         <resource-bundle>Language</resource-bundle>
 		<portlet-info>
-			<title>Refound</title>
-			<short-title>Refound</short-title>
-			<keywords>Refound</keywords>
+			<title>Refund</title>
+			<short-title>Refund</short-title>
+			<keywords>Refund</keywords>
 		</portlet-info>
 		<security-role-ref>
 			<role-name>administrator</role-name>

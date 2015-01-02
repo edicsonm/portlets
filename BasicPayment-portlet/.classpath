@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry combineaccessrules="false" kind="src" path="/BillingBuddyCommon"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/BillingBuddyServer"/>
 	<classpathentry kind="src" path="docroot/WEB-INF/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.7.0_55">
 		<attributes>
@@ -18,8 +20,5 @@
 			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/run/media/Edicson/git/skyepac/edicson_code/BillingBuddyServer/lib/json-simple-1.1.1.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/BillingBuddyCommon"/>
-	<classpathentry kind="lib" path="/run/media/Edicson/Informacion IPG/Servidor/liferay/tomcat-7.0.40/lib/BillingBuddyServer.jar"/>
 	<classpathentry kind="output" path="docroot/WEB-INF/classes"/>
 </classpath>

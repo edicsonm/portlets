@@ -5,11 +5,16 @@
 	<portlet>
 		<portlet-name>BasePorlet</portlet-name>
 		<icon>/icon.png</icon>
+		<show-portlet-access-denied>false</show-portlet-access-denied>
 		<header-portlet-css>/css/main.css</header-portlet-css>
 		<footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
 		<css-class-wrapper>BasePorlet-portlet</css-class-wrapper>
 	</portlet>
 	<role-mapper>
+		<role-name>power-user</role-name>
+		<role-link>Power User</role-link>
+	</role-mapper>
+	<!-- <role-mapper>
 		<role-name>administrator</role-name>
 		<role-link>Administrator</role-link>
 	</role-mapper>
@@ -18,11 +23,7 @@
 		<role-link>Guest</role-link>
 	</role-mapper>
 	<role-mapper>
-		<role-name>power-user</role-name>
-		<role-link>Power User</role-link>
-	</role-mapper>
-	<role-mapper>
 		<role-name>user</role-name>
 		<role-link>User</role-link>
-	</role-mapper>
+	</role-mapper> -->
 </liferay-portlet-app>

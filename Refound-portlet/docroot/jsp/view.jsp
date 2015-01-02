@@ -26,23 +26,13 @@
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
-<liferay-ui:error key="success" message="label.success" />
+<%-- <liferay-ui:error key="success" message="label.success" />
 <liferay-ui:error key="error" message="label.unsatisfactoryRegistration" />
-<liferay-ui:error key="claveDuplicada" message="error.claveDuplicada"  />
-
-
+<liferay-ui:error key="claveDuplicada" message="error.claveDuplicada"  /> --%>
 <aui:script use="aui">
-	
 	showDetails = function(val){
 		alert(val);
 	}
-	
-</aui:script>
-
-
-
-<liferay-ui:message key="label.title"/>
-<aui:script use="aui-io-request,aui-node">
 </aui:script>
 <%
 	String orderByColAnterior = (String)session.getAttribute("orderByCol");
@@ -66,9 +56,9 @@
 	}else{
 		orderByType = "asc";
 	}
-	
-	ArrayList<TransactionVO> listTransaction = (ArrayList)session.getAttribute("listTransaction");
-	if(listTransaction == null) listTransaction = new ArrayList<TransactionVO>();
+	/* com.liferay.portal.kernel.dao.search.SearchContainer<ChargeVO> searchContainer = null; */
+	ArrayList<ChargeVO> listCharge = (ArrayList)session.getAttribute("listCharge");
+	if(listCharge == null) listCharge = new ArrayList<ChargeVO>();
 	session.setAttribute("orderByCol", orderByCol);
 	session.setAttribute("orderByType", orderByType);
 %>
@@ -87,57 +77,31 @@
 				</div>
 			</div> --%>
 			<div class="fila">
-				<liferay-ui:search-container emptyResultsMessage="label.noRegistros" delta="5" iteratorURL="<%=renderURL%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
+				<liferay-ui:search-container emptyResultsMessage="label.noRegistros" delta="10" iteratorURL="<%=renderURL%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
 				   <liferay-ui:search-container-results>
 				      <%
-						listTransaction = Methods.orderTransactions(listTransaction,orderByCol,orderByType);
-						results = ListUtil.subList(listTransaction, searchContainer.getStart(), searchContainer.getEnd());
-						total = listTransaction.size();
+						listCharge = Methods.orderCharges(listCharge,orderByCol,orderByType);
+						results = ListUtil.subList(listCharge, searchContainer.getStart(), searchContainer.getEnd());
+						total = listCharge.size();
 						pageContext.setAttribute("results", results);
 						pageContext.setAttribute("total", total);
 						session.setAttribute("results", results);
 				       %>
 					</liferay-ui:search-container-results>
-					<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.TransactionVO" rowVar="posi" indexVar="indice" keyProperty="id" modelVar="transactionVO">
-					<%-- <liferay-ui:search-container-column-button align="right" href="<%= reFound%>" name='Refound' /> --%>
-					<%-- <liferay-ui:search-container-column-button href="<%=deleteData%>"/>  --%>
-						
-						<portlet:actionURL var="showDetails" name="showDetails">
-						<portlet:param name="jspPage" value="/edit.jsp" />
-						<portlet:param name="id" value="id" />
-						</portlet:actionURL>
+					<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.ChargeVO" rowVar="posi" indexVar="indice" keyProperty="id" modelVar="chargeVO">
 						
 						<liferay-portlet:renderURL varImpl="rowURL">
-							<%-- <portlet:param name="backURL" value="<%= currentURL %>" /> --%>
-							<portlet:param name="mvcPath" value="/jsp/refound.jsp" />
-							<portlet:param name="idColumna" value="id" />
-							 <portlet:param name="id" value="<%= String.valueOf(transactionVO.getId())%>" />
+							<portlet:param name="mvcPath" value="/jsp/refund.jsp" />
+							<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
 						</liferay-portlet:renderURL>
 					
-					<liferay-ui:search-container-column-text value="id" name="# Transaction" property="id" orderable="true" orderableProperty="id" href="<%= rowURL %>"/>
-					<liferay-ui:search-container-column-text name="Currency" property="orderCurrency" orderable="true" orderableProperty="orderCurrency" />
-					<liferay-ui:search-container-column-text name="Transaction Type" property="txnType" orderable="true" orderableProperty="txnType" />
-					<liferay-ui:search-container-column-text name="Order Amount" property="orderAmount" orderable="true" orderableProperty="orderAmount" />
-					<liferay-ui:search-container-column-text name="Card Number" property="cardVO.cardNumber" orderable="true" orderableProperty="cardVO.cardNumber" />
-					<liferay-ui:search-container-column-text name="Card Holder Name" property="cardVO.name" orderable="true" orderableProperty="cardVO.name" />
-					<%-- <liferay-ui:search-container-column-text name="Accion">
-						<liferay-ui:icon-menu>
-							<portlet:actionURL var="editarURL" name="editarInformacion">
-								<portlet:param name="idRaza" value="<%=razaVO.getIdRaza()%>"/>
-								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
-								<portlet:param name="jspPage" value="/edit.jsp" />
-							</portlet:actionURL>
-							<liferay-ui:icon image="edit" message="label.editar" url="<%=editarURL.toString()%>" />
-							
-							<portlet:actionURL var="eliminarURL" name="eliminarInformacion">
-								<portlet:param name="idRaza" value="<%=razaVO.getIdRaza()%>"/>
-								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
-								<portlet:param name="jspPage" value="/edit.jsp" />
-							</portlet:actionURL>
-							<liferay-ui:icon-delete message="label.eliminar" url="<%=eliminarURL.toString()%>" />
-							 
-						</liferay-ui:icon-menu>
-					</liferay-ui:search-container-column-text> --%>
+					<liferay-ui:search-container-column-text name="Charge" property="id" value="transactionId" orderable="true" orderableProperty="id" href="<%= rowURL %>"/>
+					<liferay-ui:search-container-column-text name="Currency" property="currency" orderable="true" orderableProperty="currency" />
+					<liferay-ui:search-container-column-text name="Amount" property="amount" orderable="true" orderableProperty="amount" />
+					<liferay-ui:search-container-column-text name="Charge Date" property="creationTime" orderable="true" orderableProperty="creationTime" />
+					<%-- <liferay-ui:search-container-column-text name="Last 4 Digits Card Number" property="cardVO.last4" orderable="true" orderableProperty="cardVO.last4" />
+					<liferay-ui:search-container-column-text name="Brand" property="cardVO.brand" orderable="true" orderableProperty="cardVO.brand" />
+					<liferay-ui:search-container-column-text name="Funding" property="cardVO.funding" orderable="true" orderableProperty="cardVO.funding" /> --%>
 				   </liferay-ui:search-container-row>
 				   <liferay-ui:search-iterator />
 				</liferay-ui:search-container>

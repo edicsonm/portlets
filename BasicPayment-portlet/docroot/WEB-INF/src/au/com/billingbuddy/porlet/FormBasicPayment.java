@@ -1,6 +1,8 @@
 package au.com.billingbuddy.porlet;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.Calendar;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -17,8 +19,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import au.com.billingbuddy.business.objects.TransactionFacade;
+import au.com.billingbuddy.business.objects.SecurityFacade;
 import au.com.billingbuddy.common.objects.SecurityMethods;
 import au.com.billingbuddy.exceptions.objects.DataSanitizeException;
+import au.com.billingbuddy.exceptions.objects.TransactionFacadeException;
 import au.com.billingbuddy.jsonprocessor.JsonProcessor;
 import au.com.billingbuddy.vo.objects.CardVO;
 import au.com.billingbuddy.vo.objects.CustomerVO;
@@ -37,8 +41,10 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
 
 public class FormBasicPayment extends MVCPortlet {
 	
-	private JsonProcessor jsonProcessor = JsonProcessor.getInstance();
 	private TransactionFacade transactionFacade  = TransactionFacade.getInstance();
+	private SecurityFacade securityFacade  = SecurityFacade.getInstance();
+	private long initialTime;
+	private long finalTime;
 	
 	@Override
 	public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
@@ -65,7 +71,7 @@ public class FormBasicPayment extends MVCPortlet {
 			if(merchantID != null && orderNumber != null && currency != null && transactionAmount != null && sha1Value != null){
 				/* Verify signature in message received*/
 				String sha1ValueCalculated = SecurityMethods.sha1Calculator(orderNumber+currency+merchantID+transactionAmount+"");
-				boolean answer = transactionFacade.validateSignature(sha1ValueCalculated,signSha1);
+				boolean answer = securityFacade.validateSignature(sha1ValueCalculated,signSha1);
 				if(answer) {
 					
 					TransactionVO transactionVO = new TransactionVO();
@@ -75,6 +81,8 @@ public class FormBasicPayment extends MVCPortlet {
 					transactionVO.setOrderAmount((String)request.getParameter("transactionAmount"));
 					
 					transactionVO.setIp(request.getRemoteAddr());
+					transactionVO.setIp("27.32.44.176");
+					
 					transactionVO.setSessionId(request.getRequestedSessionId());
 					transactionVO.setUserAgent(request.getHeader("User-Agent"));
 					transactionVO.setAcceptLanguage(request.getHeader("Accept-Language"));
@@ -96,89 +104,47 @@ public class FormBasicPayment extends MVCPortlet {
 		} catch (Exception ex){
 			include("/jsp/unauthorizedAccess.jsp", renderRequest, renderResponse);
 		}
-		
 	}
 	
 	public void savePayment(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+		
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 		HttpServletResponse response = PortalUtil.getHttpServletResponse(actionResponse);
 		HttpSession session = request.getSession();
 		TransactionVO transactionVO = (TransactionVO)session.getAttribute("transactionVO");
 		
-		String orderNumber= (String)request.getParameter("orderNumber");
-		System.out.println("OrderNumber in savePayment: " + orderNumber);
-		
-		transactionVO.setId("1202182387");
-//		session.setAttribute("transactionVO", transactionVO);
-		actionResponse.setRenderParameter("jspPage", "/jsp/sumaryPayment.jsp");
-		
-	}
-	
-	public void savePayment_bk(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
-		
-		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
-		HttpSession session = request.getSession();
-		
 		try {
 			
-			TransactionVO transactionVO = new TransactionVO();
-			CardVO cardVO = new CardVO();
-			ShippingAddressVO shippingAddressVO = new ShippingAddressVO();
-			CustomerVO customerVO = new CustomerVO();
+			transactionVO.getCardVO().setBin(transactionVO.getCardVO().getNumber().substring(0, 6));
 			
 			/****** Table Card ******/
-			cardVO.setName(request.getParameter("name"));
-			cardVO.setCardNumber(request.getParameter("cardNumber"));
-			cardVO.setBin(cardVO.getCardNumber().substring(0, 6));
-			cardVO.setExpYear(request.getParameter("expirationYear"));
-			String expirationMonth = "0"+ request.getParameter("expirationMonth");
-			cardVO.setExpMonth(expirationMonth.substring(expirationMonth.length()-2));
-			cardVO.setCvv(request.getParameter("securityCode"));
+			transactionVO.getCardVO().setName(request.getParameter("name"));
+			transactionVO.getCardVO().setNumber(request.getParameter("cardNumber"));
+			transactionVO.getCardVO().setBin(transactionVO.getCardVO().getNumber().substring(0, 6));
+			transactionVO.getCardVO().setExpYear(request.getParameter("expirationYear"));
+			String expirationMonth = new DecimalFormat("00").format(Double.parseDouble(request.getParameter("expirationMonth")));
+			transactionVO.getCardVO().setExpMonth(expirationMonth.substring(expirationMonth.length()-2));
+			transactionVO.getCardVO().setCvv(request.getParameter("securityCode"));
 			
+			transactionVO.setBillingAddressCountry(request.getParameter("country"));
+			transactionVO.setBillingAddressRegion(request.getParameter("region"));
+			transactionVO.setBillingAddressCity(request.getParameter("city"));
+			transactionVO.setBillingAddressPostal(request.getParameter("postalCode"));
 			
-			/****** Table TransactionInformation ******/
-			transactionVO.setCompanyName(request.getParameter("companyName"));
-			transactionVO.setProduct("Toothbrush");
-			transactionVO.setQuantity("2");
-			transactionVO.setRate("100.0");
-			transactionVO.setOrderAmount("100");
-
-			transactionVO.setOrderCurrency("USD");
-			transactionVO.setMerchantId("2");
-			transactionVO.setTxnType("creditcard");
+			transactionVO.getCardVO().setCustomerVO(new CustomerVO());
+			transactionVO.getCardVO().getCustomerVO().setEmail(request.getParameter("email"));
+			transactionVO.getCardVO().getCustomerVO().setPhoneNumber(request.getParameter("phoneNumber"));
 			
-			transactionVO.setIp(request.getRemoteAddr());
-			transactionVO.setBillingAddressCity("New York");
-			transactionVO.setBillingAddressRegion("NY");
-			transactionVO.setBillingAddressPostal("11434");
-			transactionVO.setBillingAddressCountry("US");
-//			transactionVO.setId(jSONObject.get("txnID").toString());
-			transactionVO.setSessionId(request.getRequestedSessionId());
-			transactionVO.setUserAgent(request.getHeader("User-Agent"));
-			transactionVO.setAcceptLanguage(request.getHeader("Accept-Language"));
-			transactionVO.setDomain("yahoo.com");
-
-			/****** Table ShippingAddress ******/
-			shippingAddressVO.setAddress("145-50 157TH STREET");
-			shippingAddressVO.setCity("Jamaica");
-			shippingAddressVO.setRegion("NY");
-			shippingAddressVO.setPostal("11434");
-			shippingAddressVO.setCountry("US");
-			
-			/****** Table Customer ******/
-			customerVO.setEmail(request.getParameter("email"));
-			customerVO.setUsername("1234");
-			customerVO.setPassword("test_carder_password");
-			
-			transactionVO.setCardVO(cardVO);
-			transactionVO.setShippingAddressVO(shippingAddressVO);
-			transactionVO.setCustomerVO(customerVO);
-			
+			initialTime = Calendar.getInstance().getTimeInMillis();
 			transactionVO = transactionFacade.proccesPayment(transactionVO);
+			finalTime = Calendar.getInstance().getTimeInMillis();
+			System.out.println("Tiempo total de procesamiento de la solicitud: " + (finalTime-initialTime) + " ms.");
 			if(transactionVO.getStatus().equalsIgnoreCase("success")){
+//				SessionMessages.add(actionRequest, "paymentSuccessful", new Object[] { transactionVO.getId() });
 				SessionMessages.add(actionRequest, "paymentSuccessful");
 				session.setAttribute("transactionId", transactionVO.getId());
 				actionResponse.setRenderParameter("jspPage", "/jsp/sumaryPayment.jsp");
+				
 			}else{
 				
 				System.out.println("basicPaymentResponseModel.getMessage(): " + transactionVO.getMessage());
@@ -187,10 +153,102 @@ public class FormBasicPayment extends MVCPortlet {
 				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 				SessionErrors.add(actionRequest, "error");
+				System.out.println("transactionVO.getMessage(): " + transactionVO.getMessage());
 				SessionErrors.add(actionRequest,transactionVO.getMessage());
 				session.setAttribute("transactionVO", transactionVO);
 				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
+				
 			}
+//			String orderNumber= (String)request.getParameter("orderNumber");
+//			System.out.println("OrderNumber in savePayment: " + orderNumber);
+//			transactionVO.setId("1202182387");
+//			actionResponse.setRenderParameter("jspPage", "/jsp/sumaryPayment.jsp");
+		} catch (TransactionFacadeException e) {
+			e.printStackTrace();
+			
+			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+			SessionErrors.add(actionRequest, "error");
+			SessionErrors.add(actionRequest,e.getErrorMenssage());
+			session.setAttribute("transactionVO", transactionVO);
+			actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
+		}
+	}
+	
+	public void savePayment_bk(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+		
+//		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
+//		HttpSession session = request.getSession();
+//		
+//		try {
+//			
+//			TransactionVO transactionVO = new TransactionVO();
+//			CardVO cardVO = new CardVO();
+//			ShippingAddressVO shippingAddressVO = new ShippingAddressVO();
+//			CustomerVO customerVO = new CustomerVO();
+//			
+//			/****** Table Card ******/
+//			cardVO.setName(request.getParameter("name"));
+//			cardVO.setNumber(request.getParameter("cardNumber"));
+//			cardVO.setBin(cardVO.getNumber().substring(0, 6));
+//			cardVO.setExpYear(request.getParameter("expirationYear"));
+//			String expirationMonth = "0"+ request.getParameter("expirationMonth");
+//			cardVO.setExpMonth(expirationMonth.substring(expirationMonth.length()-2));
+//			cardVO.setCvv(request.getParameter("securityCode"));
+//			
+//			
+//			/****** Table TransactionInformation ******/
+//			transactionVO.setOrderAmount("100");
+//
+//			transactionVO.setOrderCurrency("USD");
+//			transactionVO.setMerchantId("2");
+//			transactionVO.setTxnType("creditcard");
+//			
+//			transactionVO.setIp(request.getRemoteAddr());
+//			transactionVO.setBillingAddressCity("New York");
+//			transactionVO.setBillingAddressRegion("NY");
+//			transactionVO.setBillingAddressPostal("11434");
+//			transactionVO.setBillingAddressCountry("US");
+////			transactionVO.setId(jSONObject.get("txnID").toString());
+//			transactionVO.setSessionId(request.getRequestedSessionId());
+//			transactionVO.setUserAgent(request.getHeader("User-Agent"));
+//			transactionVO.setAcceptLanguage(request.getHeader("Accept-Language"));
+//			transactionVO.setDomain("yahoo.com");
+//
+//			/****** Table ShippingAddress ******/
+//			shippingAddressVO.setAddress("145-50 157TH STREET");
+//			shippingAddressVO.setCity("Jamaica");
+//			shippingAddressVO.setRegion("NY");
+//			shippingAddressVO.setPostal("11434");
+//			shippingAddressVO.setCountry("US");
+//			
+//			/****** Table Customer ******/
+//			customerVO.setEmail(request.getParameter("email"));
+//			customerVO.setUsername("1234");
+//			customerVO.setPassword("test_carder_password");
+//			
+//			transactionVO.setCardVO(cardVO);
+////			transactionVO.setShippingAddressVO(shippingAddressVO);
+////			transactionVO.setCustomerVO(customerVO);
+//			
+//			transactionVO = transactionFacade.proccesPayment(transactionVO);
+//			if(transactionVO.getStatus().equalsIgnoreCase("success")){
+//				SessionMessages.add(actionRequest, "paymentSuccessful");
+//				session.setAttribute("transactionId", transactionVO.getId());
+//				actionResponse.setRenderParameter("jspPage", "/jsp/sumaryPayment.jsp");
+//			}else{
+//				
+//				System.out.println("basicPaymentResponseModel.getMessage(): " + transactionVO.getMessage());
+//				
+//				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+//				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+//				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+//				SessionErrors.add(actionRequest, "error");
+//				SessionErrors.add(actionRequest,transactionVO.getMessage());
+//				session.setAttribute("transactionVO", transactionVO);
+//				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
+//			}
 			
 /*Aca comienza el anterior proceso definido para trabajar con JSON*/			
 			
@@ -232,9 +290,9 @@ public class FormBasicPayment extends MVCPortlet {
 //			}
 /*Aca termina el anterior proceso definido para trabajar con JSON*/
 			
-		} catch (DataSanitizeException e) {
-			e.printStackTrace();
-		}
+//		} catch (DataSanitizeException e) {
+//			e.printStackTrace();
+//		}
 	}
 	
 	public void acceptPayment(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {

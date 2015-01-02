@@ -16,26 +16,122 @@
 <%@ include file="init.jsp" %>
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
 
+<fmt:setBundle basename="Language"/>
 <portlet:defineObjects />
 <liferay-ui:success key="paymentSuccessful" message="label.satisfactoryRegistration" />
-
 <%
 	TransactionVO transactionVO = (TransactionVO)session.getAttribute("transactionVO");
+	String cardNumber = CreditCard.hide(transactionVO.getCardVO().getNumber(), "X");
 %>
 <portlet:actionURL var="acceptPayment" name="acceptPayment"/>
 <aui:form action="<%= acceptPayment %>" method="post">
 	<div class="tabla">
-			<div class="fila">
-				<div class="columnaIzquierda">
-				There has been a payment on our systems under the transaction number
+		<div class="tabla">
+			<div class="section">
+				<div class="row">
+					<div class="column1-1">
+						<label class="order-number ">
+							<fmt:message key="label.orderNumberSumary">
+						 		 <fmt:param value="${transactionVO.id}"/>
+			 				</fmt:message>
+			 			</label>
+					</div>
 				</div>
-				<div class="columnaIzquierdaMargen">
-				<%= transactionVO != null && transactionVO.getId() != null ? transactionVO.getId() : "Information not available"%>
+				<div class="row">
+					<div class="column1-1">
+						<label class="order-information">
+							<fmt:message key="label.orderText">
+						 		 <fmt:param value="${transactionVO.cardVO.customerVO.email}"/>
+			 				</fmt:message>
+			 			</label>
+					</div>
 				</div>
 			</div>
-			<div class="fila">
-			<div class="columna">
-				<aui:button type="submit" name="Name" value="label.accept" />
+			<div class="section">
+				<div class="row">
+					<div class="column1-1">
+						<label class="sub-title"><fmt:message key="label.billingAddress"/></label>
+					</div>
+				</div>
+			
+				<div class="row">
+					<div class="column1-4">
+						<label class="aui-field-label"><fmt:message key="label.country"/></label>
+					</div>
+					<div class="column2-4">
+						<c:out value="${transactionVO.billingAddressCountry}"/>
+					</div>
+					<div class="column3-4">
+						<label class="aui-field-label"><fmt:message key="label.region"/></label>
+					</div>
+					<div class="column4-4">
+						<c:out value="${transactionVO.billingAddressRegion}"/>
+					</div>
+				</div>
+				<div class="row">
+					<div class="column1-4">
+						<label class="aui-field-label"><fmt:message key="label.city"/></label>
+					</div>
+					<div class="column2-4">
+						<c:out value="${transactionVO.billingAddressCity}"/>
+					</div>
+					<div class="column3-4">
+						<label class="aui-field-label"><fmt:message key="label.postalCode"/></label>
+					</div>
+					<div class="column4-4">
+						<c:out value="${transactionVO.billingAddressPostal}"/>
+					</div>
+				</div>
+			</div>
+			<div class="section">
+				<div class="row">
+					<div class="column1-1">
+						<label class="aui-field-label sub-title"><fmt:message key="label.paymentDetails"/></label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="column1-4">
+						<label class="aui-field-label"><fmt:message key="label.name"/></label>
+					</div>
+					<div class="column2-4">
+						<c:out value="${transactionVO.cardVO.name}"/>
+					</div>
+					<div class="column3-4">
+						<label class="aui-field-label"><fmt:message key="label.cardNumber"/></label>
+					</div>
+					<div class="column4-4">
+						<c:out value="<%=cardNumber%>"/>
+					</div>
+				</div>
+				<div class="row">
+					<div class="column1-4">
+						<label class="aui-field-label"><fmt:message key="label.cardType"/></label>
+					</div>
+					<div class="column2-4">
+						<c:out value="${transactionVO.cardVO.brand}"/>
+					</div>
+					<div class="column3-4">
+						<label class="aui-field-label"><fmt:message key="label.paymentMethod"/></label>
+					</div>
+					<div class="column4-4">
+						<c:out value="${transactionVO.cardVO.funding}"/>
+					</div>
+				</div>
+			
+				<div class="row">
+					<div class="column1-4">
+						<label class="aui-field-label"><fmt:message key="label.currency"/></label>
+					</div>
+					<div class="column2-4">
+						<c:out value="${transactionVO.chargeVO.currency}"/>
+					</div>
+					<div class="column3-4">
+						<label class="aui-field-label"><fmt:message key="label.totalOrderAmount"/></label>
+					</div>
+					<div class="column4-4">
+						<c:out value="${transactionVO.chargeVO.amount}"/>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div id="msgid"></div>
@@ -45,17 +141,20 @@
 	if(transactionVO != null)	{
 %>
 	<script type="text/javascript">
-		 
+		$("#msgid").attr("class", "information red");	
+		$("#msgid").html("Sending payment information to the merchant. Please wait.");
 		$.ajax({
-	    	url: "http://192.168.0.2:8080/Merchant/answerProcessor.jsp",
+	    	url: "http://merchant.billingbuddy.com/Merchant/answerProcessor.jsp",
 	    	type: "GET",
 	        dataType: "html",
-	        async: false,
+	       /*  async: false, */
 	        data: { approbationNumber: <%=transactionVO.getId()%>, orderNumber:<%=transactionVO.getOrderNumber()%>},
 	        success: function (response) {
-	            $("#msgid").html("The merchant have received the payment. You can close this window." + response);
+	        	$("#msgid").attr("class", "information orange");
+	        	$("#msgid").html("The merchant has received the payment. You can close this window." + response);
 	        },
 	        error: function(jqXHR, textStatus, errorThrown) {
+	        	$("#msgid").attr("class", "information red");	
 	        	$("#msgid").html("An error occurred with number " + jqXHR.status);
 	        	/* alert("Error " + jqXHR.status + ":"+textStatus);
 	            alert("Error " + jqXHR.responseText ); */

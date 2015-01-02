@@ -29,7 +29,7 @@
 <liferay-ui:error key="success" message="label.satisfactoryRegistration" />
 <liferay-ui:error key="error" message="label.unsatisfactoryRegistration" />
 
-<liferay-ui:message key="label.title"/>
+<%-- <liferay-ui:message key="label.title"/> --%>
 <aui:script use="aui-io-request,aui-node">
 </aui:script>
 <script type="text/javascript">

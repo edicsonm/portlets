@@ -1,4 +1,4 @@
-<%      
+<%-- <%      
 ResultRow row = (ResultRow)   request.getAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW);
 /* Article article= (Article) row.getObject(); */
  %>
@@ -9,4 +9,4 @@ ResultRow row = (ResultRow)   request.getAttribute(WebKeys.SEARCH_CONTAINER_RESU
 
  <liferay-ui:icon image="delete" message="DELETE"
   url="<%= deleteArticleURL.toString() %>" />
-</liferay-ui:icon-menu>
+</liferay-ui:icon-menu> --%>

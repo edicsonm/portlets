@@ -22,11 +22,15 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="co"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
 
 <%@ page import="java.util.Calendar"%>
 <%@ page import="java.util.GregorianCalendar"%>
 <%@ page import="java.util.Locale"%>
 <%@ page import="com.liferay.portal.kernel.util.CalendarFactoryUtil" %>
 
-<%@ page import="au.com.billingbuddy.vo.objects.TransactionVO" %>
+<%@ page import="au.com.billingbuddy.vo.objects.ChargeVO" %>
 <%@ page import="au.com.billigbuddy.porlet.utilities.Methods" %>
+<%@ page import="au.com.billingbuddy.common.objects.Utilities" %>
+<%@ page import="au.com.billingbuddy.common.objects.Currency" %>
