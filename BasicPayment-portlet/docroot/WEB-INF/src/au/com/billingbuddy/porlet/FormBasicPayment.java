@@ -112,11 +112,8 @@ public class FormBasicPayment extends MVCPortlet {
 		HttpServletResponse response = PortalUtil.getHttpServletResponse(actionResponse);
 		HttpSession session = request.getSession();
 		TransactionVO transactionVO = (TransactionVO)session.getAttribute("transactionVO");
-		
 		try {
-			
 			transactionVO.getCardVO().setBin(transactionVO.getCardVO().getNumber().substring(0, 6));
-			
 			/****** Table Card ******/
 			transactionVO.getCardVO().setName(request.getParameter("name"));
 			transactionVO.getCardVO().setNumber(request.getParameter("cardNumber"));

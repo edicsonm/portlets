@@ -23,11 +23,11 @@
 <%@ page import="javax.portlet.PortletURL"%>
 
 <portlet:defineObjects />
-<portlet:defineObjects />
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
-<%-- <liferay-ui:error key="success" message="label.success" />
-<liferay-ui:error key="error" message="label.unsatisfactoryRegistration" />
+<liferay-ui:success key="refundSuccessful" message="label.success" />
+
+<%-- <liferay-ui:error key="error" message="label.unsatisfactoryRegistration" />
 <liferay-ui:error key="claveDuplicada" message="error.claveDuplicada"  /> --%>
 <aui:script use="aui">
 	showDetails = function(val){
@@ -61,6 +61,7 @@
 	if(listCharge == null) listCharge = new ArrayList<ChargeVO>();
 	session.setAttribute("orderByCol", orderByCol);
 	session.setAttribute("orderByType", orderByType);
+	session.setAttribute("page", "view.jsp");
 %>
 <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURL" />
 <aui:form name="operacion" method="post">
@@ -77,7 +78,7 @@
 				</div>
 			</div> --%>
 			<div class="fila">
-				<liferay-ui:search-container emptyResultsMessage="label.noRegistros" delta="10" iteratorURL="<%=renderURL%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
+				<liferay-ui:search-container emptyResultsMessage="label.noRegistros" delta="30" iteratorURL="<%=renderURL%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
 				   <liferay-ui:search-container-results>
 				      <%
 						listCharge = Methods.orderCharges(listCharge,orderByCol,orderByType);
@@ -89,16 +90,22 @@
 				       %>
 					</liferay-ui:search-container-results>
 					<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.ChargeVO" rowVar="posi" indexVar="indice" keyProperty="id" modelVar="chargeVO">
+						<portlet:actionURL var="rowURL" name="listRefund">
+							<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
+							<portlet:param name="jspPage" value="/jsp/refund.jsp" />
+							<portlet:param name="orderNumber" value="<%=String.valueOf(chargeVO.getId())%>"/>
+						</portlet:actionURL>
 						
-						<liferay-portlet:renderURL varImpl="rowURL">
+						<%-- <liferay-portlet:renderURL varImpl="rowURL">
 							<portlet:param name="mvcPath" value="/jsp/refund.jsp" />
 							<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
-						</liferay-portlet:renderURL>
+							<portlet:param name="orderNumber" value="<%=String.valueOf(chargeVO.getId())%>"/>
+						</liferay-portlet:renderURL> --%>
 					
 					<liferay-ui:search-container-column-text name="Charge" property="id" value="transactionId" orderable="true" orderableProperty="id" href="<%= rowURL %>"/>
-					<liferay-ui:search-container-column-text name="Currency" property="currency" orderable="true" orderableProperty="currency" />
-					<liferay-ui:search-container-column-text name="Amount" property="amount" orderable="true" orderableProperty="amount" />
-					<liferay-ui:search-container-column-text name="Charge Date" property="creationTime" orderable="true" orderableProperty="creationTime" />
+					<liferay-ui:search-container-column-text name="Currency" value="<%=chargeVO.getCurrency().toUpperCase()%>" orderable="true" orderableProperty="currency" />
+					<liferay-ui:search-container-column-text name="Amount" value="<%=Utilities.stripeToCurrency(chargeVO.getAmount(),chargeVO.getCurrency().toUpperCase()) %>" orderable="true" orderableProperty="amount" />
+					<liferay-ui:search-container-column-text name="Charge Date" value="<%=Utilities.formatDate(chargeVO.getCreationTime()) %>" orderable="true" orderableProperty="creationTime" />
 					<%-- <liferay-ui:search-container-column-text name="Last 4 Digits Card Number" property="cardVO.last4" orderable="true" orderableProperty="cardVO.last4" />
 					<liferay-ui:search-container-column-text name="Brand" property="cardVO.brand" orderable="true" orderableProperty="cardVO.brand" />
 					<liferay-ui:search-container-column-text name="Funding" property="cardVO.funding" orderable="true" orderableProperty="cardVO.funding" /> --%>
