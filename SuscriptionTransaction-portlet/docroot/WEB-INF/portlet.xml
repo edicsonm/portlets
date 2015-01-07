@@ -4,11 +4,15 @@
 	<portlet>
 		<portlet-name>SuscriptionTransaction</portlet-name>
 		<display-name>SuscriptionTransaction</display-name>
-		<portlet-class>com.liferay.util.bridges.mvc.MVCPortlet</portlet-class>
+		<portlet-class>au.com.billingbuddy.porlet.FormSuscriptionTransaction</portlet-class>
 		<init-param>
 			<name>view-template</name>
-			<value>/view.jsp</value>
+			<value>/jsp/view.jsp</value>
 		</init-param>
+		<init-param>
+            <name>add-process-action-success-action</name>
+            <value>false</value>
+        </init-param>
 		<expiration-cache>0</expiration-cache>
 		<supports>
 			<mime-type>text/html</mime-type>
@@ -22,13 +26,13 @@
 			<role-name>administrator</role-name>
 		</security-role-ref>
 		<security-role-ref>
+			<role-name>power-user</role-name>
+		</security-role-ref>
+		<!-- <security-role-ref>
 			<role-name>guest</role-name>
 		</security-role-ref>
 		<security-role-ref>
-			<role-name>power-user</role-name>
-		</security-role-ref>
-		<security-role-ref>
 			<role-name>user</role-name>
-		</security-role-ref>
+		</security-role-ref> -->
 	</portlet>
 </portlet-app>

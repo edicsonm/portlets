@@ -81,8 +81,6 @@
 	
 	ChargeVO chargeVO = (ChargeVO)session.getAttribute("chargeVO");
 	
-	
-	
 	String orderByColAnteriorRefunds = (String)session.getAttribute("orderByColRefunds");
 	String orderByTypeAnteriorRefunds = (String)session.getAttribute("orderByTypeRefunds");
 	

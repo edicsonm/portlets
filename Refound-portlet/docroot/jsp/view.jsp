@@ -22,9 +22,10 @@
 <%@ page import="javax.portlet.PortletPreferences" %>
 <%@ page import="javax.portlet.PortletURL"%>
 
-<portlet:defineObjects />
-<liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
+<portlet:defineObjects />
+<%-- <liferay-theme:defineObjects /> --%>
+
 <liferay-ui:success key="refundSuccessful" message="label.success" />
 
 <%-- <liferay-ui:error key="error" message="label.unsatisfactoryRegistration" />
@@ -78,7 +79,7 @@
 				</div>
 			</div> --%>
 			<div class="fila">
-				<liferay-ui:search-container emptyResultsMessage="label.noRegistros" delta="30" iteratorURL="<%=renderURL%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
+				<liferay-ui:search-container emptyResultsMessage="There are no results." delta="30" iteratorURL="<%=renderURL%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
 				   <liferay-ui:search-container-results>
 				      <%
 						listCharge = Methods.orderCharges(listCharge,orderByCol,orderByType);

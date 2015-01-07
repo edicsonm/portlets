@@ -8,8 +8,6 @@ import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletConfig;
 import javax.portlet.PortletException;
-import javax.portlet.PortletPreferences;
-import javax.portlet.PortletRequestDispatcher;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.portlet.ResourceRequest;
@@ -38,41 +36,51 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
 import com.liferay.util.json.JSONFactoryUtil;
 
 public class FormRefund extends MVCPortlet {
-	private TransactionFacade transactionFacade  = TransactionFacade.getInstance();
 	private ProcesorFacade procesorFacade = ProcesorFacade.getInstance();
 	
 	@Override
 	public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
+		try {
+			System.out.println("Ejecuta doView");
+			HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
+			HttpServletResponse response = PortalUtil.getHttpServletResponse(renderResponse);
+			
+			HttpSession session = request.getSession();
+			ArrayList<ChargeVO> listCharge;
 		
-		System.out.println("Ejecuta doView");
-		HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
-		HttpServletResponse response = PortalUtil.getHttpServletResponse(renderResponse);
+			listCharge = procesorFacade.listCharge(new ChargeVO());
 		
-		HttpSession session = request.getSession();
-		ArrayList<ChargeVO> listCharge = transactionFacade.listCharge(new ChargeVO());
-		session.setAttribute("listCharge", listCharge);
-		
-//		String page = (String)session.getAttribute("page");
-//		System.out.println("page: " + page);
-//		session.removeAttribute("page");
-//		if(page == null || page.equalsIgnoreCase("view.jsp")){
-//			ArrayList<ChargeVO> listCharge = transactionFacade.listCharge(new ChargeVO());
-//			session.setAttribute("listCharge", listCharge);
-//			include("/jsp/view.jsp", renderRequest, renderResponse);
-//		} else {
-//			PortletPreferences prefs = renderRequest.getPreferences();
-//			prefs.setValue("greeting", "indiceindiceindice");
-//	        prefs.store();
-//			include("/jsp/refund.jsp", renderRequest, renderResponse);
-//		}
-		
+			session.setAttribute("listCharge", listCharge);
+			
+	//		String page = (String)session.getAttribute("page");
+	//		System.out.println("page: " + page);
+	//		session.removeAttribute("page");
+	//		if(page == null || page.equalsIgnoreCase("view.jsp")){
+	//			ArrayList<ChargeVO> listCharge = transactionFacade.listCharge(new ChargeVO());
+	//			session.setAttribute("listCharge", listCharge);
+	//			include("/jsp/view.jsp", renderRequest, renderResponse);
+	//		} else {
+	//			PortletPreferences prefs = renderRequest.getPreferences();
+	//			prefs.setValue("greeting", "indiceindiceindice");
+	//	        prefs.store();
+	//			include("/jsp/refund.jsp", renderRequest, renderResponse);
+	//		}
+		} catch (ProcesorFacadeException e) {
+			e.printStackTrace();
+			PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+			SessionMessages.add(renderRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+			SessionErrors.add(renderRequest,e.getErrorCode());
+			System.out.println("e.getMessage(): " + e.getMessage());
+			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
+			System.out.println("e.getErrorCode(): " + e.getErrorCode());
+//			renderRequest.setRenderParameter("jspPage", "/jsp/view.jsp");
+		}
 		super.doView(renderRequest, renderResponse);
 	}
 	
 	public void showDetails(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
 		System.out.println("Ejecuta showDetails");
-		
-		
 //		System.out.println("Ejecuta showDetails ...");
 //		String id = actionRequest.getParameter("id");
 //		String jspPage = actionRequest.getParameter("jspPage");
@@ -101,6 +109,15 @@ public class FormRefund extends MVCPortlet {
 			session.setAttribute("listRefunds", listRefunds);
 		} catch (ProcesorFacadeException e) {
 			e.printStackTrace();
+			
+			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+			SessionErrors.add(actionRequest,e.getErrorCode());
+			System.out.println("e.getMessage(): " + e.getMessage());
+			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
+			System.out.println("e.getErrorCode(): " + e.getErrorCode());
+			actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
 		}
 		actionResponse.setRenderParameter("jspPage", "/jsp/refund.jsp");
 	}
