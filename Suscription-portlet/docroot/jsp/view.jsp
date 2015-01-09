@@ -19,9 +19,9 @@
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
-<liferay-ui:success key="planSavedSuccessfully" message="label.planSavedSuccessfully" />
-<liferay-ui:success key="planUpdatedSuccessfully" message="label.planUpdatedSuccessfully" />
-<liferay-ui:success key="planDeletedSuccessfully" message="label.planDeletedSuccessfully" />
+<liferay-ui:success key="subscriptionSavedSuccessfully" message="label.subscriptionSavedSuccessfully" />
+<liferay-ui:success key="subscriptionUpdatedSuccessfully" message="label.subscriptionUpdatedSuccessfully" />
+<liferay-ui:success key="subscriptionDeletedSuccessfully" message="label.subscriptionDeletedSuccessfully" />
 <% 
 	
 	String orderByColAnterior = (String)session.getAttribute("orderByCol");
@@ -46,13 +46,15 @@
 		orderByType = "asc";
 	}	
 
-	ArrayList<PlanVO> listPlans = (ArrayList<PlanVO>)session.getAttribute("listPlans");
-	if(listPlans == null) listPlans = new ArrayList<PlanVO>();
+	ArrayList<SubscriptionVO> listSubscriptions = (ArrayList<SubscriptionVO>)session.getAttribute("listSubscriptions");
+	if(listSubscriptions == null) listSubscriptions = new ArrayList<SubscriptionVO>();
 %>
 
-<portlet:renderURL var="newPlan">
-	<portlet:param name="jspPage" value="/jsp/newPlan.jsp" />
-</portlet:renderURL>
+<%-- <portlet:renderURL var="newSubscription">
+	<portlet:param name="jspPage" value="/jsp/newSubscription.jsp" />
+</portlet:renderURL> --%>
+
+<portlet:actionURL var="listPlan" name="listPlan"/>
 
 <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURL" />
 <aui:form method="post">
@@ -61,20 +63,19 @@
 			<liferay-ui:search-container emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURL%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
 				<liferay-ui:search-container-results>
 					<%
-						listPlans = Methods.orderPlans(listPlans,orderByCol,orderByType);
-						results = ListUtil.subList(listPlans, searchContainer.getStart(), searchContainer.getEnd());
-						total = listPlans.size();
+						listSubscriptions = Methods.orderSubscriptions(listSubscriptions,orderByCol,orderByType);
+						results = ListUtil.subList(listSubscriptions, searchContainer.getStart(), searchContainer.getEnd());
+						total = listSubscriptions.size();
 						pageContext.setAttribute("results", results);
 						pageContext.setAttribute("total", total);
 						session.setAttribute("results", results);
 				    %>
 				</liferay-ui:search-container-results>
-				<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.PlanVO" rowVar="posi" indexVar="indice" keyProperty="id" modelVar="planVO">
+				<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.SubscriptionVO" rowVar="posi" indexVar="indice" keyProperty="id" modelVar="subscriptionVO">
 					
 					<liferay-portlet:renderURL varImpl="rowURL">
 							<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
-							<portlet:param name="jspPage" value="/jsp/viewPlan.jsp" />
-							<portlet:param name="planId" value="<%=String.valueOf(planVO.getId())%>"/>
+							<portlet:param name="jspPage" value="/jsp/viewSubscription.jsp" />
 					</liferay-portlet:renderURL>
 					
 					<liferay-ui:search-container-column-text name="Name" property="name" value="name" orderable="true" orderableProperty="name" href="<%= rowURL %>"/>
@@ -85,20 +86,18 @@
 						<liferay-ui:icon-menu>
 							
 							<liferay-portlet:renderURL varImpl="editURL">
-								<portlet:param name="mvcPath" value="/jsp/editPlan.jsp" />
+								<portlet:param name="mvcPath" value="/jsp/editSubscription.jsp" />
 								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
-								<portlet:param name="idPlan" value="<%=String.valueOf(planVO.getId())%>"/>
 							</liferay-portlet:renderURL>
 							<liferay-ui:icon image="edit" message="label.edit" url="<%=editURL.toString()%>" />
 							
-							<portlet:actionURL var="deleteURL" name="deletePlan">
+							<portlet:actionURL var="deleteURL" name="deleteSubscription">
 								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
 							</portlet:actionURL>
 							<liferay-ui:icon-delete message="label.delete" url="<%=deleteURL.toString()%>" />
 							 
 						</liferay-ui:icon-menu>
 					</liferay-ui:search-container-column-text>
-					
 					
 				</liferay-ui:search-container-row>
 				<liferay-ui:search-iterator />
@@ -107,8 +106,8 @@
 		
 		<div class="row">
 			<div class="column1-2">
-				<span class="newPlan" >
-					<a href="<%= newPlan %>"><fmt:message key="label.newPlan"/></a>
+				<span class="newSubscription" >
+					<a href="<%= listPlan %>"><fmt:message key="label.newSubscription"/></a>
 				</span>
 			</div>
 			<div class="column2-2">

@@ -103,40 +103,6 @@ public class FormPlan extends MVCPortlet {
 			actionResponse.setRenderParameter("jspPage", "/jsp/newPlan.jsp");
 		}
 	}
-
-
-	@Override
-	public void doEdit(RenderRequest renderRequest,
-			RenderResponse renderResponse) throws IOException, PortletException {
-		// TODO Auto-generated method stub
-		System.out.println("Ejecuta doEdit");
-		super.doEdit(renderRequest, renderResponse);
-	}
-
-	@Override
-	public void doHelp(RenderRequest renderRequest,
-			RenderResponse renderResponse) throws IOException, PortletException {
-		// TODO Auto-generated method stub
-		System.out.println("Ejecuta doHelp");
-		super.doHelp(renderRequest, renderResponse);
-	}
-
-	@Override
-	public void doPreview(RenderRequest renderRequest,
-			RenderResponse renderResponse) throws IOException, PortletException {
-		// TODO Auto-generated method stub
-		System.out.println("Ejecuta doPreview");
-		super.doPreview(renderRequest, renderResponse);
-	}
-
-	@Override
-	public void doPrint(RenderRequest renderRequest,
-			RenderResponse renderResponse) throws IOException, PortletException {
-		// TODO Auto-generated method stub
-		System.out.println("Ejecuta doPrint");
-		super.doPrint(renderRequest, renderResponse);
-	}
-
 	
 	public void editPlan(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
@@ -184,7 +150,7 @@ public class FormPlan extends MVCPortlet {
 			System.out.println("e.getErrorCode(): " + e.getErrorCode());
 			
 			session.setAttribute("planVO", planVO);
-			actionResponse.setRenderParameter("jspPage", "/jsp/newPlan.jsp");
+			actionResponse.setRenderParameter("jspPage", "/jsp/editPlan.jsp");
 		}
 	}
 	
@@ -221,11 +187,6 @@ public class FormPlan extends MVCPortlet {
 			session.setAttribute("planVO", planVO);
 		}
 		actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
-	}
-	
-	@Override
-	public void processAction(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
-		super.processAction(actionRequest, actionResponse);
 	}
 	
 }

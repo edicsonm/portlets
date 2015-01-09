@@ -258,7 +258,7 @@ function listRefunds() {
 							<liferay-ui:search-container-column-text name="Amount" value="<%=Utilities.stripeToCurrency(refundVO.getAmount(),refundVO.getCurrency().toUpperCase()) %>" orderable="false" orderableProperty="amount" />
 							<liferay-ui:search-container-column-text name="Charge Date" value="<%=Utilities.formatDate(refundVO.getCreationTime())%>"  orderable="false" orderableProperty="creationTime" />
 							<liferay-ui:search-container-column-text name="Reason" property="reason" orderable="false" orderableProperty="reason" />
-						   </liferay-ui:search-container-row>Utilities.formatDate(
+						   </liferay-ui:search-container-row>
 						   <liferay-ui:search-iterator paginate="false" />
 						</liferay-ui:search-container>					
 				</div>	
