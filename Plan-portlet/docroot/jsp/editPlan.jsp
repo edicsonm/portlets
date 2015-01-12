@@ -18,6 +18,7 @@
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
+<liferay-ui:error key="ProcessorMDTR.updatePlan.PlanDAOException" message="error.ProcessorMDTR.updatePlan.PlanDAOException" />
 <%
 	ArrayList<PlanVO> resultsListCharge = (ArrayList<PlanVO>)session.getAttribute("results");
 	PlanVO planVO = (PlanVO)resultsListCharge.get(Integer.parseInt(ParamUtil.getString(request, "indice")));

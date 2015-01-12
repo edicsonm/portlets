@@ -78,18 +78,25 @@
 							<portlet:param name="jspPage" value="/jsp/viewSubscription.jsp" />
 					</liferay-portlet:renderURL>
 					
-					<liferay-ui:search-container-column-text name="Name" property="name" value="name" orderable="true" orderableProperty="name" href="<%= rowURL %>"/>
-					<liferay-ui:search-container-column-text name="Interval" property="interval" value="interval" orderable="true" orderableProperty="interval"/>
-					<liferay-ui:search-container-column-text name="Amount" property="amount" value="amount" orderable="true" orderableProperty="amount"/>
+					<liferay-ui:search-container-column-text name="label.plan" property="planVO.name" value="planVO.name" orderable="true" orderableProperty="planVO.name" href="<%= rowURL %>"/>
+					<liferay-ui:search-container-column-text name="label.status" property="status" value="status" orderable="false" orderableProperty="status"/>
+					<liferay-ui:search-container-column-text name="label.quantity" property="quantity" value="quantity" orderable="false" orderableProperty="quantity"/>
+					<liferay-ui:search-container-column-text name="label.start" property="start" value="start" orderable="false" orderableProperty="start"/>
 					
 					<liferay-ui:search-container-column-text name="Accion">
 						<liferay-ui:icon-menu>
 							
-							<liferay-portlet:renderURL varImpl="editURL">
+							<portlet:actionURL var="editURL" name="listPlanEditPlan">
+								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
+								<portlet:param name="mvcPath" value="/jsp/editSubscription.jsp" />
+							</portlet:actionURL>
+							<liferay-ui:icon image="edit" message="label.edit" url="<%=editURL.toString()%>" />
+							
+							<%-- <liferay-portlet:renderURL varImpl="editURL">
 								<portlet:param name="mvcPath" value="/jsp/editSubscription.jsp" />
 								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
 							</liferay-portlet:renderURL>
-							<liferay-ui:icon image="edit" message="label.edit" url="<%=editURL.toString()%>" />
+							<liferay-ui:icon image="edit" message="label.edit" url="<%=editURL.toString()%>" /> --%>
 							
 							<portlet:actionURL var="deleteURL" name="deleteSubscription">
 								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>

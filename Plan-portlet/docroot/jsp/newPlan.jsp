@@ -18,6 +18,7 @@
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
+<liferay-ui:error key="ProcessorMDTR.savePlan.PlanDAOException" message="error.ProcessorMDTR.savePlan.PlanDAOException" />
 <% 
 	PlanVO planVO = (PlanVO)session.getAttribute("planVO");
 %>

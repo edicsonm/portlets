@@ -19,9 +19,9 @@
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
 <%
-	ArrayList<PlanVO> resultsListCharge = (ArrayList<PlanVO>)session.getAttribute("results");
-	PlanVO planVO = (PlanVO)resultsListCharge.get(Integer.parseInt(ParamUtil.getString(request, "indice")));
-	request.setAttribute("planVO", planVO);
+	ArrayList<SubscriptionVO> resultsListSubscriptions = (ArrayList<SubscriptionVO>)session.getAttribute("results");
+	SubscriptionVO subscriptionVO = (SubscriptionVO)resultsListSubscriptions.get(Integer.parseInt(ParamUtil.getString(request, "indice")));
+	request.setAttribute("subscriptionVO", subscriptionVO);
 %>
 <portlet:renderURL var="goBack">
 	<portlet:param name="jspPage" value="/jsp/view.jsp" />
@@ -33,55 +33,123 @@
 			<div class="row">
 				<div class="row">
 					<div class="column1-1">
-						<label class="aui-field-label sub-title"><fmt:message key="label.informationPlan"/></label>
+						<label class="aui-field-label sub-title"><fmt:message key="label.informationSubscription"/></label>
 					</div>
 				</div>
 			</div>
+			
 			<div class="row">
 				<div class="column1-4">
-					<label class="aui-field-label"><fmt:message key="label.name"/></label>
+					<label class="aui-field-label"><fmt:message key="label.plan"/></label>
 				</div>
 				<div class="column2-4">
-					<c:out value="${planVO.name}"/>
+					<c:out value="${subscriptionVO.planVO.name}"/>
 				</div>
 				<div class="column3-4">
-					<label class="aui-field-label"><fmt:message key="label.amount"/></label>
+					<label class="aui-field-label"><fmt:message key="label.status"/></label>
 				</div>
 				<div class="column4-4">
-					<c:out value="${planVO.amount}"/>
+					<c:out value="${subscriptionVO.status}"/>
 				</div>
 			</div>
 			
 			<div class="row">
 				<div class="column1-4">
-					<label class="aui-field-label"><fmt:message key="label.currency"/></label>
+					<label class="aui-field-label"><fmt:message key="label.quantity"/></label>
 				</div>
 				<div class="column2-4">
-					<c:out value="${planVO.currency}"/>
+					<c:out value="${subscriptionVO.quantity}"/>
 				</div>
 				<div class="column3-4">
-					<label class="aui-field-label"><fmt:message key="label.statementDescriptor"/></label>
+					<label class="aui-field-label"><fmt:message key="label.cancelAtPeriodEnd"/></label>
 				</div>
 				<div class="column4-4">
-					<c:out value="${planVO.statementDescriptor}"/>
+					<c:out value="${subscriptionVO.cancelAtPeriodEnd}"/>
 				</div>
-				
 			</div>
 			
 			<div class="row">
 				<div class="column1-4">
-					<label class="aui-field-label"><fmt:message key="label.interval"/></label>
+					<label class="aui-field-label"><fmt:message key="label.applicationFeePercent"/></label>
 				</div>
 				<div class="column2-4">
-					<c:out value="${planVO.interval}"/>
+					<c:out value="${subscriptionVO.applicationFeePercent}"/>
 				</div>
 				<div class="column3-4">
-					<label class="aui-field-label"><fmt:message key="label.trialPeriodDays"/></label>
+					<label class="aui-field-label"><fmt:message key="label.taxPercent"/></label>
 				</div>
 				<div class="column4-4">
-					<c:out value="${planVO.trialPeriodDays}"/>
+					<c:out value="${subscriptionVO.taxPercent}"/>
 				</div>
 			</div>
+			
+			<div class="row">
+				<div class="column1-4">
+					<label class="aui-field-label"><fmt:message key="label.start"/></label>
+				</div>
+				<div class="column2-4">
+					<%-- <c:out value="${subscriptionVO.start}"/> --%>
+					<c:out value="<%=Utilities.formatDate(subscriptionVO.getStart()) %>"/>
+				</div>
+				<div class="column3-4">
+					<label class="aui-field-label"><fmt:message key="label.endedAt"/></label>
+				</div>
+				<div class="column4-4">
+					<%-- <c:out value="${subscriptionVO.endedAt}"/> --%>
+					<c:out value="<%=Utilities.formatDate(subscriptionVO.getEndedAt()) %>"/>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="column1-4">
+					<label class="aui-field-label"><fmt:message key="label.canceledAt"/></label>
+				</div>
+				<div class="column2-4">
+					<%-- <c:out value="${subscriptionVO.canceledAt}"/> --%>
+					<c:out value="<%=Utilities.formatDate(subscriptionVO.getCanceledAt()) %>"/>
+				</div>
+				<div class="column3-4">
+					<%-- <label class="aui-field-label"><fmt:message key="label.endedAt"/></label> --%>
+				</div>
+				<div class="column4-4">
+					<%-- <c:out value="${subscriptionVO.endedAt}"/> --%>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="column1-4">
+					<label class="aui-field-label"><fmt:message key="label.currentPeriodStart"/></label>
+				</div>
+				<div class="column2-4">
+					<%-- <c:out value="${subscriptionVO.currentPeriodStart}"/> --%>
+					<c:out value="<%=Utilities.formatDate(subscriptionVO.getCurrentPeriodStart()) %>"/>
+				</div>
+				<div class="column3-4">
+					<label class="aui-field-label"><fmt:message key="label.currentPeriodEnd"/></label>
+				</div>
+				<div class="column4-4">
+					<%-- <c:out value="${subscriptionVO.currentPeriodEnd}"/> --%>
+					<c:out value="<%=Utilities.formatDate(subscriptionVO.getCurrentPeriodEnd()) %>"/>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="column1-4">
+					<label class="aui-field-label"><fmt:message key="label.trialStart"/></label>
+				</div>
+				<div class="column2-4">
+					<%-- <c:out value="${subscriptionVO.trialStart}"/> --%>
+					<c:out value="<%=Utilities.formatDate(subscriptionVO.getTrialStart()) %>"/>
+				</div>
+				<div class="column3-4">
+					<label class="aui-field-label"><fmt:message key="label.trialEnd"/></label>
+				</div>
+				<div class="column4-4">
+					<%-- <c:out value="${Utilities.formatDate(subscriptionVO.trialEnd)}"/> --%>
+					<c:out value="<%=Utilities.formatDate(subscriptionVO.getTrialEnd()) %>"/>
+				</div>
+			</div>
+			
 			<div class="row">
 				<div class="column1-2">
 						<span class="goBack" >

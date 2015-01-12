@@ -1,4 +1,4 @@
-.table {
+/* .table {
 	display: table;
 	border-collapse: separate;
 	border-spacing: 5px;
@@ -55,7 +55,7 @@
 
 .column1-1{
 	display: flex;
-	/* display: table-cell; */
+	display: table-cell;
 	float:left;
 	padding: 0px 0px 0px 0px;
 	width:100%;
@@ -89,7 +89,7 @@
 
 .help{
 	background: url("/BillingBuddyLookAndField-theme/images/messages/error.png") no-repeat scroll 100% 50% rgba(0, 0, 0, 0);
-}
+} */
 
 /* 
 <div style='height: 550px; width: 220px; border: 3px solid black; float: left;'></div> 

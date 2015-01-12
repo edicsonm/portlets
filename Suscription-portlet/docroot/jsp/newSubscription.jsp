@@ -25,6 +25,7 @@
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
+<liferay-ui:error key="ProcessorMDTR.saveSubscription.SubscriptionDAOException" message="error.ProcessorMDTR.saveSubscription.SubscriptionDAOException" />
 <% 
 	Calendar calendar = GregorianCalendar.getInstance();
 	Calendar cal = CalendarFactoryUtil.getCalendar(calendar.getTimeZone());
@@ -32,14 +33,26 @@
 	SubscriptionVO subscriptionVO = (SubscriptionVO)session.getAttribute("subscriptionVO");
 	ArrayList<PlanVO> listPlans = (ArrayList<PlanVO>)session.getAttribute("listPlans");
 	
-	if(subscriptionVO == null){
-		subscriptionVO =new SubscriptionVO();
+	if(subscriptionVO == null) {
+		System.out.println("subscriptionVO: " + subscriptionVO);
+		subscriptionVO = new SubscriptionVO();
 		subscriptionVO.setStart(Utilities.getCurrentDate());
+		subscriptionVO.setEndedAt(Utilities.getCurrentDate());
+		subscriptionVO.setCanceledAt(Utilities.getCurrentDate());
+		subscriptionVO.setCurrentPeriodStart(Utilities.getCurrentDate());
+		subscriptionVO.setCurrentPeriodEnd(Utilities.getCurrentDate());
+		subscriptionVO.setTrialStart(Utilities.getCurrentDate());
+		subscriptionVO.setTrialEnd(Utilities.getCurrentDate());
 	}
 	
-	Date startDate = Utilities.getSimpleDateFormat().parse(subscriptionVO.getStart());
-	Calendar startCalendar = GregorianCalendar.getInstance();
-	startCalendar.setTime(startDate);
+	Calendar startCalendar = Utilities.getCalendarDateSimple(subscriptionVO.getStart());
+	Calendar endedAtCalendar = Utilities.getCalendarDateSimple(subscriptionVO.getEndedAt());
+	Calendar canceledAtCalendar = Utilities.getCalendarDateSimple(subscriptionVO.getCanceledAt());
+	Calendar currentPeriodStartCalendar = Utilities.getCalendarDateSimple(subscriptionVO.getCurrentPeriodStart());
+	Calendar currentPeriodEndCalendar = Utilities.getCalendarDateSimple(subscriptionVO.getCurrentPeriodEnd());
+	Calendar trialStartCalendar = Utilities.getCalendarDateSimple(subscriptionVO.getTrialStart());
+	Calendar trialEndCalendar = Utilities.getCalendarDateSimple(subscriptionVO.getTrialEnd());
+	
 %>
 <portlet:actionURL name="saveSubscription" var="submitForm">
 	<portlet:param name="jspPage" value="/jsp/view.jsp" />
@@ -138,8 +151,8 @@
 								</span>
 							</label>
 							<span class="aui-field-element "> 
-								<liferay-ui:input-date formName="endedAt" dayParam="endedAtDay" dayValue="<%= cal.get(Calendar.DATE) %>" disabled="<%=false%>" firstDayOfWeek="<%= cal.getFirstDayOfWeek() - 1 %>"
-							    	monthParam="endedAtMonth" monthValue="<%= cal.get(Calendar.MONTH) %>" yearParam="endedAtYear" yearValue="<%= cal.get(Calendar.YEAR) %>"
+								<liferay-ui:input-date formName="endedAt" dayParam="endedAtDay" dayValue="<%= endedAtCalendar.get(Calendar.DATE) %>" disabled="<%=false%>" firstDayOfWeek="<%= cal.getFirstDayOfWeek() - 1 %>"
+							    	monthParam="endedAtMonth" monthValue="<%= endedAtCalendar.get(Calendar.MONTH) %>" yearParam="endedAtYear" yearValue="<%= endedAtCalendar.get(Calendar.YEAR) %>"
 							    	yearRangeStart="<%= cal.get(Calendar.YEAR) - 15 %>" yearRangeEnd="<%= cal.get(Calendar.YEAR) %>" />
 							</span>
 						</span>
@@ -158,8 +171,8 @@
 								</span>
 							</label>
 							<span class="aui-field-element "> 
-								<liferay-ui:input-date  formName="canceledAt" dayParam="canceledAtDay" dayValue="<%= cal.get(Calendar.DATE) %>" disabled="<%=false%>" firstDayOfWeek="<%= cal.getFirstDayOfWeek() - 1 %>"
-							    	monthParam="canceledAtMonth" monthValue="<%= cal.get(Calendar.MONTH) %>" yearParam="canceledAtYear" yearValue="<%= cal.get(Calendar.YEAR) %>"
+								<liferay-ui:input-date  formName="canceledAt" dayParam="canceledAtDay" dayValue="<%= canceledAtCalendar.get(Calendar.DATE) %>" disabled="<%=false%>" firstDayOfWeek="<%= cal.getFirstDayOfWeek() - 1 %>"
+							    	monthParam="canceledAtMonth" monthValue="<%= canceledAtCalendar.get(Calendar.MONTH) %>" yearParam="canceledAtYear" yearValue="<%= canceledAtCalendar.get(Calendar.YEAR) %>"
 							    	yearRangeStart="<%= cal.get(Calendar.YEAR) - 15 %>" yearRangeEnd="<%= cal.get(Calendar.YEAR) %>" />
 							</span>
 						</span>
@@ -178,8 +191,8 @@
 								</span>
 							</label>
 							<span class="aui-field-element "> 
-								<liferay-ui:input-date  formName="currentPeriodStart" dayParam="currentPeriodStartDay" dayValue="<%= cal.get(Calendar.DATE) %>" disabled="<%=false%>" firstDayOfWeek="<%= cal.getFirstDayOfWeek() - 1 %>"
-							    	monthParam="currentPeriodStartMonth" monthValue="<%= cal.get(Calendar.MONTH) %>" yearParam="currentPeriodStartYear" yearValue="<%= cal.get(Calendar.YEAR) %>"
+								<liferay-ui:input-date  formName="currentPeriodStart" dayParam="currentPeriodStartDay" dayValue="<%= currentPeriodStartCalendar.get(Calendar.DATE) %>" disabled="<%=false%>" firstDayOfWeek="<%= cal.getFirstDayOfWeek() - 1 %>"
+							    	monthParam="currentPeriodStartMonth" monthValue="<%= currentPeriodStartCalendar.get(Calendar.MONTH) %>" yearParam="currentPeriodStartYear" yearValue="<%= currentPeriodStartCalendar.get(Calendar.YEAR) %>"
 							    	yearRangeStart="<%= cal.get(Calendar.YEAR) - 15 %>" yearRangeEnd="<%= cal.get(Calendar.YEAR) %>" />
 							</span>
 						</span>
@@ -198,8 +211,8 @@
 								</span>
 							</label>
 							<span class="aui-field-element "> 
-								<liferay-ui:input-date formName="currentPeriodEnd" dayParam="currentPeriodEndDay" dayValue="<%= cal.get(Calendar.DATE) %>" disabled="<%=false%>" firstDayOfWeek="<%= cal.getFirstDayOfWeek() - 1 %>"
-							    	monthParam="currentPeriodEndMonth" monthValue="<%= cal.get(Calendar.MONTH) %>" yearParam="currentPeriodEndYear" yearValue="<%= cal.get(Calendar.YEAR) %>"
+								<liferay-ui:input-date formName="currentPeriodEnd" dayParam="currentPeriodEndDay" dayValue="<%= currentPeriodEndCalendar.get(Calendar.DATE) %>" disabled="<%=false%>" firstDayOfWeek="<%= cal.getFirstDayOfWeek() - 1 %>"
+							    	monthParam="currentPeriodEndMonth" monthValue="<%= currentPeriodEndCalendar.get(Calendar.MONTH) %>" yearParam="currentPeriodEndYear" yearValue="<%= currentPeriodEndCalendar.get(Calendar.YEAR) %>"
 							    	yearRangeStart="<%= cal.get(Calendar.YEAR) - 15 %>" yearRangeEnd="<%= cal.get(Calendar.YEAR) %>" />
 							</span>
 						</span>
@@ -218,8 +231,8 @@
 								</span>
 							</label>
 							<span class="aui-field-element "> 
-								<liferay-ui:input-date formName="trialStart" dayParam="trialStartDay" dayValue="<%= cal.get(Calendar.DATE) %>" disabled="<%=false%>" firstDayOfWeek="<%= cal.getFirstDayOfWeek() - 1 %>"
-							    	monthParam="trialStartMonth" monthValue="<%= cal.get(Calendar.MONTH) %>" yearParam="trialStartYear" yearValue="<%= cal.get(Calendar.YEAR) %>"
+								<liferay-ui:input-date formName="trialStart" dayParam="trialStartDay" dayValue="<%= trialStartCalendar.get(Calendar.DATE) %>" disabled="<%=false%>" firstDayOfWeek="<%= cal.getFirstDayOfWeek() - 1 %>"
+							    	monthParam="trialStartMonth" monthValue="<%= trialStartCalendar.get(Calendar.MONTH) %>" yearParam="trialStartYear" yearValue="<%= trialStartCalendar.get(Calendar.YEAR) %>"
 							    	yearRangeStart="<%= cal.get(Calendar.YEAR) - 15 %>" yearRangeEnd="<%= cal.get(Calendar.YEAR) %>" />
 							</span>
 						</span>
@@ -238,8 +251,8 @@
 								</span>
 							</label>
 							<span class="aui-field-element "> 
-								<liferay-ui:input-date formName="trialEnd" dayParam="trialEndDay" dayValue="<%= cal.get(Calendar.DATE) %>" disabled="<%=false%>" firstDayOfWeek="<%= cal.getFirstDayOfWeek() - 1 %>"
-							    	monthParam="trialEndMonth" monthValue="<%= cal.get(Calendar.MONTH) %>" yearParam="trialEndYear" yearValue="<%= cal.get(Calendar.YEAR) %>"
+								<liferay-ui:input-date formName="trialEnd" dayParam="trialEndDay" dayValue="<%= trialEndCalendar.get(Calendar.DATE) %>" disabled="<%=false%>" firstDayOfWeek="<%= cal.getFirstDayOfWeek() - 1 %>"
+							    	monthParam="trialEndMonth" monthValue="<%= trialEndCalendar.get(Calendar.MONTH) %>" yearParam="trialEndYear" yearValue="<%= trialEndCalendar.get(Calendar.YEAR) %>"
 							    	yearRangeStart="<%= cal.get(Calendar.YEAR) - 15 %>" yearRangeEnd="<%= cal.get(Calendar.YEAR) %>" />
 							</span>
 						</span>
