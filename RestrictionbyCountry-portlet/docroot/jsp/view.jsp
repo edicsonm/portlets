@@ -19,11 +19,12 @@
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
-<liferay-ui:success key="subscriptionSavedSuccessfully" message="label.subscriptionSavedSuccessfully" />
-<liferay-ui:success key="subscriptionUpdatedSuccessfully" message="label.subscriptionUpdatedSuccessfully" />
-<liferay-ui:success key="subscriptionDeletedSuccessfully" message="label.subscriptionDeletedSuccessfully" />
+<liferay-ui:success key="countryRestrictionSavedSuccessfully" message="label.countryRestrictionSavedSuccessfully" />
+<liferay-ui:success key="countryRestrictionUpdatedSuccessfully" message="label.countryRestrictionUpdatedSuccessfully" />
+<liferay-ui:success key="countryRestrictionDeletedSuccessfully" message="label.countryRestrictionDeletedSuccessfully" />
+<liferay-ui:error key="ProcessorMDTR.deleteCountryRestriction.CountryRestrictionDAOException" message="error.ProcessorMDTR.deleteCountryRestriction.CountryRestrictionDAOException" />
+
 <% 
-	
 	String orderByColAnterior = (String)session.getAttribute("orderByCol");
 	String orderByTypeAnterior = (String)session.getAttribute("orderByType");
 	
@@ -46,15 +47,15 @@
 		orderByType = "asc";
 	}	
 
-	ArrayList<SubscriptionVO> listSubscriptions = (ArrayList<SubscriptionVO>)session.getAttribute("listSubscriptions");
-	if(listSubscriptions == null) listSubscriptions = new ArrayList<SubscriptionVO>();
+	ArrayList<CountryRestrictionVO> listCountryRestrictions = (ArrayList<CountryRestrictionVO>)session.getAttribute("listCountryRestrictions");
+	if(listCountryRestrictions == null) listCountryRestrictions = new ArrayList<CountryRestrictionVO>();
 %>
 
 <%-- <portlet:renderURL var="newSubscription">
 	<portlet:param name="jspPage" value="/jsp/newSubscription.jsp" />
 </portlet:renderURL> --%>
 
-<portlet:actionURL var="listPlan" name="listPlan"/>
+<portlet:actionURL var="listCountries" name="listCountries"/>
 
 <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURL" />
 <aui:form method="post">
@@ -63,32 +64,30 @@
 			<liferay-ui:search-container emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURL%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
 				<liferay-ui:search-container-results>
 					<%
-						listSubscriptions = Methods.orderSubscriptions(listSubscriptions,orderByCol,orderByType);
-						results = ListUtil.subList(listSubscriptions, searchContainer.getStart(), searchContainer.getEnd());
-						total = listSubscriptions.size();
+						listCountryRestrictions = Methods.orderCountryRestriction(listCountryRestrictions,orderByCol,orderByType);
+						results = ListUtil.subList(listCountryRestrictions, searchContainer.getStart(), searchContainer.getEnd());
+						total = listCountryRestrictions.size();
 						pageContext.setAttribute("results", results);
 						pageContext.setAttribute("total", total);
 						session.setAttribute("results", results);
 				    %>
 				</liferay-ui:search-container-results>
-				<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.SubscriptionVO" rowVar="posi" indexVar="indice" keyProperty="id" modelVar="subscriptionVO">
+				<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.CountryRestrictionVO" rowVar="posi" indexVar="indice" keyProperty="id" modelVar="countryRestrictionVO">
 					
 					<liferay-portlet:renderURL varImpl="rowURL">
 							<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
-							<portlet:param name="jspPage" value="/jsp/viewSubscription.jsp" />
+							<portlet:param name="jspPage" value="/jsp/viewCountryRestriction.jsp" />
 					</liferay-portlet:renderURL>
 					
-					<liferay-ui:search-container-column-text name="label.plan" property="planVO.name" value="planVO.name" orderable="true" orderableProperty="planVO.name" href="<%= rowURL %>"/>
-					<liferay-ui:search-container-column-text name="label.status" property="status" value="status" orderable="false" orderableProperty="status"/>
-					<liferay-ui:search-container-column-text name="label.quantity" property="quantity" value="quantity" orderable="false" orderableProperty="quantity"/>
-					<liferay-ui:search-container-column-text name="label.start" value="<%=Utilities.formatDate(subscriptionVO.getStart()) %>" orderable="false" orderableProperty="start"/>
-					
+					<liferay-ui:search-container-column-text name="label.country" property="countryVO.name" value="countryVO.name" orderable="true" orderableProperty="countryVO.name" href="<%= rowURL %>"/>
+					<liferay-ui:search-container-column-text name="label.value" property="value" value="value" orderable="false" orderableProperty="value"/>
+					<liferay-ui:search-container-column-text name="label.concept" property="concept" value="concept" orderable="false" orderableProperty="concept"/>
 					<liferay-ui:search-container-column-text name="Accion">
 						<liferay-ui:icon-menu>
 							
-							<portlet:actionURL var="editURL" name="listPlanEditPlan">
+							<portlet:actionURL var="editURL" name="listCountriesEditCountryRestriction">
 								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
-								<portlet:param name="mvcPath" value="/jsp/editSubscription.jsp" />
+								<portlet:param name="mvcPath" value="/jsp/editCountryRestriction.jsp" />
 							</portlet:actionURL>
 							<liferay-ui:icon image="edit" message="label.edit" url="<%=editURL.toString()%>" />
 							
@@ -98,7 +97,7 @@
 							</liferay-portlet:renderURL>
 							<liferay-ui:icon image="edit" message="label.edit" url="<%=editURL.toString()%>" /> --%>
 							
-							<portlet:actionURL var="deleteURL" name="deleteSubscription">
+							<portlet:actionURL var="deleteURL" name="deleteCountryRestriction">
 								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
 							</portlet:actionURL>
 							<liferay-ui:icon-delete message="label.delete" url="<%=deleteURL.toString()%>" />
@@ -114,7 +113,7 @@
 		<div class="row">
 			<div class="column1-2">
 				<span class="newSubscription" >
-					<a href="<%= listPlan %>"><fmt:message key="label.newSubscription"/></a>
+					<a href="<%= listCountries %>"><fmt:message key="label.newCountryRestriction"/></a>
 				</span>
 			</div>
 			<div class="column2-2">

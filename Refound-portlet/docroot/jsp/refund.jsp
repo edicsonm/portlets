@@ -111,11 +111,6 @@
 	if(listRefunds == null) listRefunds = new ArrayList<RefundVO>();
 	session.setAttribute("orderByColRefunds", orderByColRefunds);
 	session.setAttribute("orderByTypeRefunds", orderByTypeRefunds);
-	System.out.println("listRefunds en refund.jsp: " + listRefunds);
-	
-	System.out.println("chargeVO.getAmount(): " + chargeVO.getAmount());
-	System.out.println("chargeVO.getAmountRefunded(): " + chargeVO.getAmountRefunded());
-	
 %>
 <script type="text/javascript">
 function listRefunds() {
