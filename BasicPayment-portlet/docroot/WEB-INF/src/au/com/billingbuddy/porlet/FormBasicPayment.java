@@ -18,14 +18,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import au.com.billingbuddy.business.objects.ProcesorFacade;
 import au.com.billingbuddy.business.objects.TransactionFacade;
 import au.com.billingbuddy.business.objects.SecurityFacade;
 import au.com.billingbuddy.common.objects.SecurityMethods;
+import au.com.billingbuddy.dao.objects.MerchantDAO;
 import au.com.billingbuddy.exceptions.objects.DataSanitizeException;
 import au.com.billingbuddy.exceptions.objects.TransactionFacadeException;
 import au.com.billingbuddy.jsonprocessor.JsonProcessor;
 import au.com.billingbuddy.vo.objects.CardVO;
 import au.com.billingbuddy.vo.objects.CustomerVO;
+import au.com.billingbuddy.vo.objects.MerchantVO;
 import au.com.billingbuddy.vo.objects.ShippingAddressVO;
 import au.com.billingbuddy.vo.objects.TransactionVO;
 
@@ -41,6 +44,7 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
 
 public class FormBasicPayment extends MVCPortlet {
 	
+	private ProcesorFacade procesorFacade  = ProcesorFacade.getInstance();
 	private TransactionFacade transactionFacade  = TransactionFacade.getInstance();
 	private SecurityFacade securityFacade  = SecurityFacade.getInstance();
 	private long initialTime;
@@ -68,33 +72,42 @@ public class FormBasicPayment extends MVCPortlet {
 			String signSha1= (String)request.getParameter("signSha1");
 			String sha1Value= (String)request.getParameter("sha1Value");
 			
-			if(merchantID != null && orderNumber != null && currency != null && transactionAmount != null && sha1Value != null){
-				/* Verify signature in message received*/
-				String sha1ValueCalculated = SecurityMethods.sha1Calculator(orderNumber+currency+merchantID+transactionAmount+"");
-				boolean answer = securityFacade.validateSignature(sha1ValueCalculated,signSha1);
-				if(answer) {
-					
-					TransactionVO transactionVO = new TransactionVO();
-					transactionVO.setMerchantId((String)request.getParameter("merchantID"));
-					transactionVO.setOrderNumber((String)request.getParameter("orderNumber"));
-					transactionVO.setOrderCurrency((String)request.getParameter("currency"));
-					transactionVO.setOrderAmount((String)request.getParameter("transactionAmount"));
-					
-					transactionVO.setIp(request.getRemoteAddr());
-					transactionVO.setIp("27.32.44.176");
-					
-					transactionVO.setSessionId(request.getRequestedSessionId());
-					transactionVO.setUserAgent(request.getHeader("User-Agent"));
-					transactionVO.setAcceptLanguage(request.getHeader("Accept-Language"));
-					
-					renderRequest.setAttribute("merchantID", (String)request.getParameter("merchantID"));
-					renderRequest.setAttribute("orderNumber", (String)request.getParameter("orderNumber"));
-					renderRequest.setAttribute("currency", (String)request.getParameter("currency"));
-					renderRequest.setAttribute("transactionAmount", (String)request.getParameter("transactionAmount"));
-					
-					session.setAttribute("transactionVO", transactionVO);
-					
-					super.doView(renderRequest, renderResponse);
+			MerchantVO merchantVO = new MerchantVO();
+			merchantVO.setId(merchantID);
+			merchantVO = procesorFacade.listMerchantDetail(merchantVO);
+			if(merchantVO != null){
+				
+				
+				if(merchantID != null && orderNumber != null && currency != null && transactionAmount != null && sha1Value != null){
+					/* Verify signature in message received*/
+					String sha1ValueCalculated = SecurityMethods.sha1Calculator(orderNumber+currency+merchantID+transactionAmount+"");
+					boolean answer = securityFacade.validateSignature(sha1ValueCalculated,signSha1);
+					if(answer) {
+						
+						TransactionVO transactionVO = new TransactionVO();
+						transactionVO.setMerchantId((String)request.getParameter("merchantID"));
+						transactionVO.setOrderNumber((String)request.getParameter("orderNumber"));
+						transactionVO.setOrderCurrency((String)request.getParameter("currency"));
+						transactionVO.setOrderAmount((String)request.getParameter("transactionAmount"));
+						
+						transactionVO.setIp(request.getRemoteAddr());
+						transactionVO.setIp("27.32.44.176");
+						
+						transactionVO.setSessionId(request.getRequestedSessionId());
+						transactionVO.setUserAgent(request.getHeader("User-Agent"));
+						transactionVO.setAcceptLanguage(request.getHeader("Accept-Language"));
+						
+						renderRequest.setAttribute("merchantID", (String)request.getParameter("merchantID"));
+						renderRequest.setAttribute("orderNumber", (String)request.getParameter("orderNumber"));
+						renderRequest.setAttribute("currency", (String)request.getParameter("currency"));
+						renderRequest.setAttribute("transactionAmount", (String)request.getParameter("transactionAmount"));
+						
+						session.setAttribute("transactionVO", transactionVO);
+						
+						super.doView(renderRequest, renderResponse);
+					}else{
+						include("/jsp/unauthorizedAccess.jsp", renderRequest, renderResponse);
+					}
 				}else{
 					include("/jsp/unauthorizedAccess.jsp", renderRequest, renderResponse);
 				}
@@ -141,11 +154,7 @@ public class FormBasicPayment extends MVCPortlet {
 				SessionMessages.add(actionRequest, "paymentSuccessful");
 				session.setAttribute("transactionId", transactionVO.getId());
 				actionResponse.setRenderParameter("jspPage", "/jsp/sumaryPayment.jsp");
-				
 			}else{
-				
-				System.out.println("basicPaymentResponseModel.getMessage(): " + transactionVO.getMessage());
-				
 				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
@@ -153,23 +162,27 @@ public class FormBasicPayment extends MVCPortlet {
 				System.out.println("transactionVO.getMessage(): " + transactionVO.getMessage());
 				SessionErrors.add(actionRequest,transactionVO.getMessage());
 				session.setAttribute("transactionVO", transactionVO);
-				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
-				
+				actionResponse.setRenderParameter("jspPage", "/jsp/errorProcessor.jsp");
 			}
-//			String orderNumber= (String)request.getParameter("orderNumber");
-//			System.out.println("OrderNumber in savePayment: " + orderNumber);
-//			transactionVO.setId("1202182387");
-//			actionResponse.setRenderParameter("jspPage", "/jsp/sumaryPayment.jsp");
 		} catch (TransactionFacadeException e) {
-			e.printStackTrace();
 			
+			System.out.println("e.getMessage(): " + e.getMessage());
+			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
+			System.out.println("e.getErrorCode(): " + e.getErrorCode());
+			
+			transactionVO.setStatus("error");
+			transactionVO.setMessage(e.getMessage());
+			transactionVO.setMessage("e.getMessage()");
+			transactionVO.setData(e.getErrorCode());
+			
+//			e.printStackTrace();
 			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 			SessionErrors.add(actionRequest, "error");
 			SessionErrors.add(actionRequest,e.getErrorMenssage());
 			session.setAttribute("transactionVO", transactionVO);
-			actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
+			actionResponse.setRenderParameter("jspPage", "/jsp/errorProcessor.jsp");
 		}
 	}
 	

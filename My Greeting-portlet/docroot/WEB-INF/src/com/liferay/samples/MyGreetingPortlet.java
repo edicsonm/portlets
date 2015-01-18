@@ -15,7 +15,6 @@ public class MyGreetingPortlet extends MVCPortlet {
 
 	@Override
 	public void processAction(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
-		System.out.println("Execute processAction ...");
 		PortletPreferences prefs = actionRequest.getPreferences();
 		String greeting = actionRequest.getParameter("greeting");
 		if (greeting != null) {

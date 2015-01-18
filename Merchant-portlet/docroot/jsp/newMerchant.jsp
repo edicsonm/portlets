@@ -18,7 +18,7 @@
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
-<liferay-ui:error key="ProcessorMDTR.saveMerchantRestriction.MerchantRestrictionDAOException" message="error.ProcessorMDTR.saveMerchantRestriction.MerchantRestrictionDAOException" />
+<liferay-ui:error key="ProcessorMDTR.saveMerchant.MerchantDAOException" message="error.ProcessorMDTR.saveMerchant.MerchantDAOException" />
 <% 
 	MerchantVO merchantVO = (MerchantVO)session.getAttribute("merchantVO");
 	ArrayList<CountryVO> listCountries = (ArrayList<CountryVO>)session.getAttribute("listCountries");
@@ -58,6 +58,22 @@
 							<aui:option value="${countryVO.numeric}" label="${countryVO.name}" selected="${countryVO.numeric==merchantVO.countryNumeric}"/>
 						</c:forEach>
 					</aui:select>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="column1-1">
+					<aui:input label="label.urlApproved" helpMessage="help.urlApproved" showRequiredLabel="false" type="text" required="true" name="urlApproved" value="${merchantVO.urlApproved}">
+						<%-- <aui:validator name="alphanum"/> --%>
+					</aui:input>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="column1-1">
+					<aui:input label="label.urlDeny" helpMessage="help.urlDeny" showRequiredLabel="false" type="text" required="true" name="urlDeny" value="${merchantVO.urlDeny}">
+						<%-- <aui:validator name="alphanum"/> --%>
+					</aui:input>
 				</div>
 			</div>
 			

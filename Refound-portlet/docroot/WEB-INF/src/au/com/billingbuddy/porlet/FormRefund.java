@@ -41,7 +41,6 @@ public class FormRefund extends MVCPortlet {
 	@Override
 	public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
 		try {
-			System.out.println("Ejecuta doView");
 			HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
 			HttpServletResponse response = PortalUtil.getHttpServletResponse(renderResponse);
 			

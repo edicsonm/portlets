@@ -54,6 +54,10 @@ public class FormMerchant extends MVCPortlet {
 		MerchantVO merchantVO = new MerchantVO();
 		merchantVO.setName(actionRequest.getParameter("name"));
 		merchantVO.setCountryNumeric(actionRequest.getParameter("country"));
+		
+		merchantVO.setUrlApproved(actionRequest.getParameter("urlApproved"));
+		merchantVO.setUrlDeny(actionRequest.getParameter("urlDeny"));
+		
 		session.setAttribute("merchantVO", merchantVO);
 		try {
 			procesorFacade.saveMerchant(merchantVO);
@@ -130,6 +134,10 @@ public class FormMerchant extends MVCPortlet {
 		MerchantVO merchantVO = (MerchantVO)session.getAttribute("merchantVO");
 		merchantVO.setName(actionRequest.getParameter("name"));
 		merchantVO.setCountryNumeric(actionRequest.getParameter("country"));
+		
+		merchantVO.setUrlApproved(actionRequest.getParameter("urlApproved"));
+		merchantVO.setUrlDeny(actionRequest.getParameter("urlDeny"));
+		
 		session.setAttribute("merchantVO", merchantVO);
 		try {
 			procesorFacade.updateMerchant(merchantVO);

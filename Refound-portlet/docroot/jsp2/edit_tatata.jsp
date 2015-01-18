@@ -8,12 +8,12 @@
 
 <%
 PortletPreferences prefs = renderRequest.getPreferences();
-String greeting = (String)prefs.getValue("greeting", "Hello! Welcome to our portal.");
+String greeting = (String)prefs.getValue("greeting", "Hello! Welcome to our portal.ba ba ba ");
 %>
 <liferay-ui:success key="success" message="Greeting saved successfully!" />
 
 <portlet:actionURL var="editGreetingURL">
-    <portlet:param name="jspPage" value="/edit.jsp" />
+    <portlet:param name="jspPage" value="/jsp2/edit_tatata.jsp" />
 </portlet:actionURL>
 
 <aui:form action="<%= editGreetingURL %>" method="post">
@@ -22,7 +22,7 @@ String greeting = (String)prefs.getValue("greeting", "Hello! Welcome to our port
 </aui:form>
 
 <portlet:renderURL var="viewGreetingURL">
-    <portlet:param name="jspPage" value="/view.jsp" />
+    <portlet:param name="jspPage" value="/jsp2/view_tatata.jsp" />
 </portlet:renderURL>
 
 <p><a href="<%= viewGreetingURL %>">Back</a></p>

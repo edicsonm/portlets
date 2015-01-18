@@ -4,11 +4,11 @@
 	<portlet>
 		<portlet-name>My Greeting</portlet-name>
 		<display-name>My Greeting</display-name>
-		<!-- <portlet-class>com.liferay.util.bridges.mvc.MVCPortlet</portlet-class> -->
 		<portlet-class>com.liferay.samples.MyGreetingPortlet</portlet-class>
 		<init-param>
-			<name>view-jsp</name>
-			<value>/view.jsp</value>
+			<!-- <name>view-jsp</name> -->
+			<name>view-template</name>
+			<value>/jsp2/view_tatata.jsp</value>
 		</init-param>
 		<expiration-cache>0</expiration-cache>
 		<supports>

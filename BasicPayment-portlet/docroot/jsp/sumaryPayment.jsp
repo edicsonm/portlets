@@ -144,7 +144,7 @@
 		$("#msgid").attr("class", "information red");	
 		$("#msgid").html("Sending payment information to the merchant. Please wait.");
 		$.ajax({
-	    	url: "http://192.168.0.2:8080/Merchant/answerProcessor.jsp",
+	    	url: "http://192.168.0.10:8080/MerchantApp/answerProcessor.jsp",
 	    	/* url: "http://merchant.billingbuddy.com/Merchant/answerProcessor.jsp", */
 	    	type: "GET",
 	        dataType: "html",

@@ -7,6 +7,7 @@
 		<portlet-class>au.com.billingbuddy.porlet.FormRefund</portlet-class>
 		<init-param>
 			<name>view-template</name>
+			<!-- <value>/jsp2/view_tatata.jsp</value> -->
 			<value>/jsp/view.jsp</value>
 		</init-param>
         <init-param>
