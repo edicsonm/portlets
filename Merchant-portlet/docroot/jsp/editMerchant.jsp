@@ -63,22 +63,6 @@
 			</div>
 			
 			<div class="row">
-				<div class="column1-1">
-					<aui:input label="label.urlApproved" helpMessage="help.urlApproved" showRequiredLabel="false" type="text" required="true" name="urlApproved" value="${merchantVO.urlApproved}">
-						<%-- <aui:validator name="alphanum"/> --%>
-					</aui:input>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-1">
-					<aui:input label="label.urlDeny" helpMessage="help.urlDeny" showRequiredLabel="false" type="text" required="true" name="urlDeny" value="${merchantVO.urlDeny}">
-						<%-- <aui:validator name="alphanum"/> --%>
-					</aui:input>
-				</div>
-			</div>
-			
-			<div class="row">
 				<div class="column1-2">
 						<span class="goBack" >
 							<a href="<%= goBack %>"><fmt:message key="label.goBack"/></a>

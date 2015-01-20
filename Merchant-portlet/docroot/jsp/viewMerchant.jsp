@@ -55,21 +55,6 @@
 			</div>
 			
 			<div class="row">
-				<div class="column1-4">
-					<label class="aui-field-label"><fmt:message key="label.urlApproved"/></label>
-				</div>
-				<div class="column2-4">
-					<c:out value="${merchantVO.urlApproved}"/>
-				</div>
-				<div class="column3-4">
-					<label class="aui-field-label"><fmt:message key="label.urlDeny"/></label>
-				</div>
-				<div class="column4-4">
-					<c:out value="${merchantVO.urlDeny}"/>
-				</div>
-			</div>
-			
-			<div class="row">
 				<div class="column1-2">
 					<span class="goBack" >
 						<a href="<%= goBack %>"><fmt:message key="label.goBack"/></a>
