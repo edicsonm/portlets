@@ -8,8 +8,6 @@ import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletConfig;
 import javax.portlet.PortletException;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.portlet.ResourceRequest;
@@ -22,14 +20,10 @@ import au.com.billingbuddy.business.objects.ProcesorFacade;
 import au.com.billingbuddy.business.objects.TransactionFacade;
 import au.com.billingbuddy.business.objects.SecurityFacade;
 import au.com.billingbuddy.common.objects.SecurityMethods;
-import au.com.billingbuddy.dao.objects.MerchantDAO;
-import au.com.billingbuddy.exceptions.objects.DataSanitizeException;
+import au.com.billingbuddy.exceptions.objects.ProcesorFacadeException;
 import au.com.billingbuddy.exceptions.objects.TransactionFacadeException;
-import au.com.billingbuddy.jsonprocessor.JsonProcessor;
-import au.com.billingbuddy.vo.objects.CardVO;
 import au.com.billingbuddy.vo.objects.CustomerVO;
 import au.com.billingbuddy.vo.objects.MerchantVO;
-import au.com.billingbuddy.vo.objects.ShippingAddressVO;
 import au.com.billingbuddy.vo.objects.TransactionVO;
 
 import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
@@ -52,9 +46,9 @@ public class FormBasicPayment extends MVCPortlet {
 	
 	@Override
 	public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
+		HttpServletRequest request = PortalUtil.getOriginalServletRequest(PortalUtil.getHttpServletRequest(renderRequest));
+		HttpSession session = request.getSession();
 		try {
-			HttpServletRequest request = PortalUtil.getOriginalServletRequest(PortalUtil.getHttpServletRequest(renderRequest));
-			HttpSession session = request.getSession();
 	//		System.out.println("originalRequest.getRemoteAddr(): " + originalRequest.getRemoteAddr());
 	//		System.out.println("originalRequest.getRemotePort(): " + originalRequest.getRemotePort());
 	//		System.out.println("originalRequest.getRequestURI(): " + originalRequest.getRequestURI());
@@ -74,9 +68,19 @@ public class FormBasicPayment extends MVCPortlet {
 			
 			MerchantVO merchantVO = new MerchantVO();
 			merchantVO.setId(merchantID);
-			merchantVO = procesorFacade.listMerchantDetail(merchantVO);
-			if(merchantVO != null){
+			merchantVO = procesorFacade.validateMerchant(merchantVO);
+			if(merchantVO != null) {
+				session.setAttribute("merchantVO", merchantVO);
+				System.out.println("UrlDeny: " + merchantVO.getMerchantConfigurationVO().getUrlDeny());
+				System.out.println("UrlApproved: " + merchantVO.getMerchantConfigurationVO().getUrlApproved());
+				System.out.println("PasswordKeyStore: " + merchantVO.getMerchantConfigurationVO().getPasswordKeyStore());
+				System.out.println("PrivacyKeyStore: " + merchantVO.getMerchantConfigurationVO().getPrivacyKeyStore());
+				System.out.println("Passwordkey: " + merchantVO.getMerchantConfigurationVO().getPasswordkey());
+				System.out.println("KeyName: " + merchantVO.getMerchantConfigurationVO().getKeyName());
 				
+				/*Merchant exists
+				 * Validate restrictions by number of transactions
+				 * */ 
 				
 				if(merchantID != null && orderNumber != null && currency != null && transactionAmount != null && sha1Value != null){
 					/* Verify signature in message received*/
@@ -114,6 +118,20 @@ public class FormBasicPayment extends MVCPortlet {
 			}else{
 				include("/jsp/unauthorizedAccess.jsp", renderRequest, renderResponse);
 			}
+		} catch (ProcesorFacadeException ex){
+			PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+			SessionMessages.add(renderRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+			SessionErrors.add(renderRequest,ex.getErrorCode());
+			
+			TransactionVO transactionVO = new TransactionVO();
+			transactionVO.setMerchantId((String)request.getParameter("merchantID"));
+			transactionVO.setOrderNumber((String)request.getParameter("orderNumber"));
+			transactionVO.setStatus("error");
+			transactionVO.setMessage(ex.getErrorCode());
+			transactionVO.setData(ex.getErrorMenssage());
+			session.setAttribute("transactionVO", transactionVO);
+			include("/jsp/error.jsp", renderRequest, renderResponse);
 		} catch (Exception ex){
 			include("/jsp/unauthorizedAccess.jsp", renderRequest, renderResponse);
 		}
@@ -166,14 +184,13 @@ public class FormBasicPayment extends MVCPortlet {
 			}
 		} catch (TransactionFacadeException e) {
 			
-			System.out.println("e.getMessage(): " + e.getMessage());
-			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
-			System.out.println("e.getErrorCode(): " + e.getErrorCode());
+//			System.out.println("e.getMessage(): " + e.getMessage());
+//			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
+//			System.out.println("e.getErrorCode(): " + e.getErrorCode());
 			
 			transactionVO.setStatus("error");
-			transactionVO.setMessage(e.getMessage());
-			transactionVO.setMessage("e.getMessage()");
-			transactionVO.setData(e.getErrorCode());
+			transactionVO.setMessage(e.getErrorCode());
+			transactionVO.setData(e.getErrorMenssage());
 			
 //			e.printStackTrace();
 			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);

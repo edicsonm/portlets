@@ -21,6 +21,7 @@
 <liferay-ui:success key="paymentSuccessful" message="label.satisfactoryRegistration" />
 <%
 	TransactionVO transactionVO = (TransactionVO)session.getAttribute("transactionVO");
+	MerchantVO merchantVO = (MerchantVO)session.getAttribute("merchantVO");	
 	String cardNumber = CreditCard.hide(transactionVO.getCardVO().getNumber(), "X");
 %>
 <portlet:actionURL var="acceptPayment" name="acceptPayment"/>
@@ -144,7 +145,8 @@
 		$("#msgid").attr("class", "information red");	
 		$("#msgid").html("Sending payment information to the merchant. Please wait.");
 		$.ajax({
-	    	url: "http://192.168.0.10:8080/MerchantApp/answerProcessor.jsp",
+	    	/* url: "http://192.168.0.10:8080/MerchantApp/answerProcessor.jsp", */
+	    	url: "<%=merchantVO.getMerchantConfigurationVO().getUrlApproved()%>",
 	    	/* url: "http://merchant.billingbuddy.com/Merchant/answerProcessor.jsp", */
 	    	type: "GET",
 	        dataType: "html",

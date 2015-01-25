@@ -19,6 +19,8 @@
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
 <liferay-ui:error key="ProcessorMDTR.saveMerchantRestriction.MerchantRestrictionDAOException" message="error.ProcessorMDTR.saveMerchantRestriction.MerchantRestrictionDAOException" />
+<liferay-ui:error key="ProcessorMDTR.saveMerchantRestriction.MerchantRestrictionDAOException.UNIQUE_Merc_ID_Mere_Concept" message="error.ProcessorMDTR.saveMerchantRestriction.MerchantRestrictionDAOException.UNIQUE_Merc_ID_Mere_Concept" />
+
 <% 
 	MerchantRestrictionVO merchantRestrictionVO = (MerchantRestrictionVO)session.getAttribute("merchantRestrictionVO");
 	ArrayList<MerchantVO> listMerchants = (ArrayList<MerchantVO>)session.getAttribute("listMerchants");

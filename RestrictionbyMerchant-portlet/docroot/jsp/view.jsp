@@ -25,6 +25,8 @@
 <liferay-ui:error key="ProcessorMDTR.deleteMerchantRestriction.MerchantRestrictionDAOException" message="error.ProcessorMDTR.deleteMerchantRestriction.MerchantRestrictionDAOException" />
 
 <% 
+	session.removeAttribute("merchantRestrictionVO");
+
 	String orderByColAnterior = (String)session.getAttribute("orderByCol");
 	String orderByTypeAnterior = (String)session.getAttribute("orderByType");
 	

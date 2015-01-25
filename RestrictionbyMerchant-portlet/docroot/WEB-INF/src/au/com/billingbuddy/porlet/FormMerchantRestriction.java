@@ -29,9 +29,10 @@ public class FormMerchantRestriction extends MVCPortlet {
 	
 	@Override
 	public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
+		HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
+		HttpSession session = request.getSession();
 		try {
-			HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
-			HttpSession session = request.getSession();
+			session.removeAttribute("merchantRestrictionVO");
 			ArrayList<MerchantRestrictionVO> listMerchantRestrictions = procesorFacade.listMerchantRestrictions(new MerchantRestrictionVO());
 			session.setAttribute("listMerchantRestrictions", listMerchantRestrictions);
 		} catch (ProcesorFacadeException e) {

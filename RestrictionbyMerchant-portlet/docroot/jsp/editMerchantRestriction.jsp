@@ -19,6 +19,7 @@
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
 <liferay-ui:error key="ProcessorMDTR.updateMerchantRestriction.MerchantRestrictionDAOException" message="error.ProcessorMDTR.updateMerchantRestriction.MerchantRestrictionDAOException" />
+<liferay-ui:error key="ProcessorMDTR.updateMerchantRestriction.MerchantRestrictionDAOException.UNIQUE_Merc_ID_Mere_Concept" message="error.ProcessorMDTR.updateMerchantRestriction.MerchantRestrictionDAOException.UNIQUE_Merc_ID_Mere_Concept" />
 <% 
 	MerchantRestrictionVO merchantRestrictionVO = (MerchantRestrictionVO)session.getAttribute("merchantRestrictionVO");
 	request.setAttribute("merchantRestrictionVO", merchantRestrictionVO);

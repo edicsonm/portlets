@@ -30,5 +30,7 @@
 <%@ page import="com.liferay.util.CreditCard" %>
 
 <%@ page import="au.com.billingbuddy.vo.objects.TransactionVO" %>
+<%@ page import="au.com.billingbuddy.vo.objects.MerchantVO" %>
 <%@ page import="au.com.billingbuddy.vo.objects.CardVO" %>
 <%@ page import="au.com.billingbuddy.vo.objects.CustomerVO" %>
+

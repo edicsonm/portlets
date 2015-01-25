@@ -38,6 +38,8 @@
 	Calendar cal = CalendarFactoryUtil.getCalendar();
 	int initialYear = cal.get(Calendar.YEAR) + 1;
 	TransactionVO transactionVO = (TransactionVO)session.getAttribute("transactionVO");
+	MerchantVO merchantVO = (MerchantVO)session.getAttribute("merchantVO");
+	
 	
 	transactionVO.setCardVO(new CardVO());
 	transactionVO.getCardVO().setName("Edicson Morales");
@@ -205,17 +207,7 @@
 				</div>
 			</div>
 		</div>
-		<%-- 
-		<div class="fila">
-			<div class="columna">
-				<input type="button" value="select" onClick="
-var organizationWindow = window.open('<portlet:renderURL windowState="<%= LiferayWindowState.POP_UP.toString() %>"><portlet:param name="jspPage" value="/jsp/view.jsp"/><portlet:param name="redirect" value="#"/></portlet:renderURL>',
-         'title',
-        'directories=no, height=340, location=no, menubar=no, resizable=yes,scrollbars=yes, status=no, toolbar=no, width=680');
-        organizationWindow.focus();" />
-			</div>
-		</div> --%>
-		
+		<div id="msgid"></div>
 	</div>
 </aui:form>
 
@@ -224,8 +216,9 @@ var organizationWindow = window.open('<portlet:renderURL windowState="<%= Lifera
 $("#msgid").attr("class", "information red");	
 $("#msgid").html("Sending payment information to the merchant. Please wait.");
 $.ajax({
-	url: "http://192.168.0.10:8080/MerchantApp/answerError.jsp",
+	/* url: "http://192.168.0.10:8080/MerchantApp/answerError.jsp", */
 	/* url: "http://merchant.billingbuddy.com/Merchant/answerProcessor.jsp", */
+	url: "<%=merchantVO.getMerchantConfigurationVO().getUrlDeny()%>",
 	type: "GET",
     dataType: "html",
    /*  async: false, */
