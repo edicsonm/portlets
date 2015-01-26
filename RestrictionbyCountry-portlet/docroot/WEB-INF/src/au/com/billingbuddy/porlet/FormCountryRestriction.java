@@ -101,7 +101,7 @@ public class FormCountryRestriction extends MVCPortlet {
 		try {
 			HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 			HttpSession session = request.getSession();
-			ArrayList<CountryVO> listCountries = procesorFacade.listCountries(new CountryVO());
+			ArrayList<CountryVO> listCountries = procesorFacade.listCountries();
 			session.setAttribute("listCountries", listCountries);
 		} catch (ProcesorFacadeException e) {
 			e.printStackTrace();
@@ -122,7 +122,7 @@ public class FormCountryRestriction extends MVCPortlet {
 			CountryRestrictionVO countryRestrictionVO = (CountryRestrictionVO)resultsListCountryRestriction.get(Integer.parseInt(actionRequest.getParameter("indice")));
 			session.setAttribute("countryRestrictionVO", countryRestrictionVO);
 			
-			ArrayList<CountryVO> listCountries = procesorFacade.listCountries(new CountryVO());
+			ArrayList<CountryVO> listCountries = procesorFacade.listCountries();
 			session.setAttribute("listCountries", listCountries);
 		} catch (ProcesorFacadeException e) {
 			e.printStackTrace();

@@ -99,7 +99,7 @@ public class FormMerchantRestriction extends MVCPortlet {
 		try {
 			HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 			HttpSession session = request.getSession();
-			ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants(new MerchantVO());
+			ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants();
 			session.setAttribute("listMerchants", listMerchants);
 		} catch (ProcesorFacadeException e) {
 			e.printStackTrace();
@@ -120,7 +120,7 @@ public class FormMerchantRestriction extends MVCPortlet {
 			MerchantRestrictionVO merchantRestrictionVO = (MerchantRestrictionVO)resultsListMerchantRestriction.get(Integer.parseInt(actionRequest.getParameter("indice")));
 			session.setAttribute("merchantRestrictionVO", merchantRestrictionVO);
 			
-			ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants(new MerchantVO());
+			ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants();
 			session.setAttribute("listMerchants", listMerchants);
 			
 		} catch (ProcesorFacadeException e) {

@@ -129,7 +129,6 @@ public class FormSubscription extends MVCPortlet {
 			e.printStackTrace();
 		}
 		
-		System.out.println("Respuesta: " + Utilities.isNullOrEmpty(actionRequest.getParameter("taxPercent")));
 		if(Utilities.isNullOrEmpty(actionRequest.getParameter("taxPercent"))){
 			subscriptionVO.setTaxPercent("0");
 		} else {

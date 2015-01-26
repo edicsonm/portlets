@@ -58,7 +58,7 @@ public class FormPlan extends MVCPortlet {
 		planVO.setInterval(actionRequest.getParameter("interval"));
 		planVO.setIntervalCount(actionRequest.getParameter("intervalCount"));
 		planVO.setName(actionRequest.getParameter("name"));
-		if(Utilities.isNUllOrEmpty(actionRequest.getParameter("trialPeriodDays"))){
+		if(Utilities.isNullOrEmpty(actionRequest.getParameter("trialPeriodDays"))){
 			planVO.setTrialPeriodDays("0");
 		} else {
 			planVO.setTrialPeriodDays(actionRequest.getParameter("trialPeriodDays"));			
@@ -104,7 +104,7 @@ public class FormPlan extends MVCPortlet {
 		planVO.setInterval(actionRequest.getParameter("interval"));
 		planVO.setIntervalCount(actionRequest.getParameter("intervalCount"));
 		planVO.setName(actionRequest.getParameter("name"));
-		if(Utilities.isNUllOrEmpty(actionRequest.getParameter("trialPeriodDays"))){
+		if(Utilities.isNullOrEmpty(actionRequest.getParameter("trialPeriodDays"))){
 			planVO.setTrialPeriodDays("0");
 		} else {
 			planVO.setTrialPeriodDays(actionRequest.getParameter("trialPeriodDays"));			

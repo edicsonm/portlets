@@ -32,7 +32,7 @@ public class FormMerchant extends MVCPortlet {
 		try {
 			HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
 			HttpSession session = request.getSession();
-			ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants(new MerchantVO());
+			ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants();
 			session.setAttribute("listMerchants", listMerchants);
 		} catch (ProcesorFacadeException e) {
 			e.printStackTrace();
@@ -59,7 +59,7 @@ public class FormMerchant extends MVCPortlet {
 		try {
 			procesorFacade.saveMerchant(merchantVO);
 			if(merchantVO.getStatus().equalsIgnoreCase("success")) {
-				ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants(new MerchantVO());
+				ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants();
 				session.setAttribute("listMerchants", listMerchants);
 				SessionMessages.add(actionRequest, "merchantSavedSuccessfully");
 				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
@@ -91,7 +91,7 @@ public class FormMerchant extends MVCPortlet {
 		try {
 			HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 			HttpSession session = request.getSession();
-			ArrayList<CountryVO> listCountries = procesorFacade.listCountries(new CountryVO());
+			ArrayList<CountryVO> listCountries = procesorFacade.listCountries();
 			session.setAttribute("listCountries", listCountries);
 		} catch (ProcesorFacadeException e) {
 			e.printStackTrace();
@@ -112,7 +112,7 @@ public class FormMerchant extends MVCPortlet {
 			MerchantVO merchantVO = (MerchantVO)resultsListMerchants.get(Integer.parseInt(actionRequest.getParameter("indice")));
 			session.setAttribute("merchantVO", merchantVO);
 			
-			ArrayList<CountryVO> listCountries = procesorFacade.listCountries(new CountryVO());
+			ArrayList<CountryVO> listCountries = procesorFacade.listCountries();
 			session.setAttribute("listCountries", listCountries);
 			
 		} catch (ProcesorFacadeException e) {
@@ -136,7 +136,7 @@ public class FormMerchant extends MVCPortlet {
 		try {
 			procesorFacade.updateMerchant(merchantVO);
 			if(merchantVO.getStatus().equalsIgnoreCase("success")) {
-				ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants(new MerchantVO());
+				ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants();
 				session.setAttribute("listMerchants", listMerchants);
 				SessionMessages.add(actionRequest, "merchantUpdatedSuccessfully");
 				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
@@ -173,7 +173,7 @@ public class FormMerchant extends MVCPortlet {
 		try {
 			procesorFacade.deleteMerchant(merchantVO);
 			if(merchantVO.getStatus().equalsIgnoreCase("success")) {
-				ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants(new MerchantVO());
+				ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants();
 				session.setAttribute("listMerchants", listMerchants);
 				SessionMessages.add(actionRequest, "merchantDeletedSuccessfully");
 			}else{
