@@ -18,9 +18,8 @@
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
-<liferay-ui:error key="ProcessorMDTR.saveMerchantConfiguration.MerchantConfigurationDAOException" message="error.ProcessorMDTR.saveMerchantConfiguration.MerchantConfigurationDAOException" />
+<liferay-ui:error key="SecurityMDTR.certificateGeneration.CertificateDAOException" message="error.SecurityMDTR.certificateGeneration.CertificateDAOException" />
 <liferay-ui:error key="SecurityMDTR.certificateGeneration.Exception" message="error.SecurityMDTR.certificateGeneration.Exception" />
-<liferay-ui:error key="ProcessorMDTR.saveMerchantConfiguration.MerchantConfigurationDAOException.Merc_ID_UNIQUE" message="error.ProcessorMDTR.saveMerchantConfiguration.MerchantConfigurationDAOException.Merc_ID_UNIQUE" />
 
 <% 
 	CertificateVO certificateVO = (CertificateVO)session.getAttribute("certificateVO");
@@ -96,21 +95,8 @@
 					</aui:input>
 				</div>
 				<div class="column2-2">
-					<aui:input label="label.passwordKeyStoreConfirmation" helpMessage="help.passwordKeyStoreConfirmation" showRequiredLabel="false" type="password" required="true" name="passwordKeyStoreConfirmation" value="${certificateVO.passwordKeyStoreConfirmation}">
+					<aui:input label="label.passwordKeyStoreConfirmation" helpMessage="help.passwordKeyStoreConfirmation" showRequiredLabel="false" type="password" required="true" name="passwordKeyStoreConfirmation" value="${certificateVO.passwordKeyStore}">
 						<aui:validator name="equalTo">'#<portlet:namespace />passwordKeyStore'</aui:validator>
-					</aui:input>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-2">
-					<aui:input label="label.privacyKeyStore" helpMessage="help.privacyKeyStore" showRequiredLabel="false" type="password" required="true" name="privacyKeyStore" value="${certificateVO.privacyKeyStore}">
-						<aui:validator name="required"/>
-					</aui:input>
-				</div>
-				<div class="column2-2">
-					<aui:input label="label.privacyKeyStoreConfirmation" helpMessage="help.privacyKeyStoreConfirmation" showRequiredLabel="false" type="password" required="true" name="privacyKeyStoreConfirmation" value="${certificateVO.privacyKeyStoreConfirmation}">
-						<aui:validator name="equalTo">'#<portlet:namespace />privacyKeyStore'</aui:validator>
 					</aui:input>
 				</div>
 			</div>
@@ -122,11 +108,26 @@
 					</aui:input>
 				</div>
 				<div class="column2-2">
-					<aui:input label="label.passwordkeyConfirmation" helpMessage="help.passwordkeyConfirmation" showRequiredLabel="false" type="password" required="true" name="passwordkeyConfirmation" value="${certificateVO.passwordkeyConfirmation}">
+					<aui:input label="label.passwordkeyConfirmation" helpMessage="help.passwordkeyConfirmation" showRequiredLabel="false" type="password" required="true" name="passwordkeyConfirmation" value="${certificateVO.passwordkey}">
 						<aui:validator name="equalTo">'#<portlet:namespace />passwordkey'</aui:validator>
 					</aui:input>
 				</div>
 			</div>
+			
+			<%-- <div class="row">
+				<div class="column1-2">
+					<aui:input label="label.privacyKeyStore" helpMessage="help.privacyKeyStore" showRequiredLabel="false" type="password" required="true" name="privacyKeyStore" value="${certificateVO.privacyKeyStore}">
+						<aui:validator name="required"/>
+					</aui:input>
+				</div>
+				<div class="column2-2">
+					<aui:input label="label.privacyKeyStoreConfirmation" helpMessage="help.privacyKeyStoreConfirmation" showRequiredLabel="false" type="password" required="true" name="privacyKeyStoreConfirmation" value="${certificateVO.privacyKeyStoreConfirmation}">
+						<aui:validator name="equalTo">'#<portlet:namespace />privacyKeyStore'</aui:validator>
+					</aui:input>
+				</div>
+			</div> --%>
+			
+			
 			
 			<div class="row">
 				<div class="column1-1">

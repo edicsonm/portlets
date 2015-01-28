@@ -20,6 +20,10 @@
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
 <liferay-ui:success key="certificateGenerationSuccessfully" message="label.certificateGenerationSuccessfully" />
+<liferay-ui:success key="certificateChangeSuccessfully" message="label.certificateChangeSuccessfully" />
+
+<liferay-ui:error key="SecurityMDTR.updateStatusCertificate.CertificateDAOException.Certificate_BEFORE_UPDATE" message="error.SecurityMDTR.updateStatusCertificate.CertificateDAOException.Certificate_BEFORE_UPDATE" />
+
 <% 
 	/* session.removeAttribute("certificateVO");	 */
 	String orderByColAnterior = (String)session.getAttribute("orderByCol");
@@ -34,8 +38,8 @@
 	
 	if(orderByCol == null){
 		orderByCol = "id";
-	}else if(orderByCol.equalsIgnoreCase(orderByColAnterior)){
-		if (orderByTypeAnterior.equalsIgnoreCase("asc")){
+	}else if(orderByCol.equalsIgnoreCase(orderByColAnterior)) {
+		if (orderByTypeAnterior.equalsIgnoreCase("asc")) {
 			orderByType = "desc";
 		}else{
 			orderByType = "asc";
@@ -46,6 +50,8 @@
 
 	ArrayList<CertificateVO> listCertificates = (ArrayList<CertificateVO>)session.getAttribute("listCertificates");
 	if(listCertificates == null) listCertificates = new ArrayList<CertificateVO>();
+	String active = "Active";
+	String inactive = "Inactive";
 %>
 
 <portlet:actionURL var="listMerchantsAndCountries" name="listMerchantsAndCountries"/>
@@ -53,7 +59,7 @@
 <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURL" />
 <aui:form method="post">
 	<div class="table">
-		<%-- <div class="row">
+		<div class="row">
 			<liferay-ui:search-container emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURL%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
 				<liferay-ui:search-container-results>
 					<%
@@ -69,20 +75,31 @@
 					
 					<liferay-portlet:renderURL varImpl="rowURL">
 							<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
-							<portlet:param name="jspPage" value="/jsp/viewMerchantConfiguration.jsp" />
+							<portlet:param name="jspPage" value="/jsp/viewCertificateGeneration.jsp" />
 					</liferay-portlet:renderURL>
 					
 					<liferay-ui:search-container-column-text name="label.merchant" property="merchantId" value="merchantId" orderable="true" orderableProperty="merchantId" href="<%= rowURL %>"/>
-					<liferay-ui:search-container-column-text name="label.country" property="countryVO.name" value="countryVO.name" orderable="false" orderableProperty="countryVO.name"/>
-					<liferay-ui:search-container-column-text name="label.concept" property="concept" value="concept" orderable="false" orderableProperty="concept"/>
+					<liferay-ui:search-container-column-text name="label.commonName" property="commonName" value="commonName" orderable="false" orderableProperty="commonName"/>
+					<liferay-ui:search-container-column-text name="label.creationTime" value="<%=Utilities.formatDate(certificateVO.getCreationTime()) %>" orderable="false" orderableProperty="creationTime"/>
+					<%if(!certificateVO.getStatus().equalsIgnoreCase("1")) {%>
+							<liferay-ui:search-container-column-text name="label.status" value="<%=active%>" orderable="false" orderableProperty="status"/>
+					<%}else{%> 
+							<liferay-ui:search-container-column-text name="label.status" value="<%=inactive%>" orderable="false" orderableProperty="status"/>
+					<%}%>
+					
 					<liferay-ui:search-container-column-text name="Accion">
 						<liferay-ui:icon-menu>
 							
-							<portlet:actionURL var="editURL" name="listMerchantsEditMerchant">
+							<portlet:actionURL var="editURL" name="changeStatus">
 								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
-								<portlet:param name="mvcPath" value="/jsp/editMerchantConfiguration.jsp" />
+								<portlet:param name="mvcPath" value="/jsp/view.jsp" />
 							</portlet:actionURL>
-							<liferay-ui:icon image="edit" message="label.edit" url="<%=editURL.toString()%>" />
+							<%if(!certificateVO.getStatus().equalsIgnoreCase("1")) {%>
+									<liferay-ui:icon image="edit" message="label.inactivate" url="<%=editURL.toString()%>" />
+							<%}else{%> 
+									<liferay-ui:icon image="edit" message="label.activate" url="<%=editURL.toString()%>" />
+							<%}%>
+							<%-- <liferay-ui:icon image="edit" message="label.edit" url="<%=editURL.toString()%>" /> --%>
 							 
 						</liferay-ui:icon-menu>
 					</liferay-ui:search-container-column-text>
@@ -90,7 +107,7 @@
 				</liferay-ui:search-container-row>
 				<liferay-ui:search-iterator />
 			</liferay-ui:search-container>
-		</div> --%>
+		</div>
 		
 		<div class="row">
 			<div class="column1-2">

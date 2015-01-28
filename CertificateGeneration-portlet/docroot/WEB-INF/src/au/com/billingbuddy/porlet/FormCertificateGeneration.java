@@ -36,10 +36,10 @@ public class FormCertificateGeneration extends MVCPortlet {
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
 		HttpSession session = request.getSession();
 		try {
-			session.removeAttribute("merchantConfigurationVO");
-			ArrayList<MerchantConfigurationVO> listMerchantConfigurations = procesorFacade.listMerchantConfigurations();
-			session.setAttribute("listMerchantConfigurations", listMerchantConfigurations);
-		} catch (ProcesorFacadeException e) {
+//			session.removeAttribute("certificateVO");
+			ArrayList<CertificateVO> listCertificates = securityFacade.listCertificates();
+			session.setAttribute("listCertificates", listCertificates);
+		} catch (SecurityFacadeException e) {
 			e.printStackTrace();
 			PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
@@ -64,32 +64,27 @@ public class FormCertificateGeneration extends MVCPortlet {
 		certificateVO.setOrganizationUnit(actionRequest.getParameter("organizationUnit"));
 		certificateVO.setCountry(actionRequest.getParameter("country"));
 		certificateVO.setPasswordKeyStore(actionRequest.getParameter("passwordKeyStore"));
-		certificateVO.setPrivacyKeyStore(actionRequest.getParameter("privacyKeyStore"));
 		certificateVO.setPasswordkey(actionRequest.getParameter("passwordkey"));
 		certificateVO.setKeyName(actionRequest.getParameter("keyName"));
-		
 		session.setAttribute("certificateVO", certificateVO);
 		try {
 			securityFacade.certificateGeneration(certificateVO);
-			SessionMessages.add(actionRequest, "certificateGenerationSuccessfully");
-			actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
-			
-//			if(merchantConfigurationVO.getStatus().equalsIgnoreCase("success")) {
-//				ArrayList<MerchantConfigurationVO> listMerchantConfigurations = procesorFacade.listMerchantConfigurations();
-//				session.setAttribute("listMerchantConfigurations", listMerchantConfigurations);
-//				SessionMessages.add(actionRequest, "merchantConfigurationSavedSuccessfully");
-//				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
-//			} else {
-//				System.out.println("merchantConfigurationVO.getMessage(): " + merchantConfigurationVO.getMessage());
-//				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
-//				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
-//				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
-//				SessionErrors.add(actionRequest, "error");
-//				System.out.println("merchantConfigurationVO.getMessage(): " + merchantConfigurationVO.getMessage());
-//				SessionErrors.add(actionRequest,merchantConfigurationVO.getMessage());
-//				session.setAttribute("merchantConfigurationVO", merchantConfigurationVO);
-//				actionResponse.setRenderParameter("jspPage", "/jsp/newMerchantConfiguration.jsp");
-//			}
+			if(certificateVO.getStatus().equalsIgnoreCase("success")) {
+				ArrayList<CertificateVO> listCertificates = securityFacade.listCertificates();
+				session.setAttribute("listCertificates", listCertificates);
+				SessionMessages.add(actionRequest, "certificateGenerationSuccessfully");
+				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
+			} else {
+				System.out.println("merchantConfigurationVO.getMessage(): " + certificateVO.getMessage());
+				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+				SessionErrors.add(actionRequest, "error");
+				System.out.println("certificateVO.getMessage(): " + certificateVO.getMessage());
+				SessionErrors.add(actionRequest,certificateVO.getMessage());
+				session.setAttribute("certificateVO", certificateVO);
+				actionResponse.setRenderParameter("jspPage", "/jsp/newCertificateGeneration.jsp");
+			}
 		} catch (SecurityFacadeException e) {
 			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
@@ -122,6 +117,51 @@ public class FormCertificateGeneration extends MVCPortlet {
 			SessionErrors.add(actionRequest,e.getErrorCode());
 		}
 		actionResponse.setRenderParameter("jspPage", "/jsp/newCertificateGeneration.jsp");
+	}
+	
+	public void changeStatus(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
+		HttpSession session = request.getSession();
+		ArrayList<CertificateVO> resultsListCertificates = (ArrayList<CertificateVO>)session.getAttribute("results");
+		CertificateVO certificateVO = (CertificateVO)resultsListCertificates.get(Integer.parseInt(actionRequest.getParameter("indice")));
+		try {
+			if(certificateVO.getStatus().equalsIgnoreCase("1")) {
+				certificateVO.setStatus("0");
+			}else{ 
+				certificateVO.setStatus("1");
+			}
+			session.setAttribute("certificateVO", certificateVO);
+			securityFacade.updateStatusCertificate(certificateVO);
+			if(certificateVO.getStatus().equalsIgnoreCase("success")) {
+				ArrayList<CertificateVO> listCertificates = securityFacade.listCertificates();
+				session.setAttribute("listCertificates", listCertificates);
+				SessionMessages.add(actionRequest, "certificateChangeSuccessfully");
+			} else {
+				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+				SessionErrors.add(actionRequest, "error");
+				System.out.println("certificateVO.getMessage(): " + certificateVO.getMessage());
+				SessionErrors.add(actionRequest,certificateVO.getMessage());
+				session.setAttribute("certificateVO", certificateVO);
+			}
+			
+		} catch (SecurityFacadeException e) {
+			e.printStackTrace();
+			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+			SessionErrors.add(actionRequest,e.getErrorCode());
+			System.out.println("e.getMessage(): " + e.getMessage());
+			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
+			System.out.println("e.getErrorCode(): " + e.getErrorCode());
+			if(certificateVO.getStatus().equalsIgnoreCase("1")) {
+				certificateVO.setStatus("0");
+			}else{ 
+				certificateVO.setStatus("1");
+			}
+		}
+		actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
 	}
 	
 }
