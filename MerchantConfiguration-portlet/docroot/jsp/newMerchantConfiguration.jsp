@@ -80,53 +80,6 @@
 			
 			<div class="row">
 				<div class="column1-2">
-					<aui:input label="label.passwordKeyStore" helpMessage="help.passwordKeyStore" showRequiredLabel="false" type="password" required="true" name="passwordKeyStore" value="${merchantConfigurationVO.passwordKeyStore}">
-						<aui:validator name="required"/>
-					</aui:input>
-				</div>
-				<div class="column2-2">
-					<aui:input label="label.passwordKeyStoreConfirmation" helpMessage="help.passwordKeyStoreConfirmation" showRequiredLabel="false" type="password" required="true" name="passwordKeyStoreConfirmation" value="${merchantConfigurationVO.passwordKeyStore}">
-						<aui:validator name="equalTo">'#<portlet:namespace />passwordKeyStore'</aui:validator>
-					</aui:input>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-2">
-					<aui:input label="label.privacyKeyStore" helpMessage="help.privacyKeyStore" showRequiredLabel="false" type="password" required="true" name="privacyKeyStore" value="${merchantConfigurationVO.privacyKeyStore}">
-						<aui:validator name="required"/>
-					</aui:input>
-				</div>
-				<div class="column2-2">
-					<aui:input label="label.privacyKeyStoreConfirmation" helpMessage="help.privacyKeyStoreConfirmation" showRequiredLabel="false" type="password" required="true" name="privacyKeyStoreConfirmation" value="${merchantConfigurationVO.privacyKeyStore}">
-						<aui:validator name="equalTo">'#<portlet:namespace />privacyKeyStore'</aui:validator>
-					</aui:input>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-2">
-					<aui:input label="label.passwordkey" helpMessage="help.passwordkey" showRequiredLabel="false" type="text" required="true" name="passwordkey" value="${merchantConfigurationVO.passwordkey}">
-						<aui:validator name="required"/>
-					</aui:input>
-				</div>
-				<div class="column2-2">
-					<aui:input label="label.passwordkeyConfirmation" helpMessage="help.passwordkeyConfirmation" showRequiredLabel="false" type="text" required="true" name="passwordkeyConfirmation" value="${merchantConfigurationVO.passwordkey}">
-						<aui:validator name="equalTo">'#<portlet:namespace />passwordkey'</aui:validator>
-					</aui:input>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-1">
-					<aui:input label="label.keyName" helpMessage="help.keyName" showRequiredLabel="false" type="text" required="true" name="keyName" value="${merchantConfigurationVO.keyName}">
-						<%-- <aui:validator name="alphanum"/> --%>
-					</aui:input>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-2">
 						<span class="goBack" >
 							<a href="<%= goBack %>"><fmt:message key="label.goBack"/></a>
 						</span>

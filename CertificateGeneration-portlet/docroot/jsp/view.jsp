@@ -95,9 +95,9 @@
 								<portlet:param name="mvcPath" value="/jsp/view.jsp" />
 							</portlet:actionURL>
 							<%if(!certificateVO.getStatus().equalsIgnoreCase("1")) {%>
-									<liferay-ui:icon image="edit" message="label.inactivate" url="<%=editURL.toString()%>" />
+									<liferay-ui:icon onClick="return confirm('Are you sure do you want to change this certificate status?')" image="edit" message="label.inactivate"  url="<%=editURL.toString()%>" />
 							<%}else{%> 
-									<liferay-ui:icon image="edit" message="label.activate" url="<%=editURL.toString()%>" />
+									<liferay-ui:icon onClick="return confirm('Are you sure do you want to change this certificate status?')" image="edit" message="label.activate" url="<%=editURL.toString()%>" />
 							<%}%>
 							<%-- <liferay-ui:icon image="edit" message="label.edit" url="<%=editURL.toString()%>" /> --%>
 							 

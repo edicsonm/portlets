@@ -18,54 +18,57 @@
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
+<liferay-ui:error key="ProcessorMDTR.saveCreditCardRestriction.CreditCardRestrictionDAOException" message="error.ProcessorMDTR.saveCreditCardRestriction.CreditCardRestrictionDAOException" />
 <% 
-	ArrayList<MerchantConfigurationVO> resultsListMerchantConfigurations = (ArrayList<MerchantConfigurationVO>)session.getAttribute("results");
-	MerchantConfigurationVO merchantConfigurationVO = (MerchantConfigurationVO)resultsListMerchantConfigurations.get(Integer.parseInt(ParamUtil.getString(request, "indice")));
-	request.setAttribute("merchantConfigurationVO", merchantConfigurationVO);
+	ArrayList<CreditCardRestrictionVO> resultsListMerchants = (ArrayList<CreditCardRestrictionVO>)session.getAttribute("results");
+	CreditCardRestrictionVO creditCardRestrictionVO = (CreditCardRestrictionVO)resultsListMerchants.get(Integer.parseInt(ParamUtil.getString(request, "indice")));
+	request.setAttribute("creditCardRestrictionVO", creditCardRestrictionVO);
 %>
+
+<portlet:actionURL name="editCreditCardRestriction" var="submitForm">
+	<portlet:param name="jspPage" value="/jsp/view.jsp" />
+</portlet:actionURL>
 
 <portlet:renderURL var="goBack">
 	<portlet:param name="jspPage" value="/jsp/view.jsp" />
 </portlet:renderURL>
 
-<aui:form method="post">
+<aui:form  action="<%= submitForm %>" method="post">
 	<div class="table">
 		<div class="section">
 			<div class="row">
 				<div class="row">
 					<div class="column1-1">
-						<label class="aui-field-label sub-title"><fmt:message key="label.informationMerchantConfiguration"/></label>
+						<label class="aui-field-label sub-title"><fmt:message key="label.informationCreditCardRestriction"/></label>
 					</div>
 				</div>
 			</div>
 			
 			<div class="row">
 				<div class="column1-4">
-					<label class="aui-field-label"><fmt:message key="label.merchant"/></label>
+					<label class="aui-field-label"><fmt:message key="label.concept"/></label>
 				</div>
 				<div class="column2-4">
-					<c:out value="${merchantConfigurationVO.id}"/>
+					<c:out value="${creditCardRestrictionVO.concept}"/>
 				</div>
 				<div class="column3-4">
-					<%-- <label class="aui-field-label"><fmt:message key="label.urlApproved"/></label> --%>
+					<label class="aui-field-label"><fmt:message key="label.value"/></label>
 				</div>
 				<div class="column4-4">
-					<%-- <c:out value="${merchantConfigurationVO.urlApproved}"/> --%>
+					<c:out value="${creditCardRestrictionVO.value}"/>
 				</div>
 			</div>
 			
 			<div class="row">
+				<div class="column1-4">
+					<label class="aui-field-label"><fmt:message key="label.timeUnit"/></label>
+				</div>
+				<div class="column2-4">
+					<c:out value="${creditCardRestrictionVO.timeUnit}"/>
+				</div>
 				<div class="column3-4">
-					<label class="aui-field-label"><fmt:message key="label.urlApproved"/></label>
 				</div>
 				<div class="column4-4">
-					<c:out value="${merchantConfigurationVO.urlApproved}"/>
-				</div>
-				<div class="column3-4">
-					<label class="aui-field-label"><fmt:message key="label.urlDeny"/></label>
-				</div>
-				<div class="column4-4">
-					<c:out value="${merchantConfigurationVO.urlDeny}"/>
 				</div>
 			</div>
 			

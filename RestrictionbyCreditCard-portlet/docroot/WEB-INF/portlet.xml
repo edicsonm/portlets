@@ -2,14 +2,14 @@
 
 <portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" version="2.0">
 	<portlet>
-		<portlet-name>Refund</portlet-name>
-		<display-name>Refund</display-name>
-		<portlet-class>au.com.billingbuddy.porlet.FormRefund</portlet-class>
+		<portlet-name>RestrictionbyCreditCard</portlet-name>
+		<display-name>Restriction by Credit Card</display-name>
+		<portlet-class>au.com.billingbuddy.porlet.FormCreditCardRestriction</portlet-class>
 		<init-param>
 			<name>view-template</name>
 			<value>/jsp/view.jsp</value>
 		</init-param>
-        <init-param>
+		<init-param>
             <name>add-process-action-success-action</name>
             <value>false</value>
         </init-param>
@@ -17,23 +17,17 @@
 		<supports>
 			<mime-type>text/html</mime-type>
 		</supports>
-        <resource-bundle>Language</resource-bundle>
+		<resource-bundle>Language</resource-bundle>
 		<portlet-info>
-			<title>Refund</title>
-			<short-title>Refund</short-title>
-			<keywords>Refund</keywords>
+			<title>Restriction by Credit Card</title>
+			<short-title>Restriction by Credit Card</short-title>
+			<keywords>Restriction by Credit Card</keywords>
 		</portlet-info>
 		<security-role-ref>
 			<role-name>administrator</role-name>
 		</security-role-ref>
-		<!-- <security-role-ref>
-			<role-name>guest</role-name>
-		</security-role-ref> -->
 		<security-role-ref>
 			<role-name>power-user</role-name>
 		</security-role-ref>
-		<!-- <security-role-ref>
-			<role-name>user</role-name>
-		</security-role-ref> -->
 	</portlet>
 </portlet-app>

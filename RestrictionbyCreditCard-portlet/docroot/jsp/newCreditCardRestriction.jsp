@@ -18,14 +18,14 @@
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
-<liferay-ui:error key="ProcessorMDTR.updateMerchantConfiguration.MerchantConfigurationDAOException" message="error.ProcessorMDTR.updateMerchantConfiguration.MerchantConfigurationDAOException" />
+<liferay-ui:error key="ProcessorMDTR.saveCreditCardRestriction.CreditCardRestrictionDAOException" message="error.ProcessorMDTR.saveCreditCardRestriction.CreditCardRestrictionDAOException" />
+<liferay-ui:error key="ProcessorMDTR.saveCreditCardRestriction.CreditCardRestrictionDAOException.Ccre_Concept_UNIQUE" message="error.ProcessorMDTR.saveCreditCardRestriction.CreditCardRestrictionDAOException.Ccre_Concept_UNIQUE" />
+
 <% 
-	MerchantConfigurationVO merchantConfigurationVO = (MerchantConfigurationVO)session.getAttribute("merchantConfigurationVO");
-	request.setAttribute("merchantConfigurationVO", merchantConfigurationVO);
-	ArrayList<MerchantVO> listMerchants = (ArrayList<MerchantVO>)session.getAttribute("listMerchants");
+	CreditCardRestrictionVO creditCardRestrictionVO = (CreditCardRestrictionVO)session.getAttribute("creditCardRestrictionVO");
 %>
 
-<portlet:actionURL name="editMerchantConfiguration" var="submitForm">
+<portlet:actionURL name="saveMerchantRestriction" var="submitForm">
 	<portlet:param name="jspPage" value="/jsp/view.jsp" />
 </portlet:actionURL>
 
@@ -39,33 +39,32 @@
 			<div class="row">
 				<div class="row">
 					<div class="column1-1">
-						<label class="aui-field-label sub-title"><fmt:message key="label.informationMerchantConfiguration"/></label>
+						<label class="aui-field-label sub-title"><fmt:message key="label.informationCreditCardRestriction"/></label>
 					</div>
 				</div>
 			</div>
 			
 			<div class="row">
 				<div class="column1-1">
-					<aui:select name="merchant" helpMessage="help.merchant" disabled="true" label="label.merchant" id="merchant">
-						<c:forEach var="merchantVO" items="${listMerchants}">
-							<aui:option value="${merchantVO.id}" label="${merchantVO.name}" selected="${merchantVO.id==merchantConfigurationVO.merchantId}"/>
-						</c:forEach>
+					<aui:select name="concept" helpMessage="help.concept" label="label.concept" id="concept">
+						<aui:option value="Amount" label="label.amount" selected="${creditCardRestrictionVO.concept=='Amount'}"/>
+						<aui:option value="Transactions" label="label.transactions" selected="${creditCardRestrictionVO.concept=='Transactions'}"/>
 					</aui:select>
 				</div>
 			</div>
 			
 			<div class="row">
 				<div class="column1-1">
-					<aui:input label="label.urlApproved" helpMessage="help.urlApproved" showRequiredLabel="false" type="text" required="true" name="urlApproved" value="${merchantConfigurationVO.urlApproved}">
-						<%-- <aui:validator name="alphanum"/> --%>
+					<aui:input label="label.value" helpMessage="help.value" showRequiredLabel="false" type="text" required="true" name="value" value="${creditCardRestrictionVO.value}">
+						<aui:validator name="digits"/>
 					</aui:input>
 				</div>
 			</div>
 			
 			<div class="row">
 				<div class="column1-1">
-					<aui:input label="label.urlDeny" helpMessage="help.urlDeny" showRequiredLabel="false" type="text" required="true" name="urlDeny" value="${merchantConfigurationVO.urlDeny}">
-						<%-- <aui:validator name="alphanum"/> --%>
+					<aui:input label="label.timeUnit" helpMessage="help.timeUnit" showRequiredLabel="false" type="text" required="true" name="timeUnit" value="${creditCardRestrictionVO.timeUnit}">
+						<aui:validator name="digits"/>
 					</aui:input>
 				</div>
 			</div>

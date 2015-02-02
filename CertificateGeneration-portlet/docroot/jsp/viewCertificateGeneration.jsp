@@ -24,9 +24,40 @@
 	request.setAttribute("certificateVO", certificateVO);
 %>
 
+<%-- <portlet:actionURL var="downloadCertificate" name="downloadCertificate"/>--%>
+
+<portlet:resourceURL var="downloadCertificate" >
+	<portlet:param name="action" value="downloadCertificate" />
+	<portlet:param name="idCertificate" value="<%=certificateVO.getId()%>" />
+</portlet:resourceURL>
+
 <portlet:renderURL var="goBack">
 	<portlet:param name="jspPage" value="/jsp/view.jsp" />
 </portlet:renderURL>
+
+<script type="text/javascript">
+<%-- function downloadCertificate() {
+	var url = '<%=downloadCertificate%>';
+    $.ajax({
+    type : "GET",
+    url : url,
+    cache:false,
+    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+    dataType: "html",
+    data: {idCertificate:<%=certificateVO.getId()%>},
+    success : function(data){
+    	alert("Termina: " + data);
+    	$("#certificate").html(data);
+    	$( "#certificate" ).load('<%=renderRequest.getContextPath()%>'+'/jsp/refunds.jsp');
+    	$( "#listRefunds" ).load("<%=ajaxUrl%>");
+    },error : function(XMLHttpRequest, textStatus, errorThrown){
+          alert("XMLHttpRequest..." + XMLHttpRequest);
+          alert("textStatus..." + textStatus);
+          alert("errorThrown..." + errorThrown);
+    }
+  });
+}; --%>
+</script>
 
 <aui:form method="post">
 	<div class="table">
@@ -88,9 +119,18 @@
 			<div class="row">
 				<div class="column1-2">
 					<span class="goBack" >
-						<a href="<%= goBack %>"><fmt:message key="label.goBack"/></a>
+						<a  href="<%= goBack %>"><fmt:message key="label.goBack"/></a>
 					</span>
 				</div>
+				<div class="column2-2">
+					<span class="goBack" >
+						<a href="<%=downloadCertificate%>"><fmt:message key="label.downloadCertificate"/></a>
+						<%-- <input type="button" value="Submit" onClick="location.href = '<portlet:resourceURL><portlet:param name="idCertificate" value="<%=certificateVO.getId()%>" /></portlet:resourceURL>'" /> --%>
+					</span>
+				</div>
+			</div>
+			<div class="row">
+				<div id="certificate"></div>
 			</div>
 		</div>
 	</div>

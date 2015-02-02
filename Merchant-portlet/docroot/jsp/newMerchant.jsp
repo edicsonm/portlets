@@ -51,6 +51,18 @@
 				</div>
 			</div>
 			
+			
+			<%-- <div class="row">
+				<div class="column1-1">
+					<aui:select name="businessName" helpMessage="help.businessName"  label="label.businessName" id="businessName">
+						<aui:input label="label.businessName" helpMessage="help.businessName" showRequiredLabel="false" type="text" required="true" name="name" value="${merchantVO.name}">
+						<aui:validator name="alphanum"/>
+					</aui:input>
+					</aui:select>
+				</div>
+			</div> --%>
+			
+			
 			<div class="row">
 				<div class="column1-1">
 					<aui:select name="country" helpMessage="help.country"  label="label.country" id="country">
@@ -60,6 +72,9 @@
 					</aui:select>
 				</div>
 			</div>
+			
+			
+			
 			
 			<div class="row">
 				<div class="column1-2">

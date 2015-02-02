@@ -34,6 +34,52 @@
 	<portlet:param name="jspPage" value="/jsp/view.jsp" />
 </portlet:renderURL>
 
+
+<portlet:resourceURL var="searchMerchantInformation" >
+	<%-- <portlet:param name="action" value="chargeMerchantInformation" />
+	<portlet:param name="idMerchant" value="<%=certificateVO.getId()%>" /> --%>
+</portlet:resourceURL>
+
+<script>
+/* 	$("select#_CertificateGeneration_WAR_CertificateGenerationportlet_merchant").change(function() {
+		alert( "Handler for .change() called." );
+	});
+ */
+function searchMerchantInformation(){
+	var url = '<%=searchMerchantInformation%>';
+    $.ajax({
+    type : "GET",
+    url : url,
+    cache:false,
+    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+    dataType: "json",
+    data: {idMerchant:$("#<portlet:namespace />merchant").find('option:selected').attr('value'), action:"chargeMerchantInformation"},
+    success : function(data){
+    	
+    	$("#<portlet:namespace />commonName").val(data.commonName);
+    	$("#<portlet:namespace />organization").val(data.organization);
+    	$("#<portlet:namespace />organizationUnit").val(data.organizationUnit);
+    	
+    	
+    	/* alert("Termina: " + data.saludo); */
+    	/* jsonObject.put("commonName", merchantVO.getName());
+		jsonObject.put("organization", merchantVO.getName());
+		jsonObject.put("organizationUnit", "IT-Security"); */
+		
+		/* $("#_CertificateGeneration_WAR_CertificateGenerationportlet_commonName").val( data.commonName ); */
+		/* alert(data.commonName); */
+    	<%-- $("#certificate").html(data);
+    	$( "#certificate" ).load('<%=renderRequest.getContextPath()%>'+'/jsp/refunds.jsp');
+    	$( "#listRefunds" ).load("<%=ajaxUrl%>"); --%>
+    },error : function(XMLHttpRequest, textStatus, errorThrown){
+          alert("XMLHttpRequest..." + XMLHttpRequest);
+          alert("textStatus..." + textStatus);
+          alert("errorThrown..." + errorThrown);
+    }
+  });
+}
+
+</script>
 <aui:form  action="<%= submitForm %>" method="post">
 	<div class="table">
 		<div class="section">
@@ -47,7 +93,8 @@
 			
 			<div class="row">
 				<div class="column1-1">
-					<aui:select name="merchant" helpMessage="help.merchant"  label="label.merchant" id="merchant">
+					<aui:select name="merchant" onChange="searchMerchantInformation();" helpMessage="help.merchant" label="label.merchant" id="merchant">
+						<%-- <aui:option value="" label=""/> --%>
 						<c:forEach var="merchantVO" items="${listMerchants}">
 							<aui:option value="${merchantVO.id}" label="${merchantVO.name}" selected="${merchantVO.id==certificateVO.merchantId}"/>
 						</c:forEach>
@@ -57,7 +104,7 @@
 			
 			<div class="row">
 				<div class="column1-1">
-					<aui:input label="label.commonName" helpMessage="help.commonName" showRequiredLabel="false" type="text" required="true" name="commonName" value="${certificateVO.commonName}">
+					<aui:input label="label.commonName" helpMessage="help.commonName" showRequiredLabel="false" type="text" id="commonName" required="true" name="commonName" value="${certificateVO.commonName}">
 						<aui:validator name="required"/>
 					</aui:input>
 				</div>
@@ -150,3 +197,6 @@
 		</div>
 	</div>
 </aui:form>
+<script>
+	searchMerchantInformation();
+</script>

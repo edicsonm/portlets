@@ -56,12 +56,8 @@ public class FormMerchantConfiguration extends MVCPortlet {
 		merchantConfigurationVO.setMerchantId(actionRequest.getParameter("merchant"));
 		merchantConfigurationVO.setUrlApproved(actionRequest.getParameter("urlApproved"));
 		merchantConfigurationVO.setUrlDeny(actionRequest.getParameter("urlDeny"));
-		merchantConfigurationVO.setPasswordKeyStore(actionRequest.getParameter("passwordKeyStore"));
-		merchantConfigurationVO.setPrivacyKeyStore(actionRequest.getParameter("privacyKeyStore"));
-		merchantConfigurationVO.setPasswordkey(actionRequest.getParameter("passwordkey"));
-		merchantConfigurationVO.setKeyName(actionRequest.getParameter("keyName"));
-		
 		session.setAttribute("merchantConfigurationVO", merchantConfigurationVO);
+		
 		try {
 			procesorFacade.saveMerchantConfiguration(merchantConfigurationVO);
 			if(merchantConfigurationVO.getStatus().equalsIgnoreCase("success")) {
@@ -138,10 +134,6 @@ public class FormMerchantConfiguration extends MVCPortlet {
 		merchantConfigurationVO.setMerchantId(actionRequest.getParameter("merchant"));
 		merchantConfigurationVO.setUrlApproved(actionRequest.getParameter("urlApproved"));
 		merchantConfigurationVO.setUrlDeny(actionRequest.getParameter("urlDeny"));
-		merchantConfigurationVO.setPasswordKeyStore(actionRequest.getParameter("passwordKeyStore"));
-		merchantConfigurationVO.setPrivacyKeyStore(actionRequest.getParameter("privacyKeyStore"));
-		merchantConfigurationVO.setPasswordkey(actionRequest.getParameter("passwordkey"));
-		merchantConfigurationVO.setKeyName(actionRequest.getParameter("keyName"));
 		
 		session.setAttribute("merchantConfigurationVO", merchantConfigurationVO);
 		try {
