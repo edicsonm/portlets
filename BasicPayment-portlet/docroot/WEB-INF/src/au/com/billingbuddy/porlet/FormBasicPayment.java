@@ -73,10 +73,6 @@ public class FormBasicPayment extends MVCPortlet {
 				session.setAttribute("merchantVO", merchantVO);
 				System.out.println("UrlDeny: " + merchantVO.getMerchantConfigurationVO().getUrlDeny());
 				System.out.println("UrlApproved: " + merchantVO.getMerchantConfigurationVO().getUrlApproved());
-				System.out.println("PasswordKeyStore: " + merchantVO.getMerchantConfigurationVO().getPasswordKeyStore());
-				System.out.println("PrivacyKeyStore: " + merchantVO.getMerchantConfigurationVO().getPrivacyKeyStore());
-				System.out.println("Passwordkey: " + merchantVO.getMerchantConfigurationVO().getPasswordkey());
-				System.out.println("KeyName: " + merchantVO.getMerchantConfigurationVO().getKeyName());
 				
 				/*Merchant exists
 				 * Validate restrictions by number of transactions
@@ -184,20 +180,20 @@ public class FormBasicPayment extends MVCPortlet {
 			}
 		} catch (TransactionFacadeException e) {
 			
-//			System.out.println("e.getMessage(): " + e.getMessage());
-//			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
-//			System.out.println("e.getErrorCode(): " + e.getErrorCode());
-			
 			transactionVO.setStatus("error");
 			transactionVO.setMessage(e.getErrorCode());
 			transactionVO.setData(e.getErrorMenssage());
 			
-//			e.printStackTrace();
 			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
-			SessionErrors.add(actionRequest, "error");
+			SessionErrors.add(actionRequest, e.getErrorCode());
 			SessionErrors.add(actionRequest,e.getErrorMenssage());
+			
+			System.out.println("e.getMessage(): " + e.getMessage());
+			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
+			System.out.println("e.getErrorCode(): " + e.getErrorCode());
+			
 			session.setAttribute("transactionVO", transactionVO);
 			actionResponse.setRenderParameter("jspPage", "/jsp/errorProcessor.jsp");
 		}

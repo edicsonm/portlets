@@ -19,7 +19,8 @@
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
 <% 
-	ArrayList<MerchantConfigurationVO> resultsListMerchantConfigurations = (ArrayList<MerchantConfigurationVO>)session.getAttribute("results");
+System.out.println("Ejecuta esto ---");	
+ArrayList<MerchantConfigurationVO> resultsListMerchantConfigurations = (ArrayList<MerchantConfigurationVO>)session.getAttribute("results");
 	MerchantConfigurationVO merchantConfigurationVO = (MerchantConfigurationVO)resultsListMerchantConfigurations.get(Integer.parseInt(ParamUtil.getString(request, "indice")));
 	request.setAttribute("merchantConfigurationVO", merchantConfigurationVO);
 %>

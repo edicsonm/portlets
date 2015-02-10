@@ -47,7 +47,7 @@ public class FormCreditCardRestriction extends MVCPortlet {
 		super.doView(renderRequest, renderResponse);
 	}
 	
-	public void saveMerchantRestriction(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+	public void saveCreditCardRestriction(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 		HttpSession session = request.getSession();
 		

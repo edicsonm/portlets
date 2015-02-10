@@ -49,7 +49,7 @@
 	if(listMerchantConfigurations == null) listMerchantConfigurations = new ArrayList<MerchantConfigurationVO>();
 %>
 
-<portlet:actionURL var="listMerchants" name="listMerchants"/>
+<portlet:actionURL var="listMerchantsMerchantConfiguration" name="listMerchantsMerchantConfiguration"/>
 
 <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURL" />
 <aui:form method="post">
@@ -101,7 +101,7 @@
 		<div class="row">
 			<div class="column1-2">
 				<span class="newMerchant" >
-					<a href="<%= listMerchants %>"><fmt:message key="label.newMerchantConfiguration"/></a>
+					<a href="<%= listMerchantsMerchantConfiguration %>"><fmt:message key="label.newMerchantConfiguration"/></a>
 				</span>
 			</div>
 			<div class="column2-2">

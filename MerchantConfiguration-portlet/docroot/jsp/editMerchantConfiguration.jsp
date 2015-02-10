@@ -25,15 +25,15 @@
 	ArrayList<MerchantVO> listMerchants = (ArrayList<MerchantVO>)session.getAttribute("listMerchants");
 %>
 
-<portlet:actionURL name="editMerchantConfiguration" var="submitForm">
+<portlet:actionURL name="editMerchantConfiguration" var="submitFormMerchantConfiguration">
 	<portlet:param name="jspPage" value="/jsp/view.jsp" />
 </portlet:actionURL>
 
-<portlet:renderURL var="goBack">
+<portlet:renderURL var="goBackMerchantConfiguration">
 	<portlet:param name="jspPage" value="/jsp/view.jsp" />
 </portlet:renderURL>
 
-<aui:form  action="<%= submitForm %>" method="post">
+<aui:form  action="<%= submitFormMerchantConfiguration %>" method="post">
 	<div class="table">
 		<div class="section">
 			<div class="row">
@@ -73,7 +73,7 @@
 			<div class="row">
 				<div class="column1-2">
 						<span class="goBack" >
-							<a href="<%= goBack %>"><fmt:message key="label.goBack"/></a>
+							<a href="<%= goBackMerchantConfiguration %>"><fmt:message key="label.goBack"/></a>
 						</span>
 					</div>
 				<div class="column2-2">

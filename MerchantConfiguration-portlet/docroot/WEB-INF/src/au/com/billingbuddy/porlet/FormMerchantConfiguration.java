@@ -89,7 +89,7 @@ public class FormMerchantConfiguration extends MVCPortlet {
 		}
 	}
 	
-	public void listMerchants(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+	public void listMerchantsMerchantConfiguration(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
 		try {
 			HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 			HttpSession session = request.getSession();
@@ -131,7 +131,7 @@ public class FormMerchantConfiguration extends MVCPortlet {
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 		HttpSession session = request.getSession();
 		MerchantConfigurationVO merchantConfigurationVO = (MerchantConfigurationVO)session.getAttribute("merchantConfigurationVO");
-		merchantConfigurationVO.setMerchantId(actionRequest.getParameter("merchant"));
+//		merchantConfigurationVO.setMerchantId(actionRequest.getParameter("merchant"));
 		merchantConfigurationVO.setUrlApproved(actionRequest.getParameter("urlApproved"));
 		merchantConfigurationVO.setUrlDeny(actionRequest.getParameter("urlDeny"));
 		

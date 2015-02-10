@@ -30,6 +30,18 @@
 <fmt:setBundle basename="Language"/>
 <liferay-ui:error key="success" message="label.satisfactoryRegistration" />
 <liferay-ui:error key="error" message="label.unsatisfactoryRegistration" />
+<liferay-ui:error key="ProcessorMDTR.chargePayment.CardException.incorrect_number" message="error.ProcessorMDTR.chargePayment.CardException.incorrect_number" />
+<liferay-ui:error key="ProcessorMDTR.chargePayment.CardException.card_declined" message="error.ProcessorMDTR.chargePayment.CardException.card_declined" />
+
+<liferay-ui:error key="ProcessorMDTR.chargePayment.CardException.incorrect_cvc" message="error.ProcessorMDTR.chargePayment.CardException.incorrect_cvc" />
+<liferay-ui:error key="ProcessorMDTR.chargePayment.CardException.expired_card" message="error.ProcessorMDTR.chargePayment.CardException.expired_card" />
+<liferay-ui:error key="ProcessorMDTR.chargePayment.CardException.invalid_expiry_month" message="error.ProcessorMDTR.chargePayment.CardException.invalid_expiry_month" />
+<liferay-ui:error key="ProcessorMDTR.chargePayment.CardException.invalid_expiry_year" message="error.ProcessorMDTR.chargePayment.CardException.invalid_expiry_year" />
+<liferay-ui:error key="ProcessorMDTR.chargePayment.CardException.incorrect_zip" message="error.ProcessorMDTR.chargePayment.CardException.incorrect_zip" />
+<liferay-ui:error key="ProcessorMDTR.chargePayment.CardException.missing" message="error.ProcessorMDTR.chargePayment.CardException.missing" />
+<liferay-ui:error key="ProcessorMDTR.chargePayment.CardException.processing_error" message="error.ProcessorMDTR.chargePayment.CardException.processing_error" />
+<liferay-ui:error key="ProcessorMDTR.chargePayment.CardDAOException" message="error.ProcessorMDTR.chargePayment.CardDAOException" />
+
 <%-- <liferay-ui:message key="label.title"/> --%>
 <aui:script use="aui-io-request,aui-node">
 </aui:script>
@@ -215,7 +227,31 @@
 	
 $("#msgid").attr("class", "information red");	
 $("#msgid").html("Sending payment information to the merchant. Please wait.");
+var URL = "<%=merchantVO.getMerchantConfigurationVO().getUrlDeny()%>";
+URL += "?jsoncallback=?";
 $.ajax({
+	type: "GET",
+	url: URL,
+	dataType: "jsonp",
+	contentType: "application/json",
+	data: { status: "<%=transactionVO.getStatus()%>", message:"<%=transactionVO.getMessage()%>", data: "<%=transactionVO.getData()%>", orderNumber:<%=transactionVO.getOrderNumber()%>},
+	/*jsonpCallback: "metodo2",*/
+	success: function (response) {				
+		$("#msgid").attr("class", "information orange");
+    	$("#msgid").html("The merchant has received the payment at "+response.date+". You can close this window." + response);
+    }, 
+    error: function(jqXHR, textStatus, errorThrown) {
+    	$("#msgid").attr("class", "information red");	
+    	$("#msgid").html("An error occurred with number " + jqXHR.status);
+    	alert("Error " + jqXHR.status + ":"+textStatus);
+        alert("Error " + jqXHR.responseText );
+    },
+    fail: function(jqXHR, textStatus ) {
+		alert( "Request failed " + textStatus +"-->"+jqXHR.status);
+	}
+});
+
+<%-- Esta es la version que estab funcionando-- $.ajax({
 	/* url: "http://192.168.0.10:8080/MerchantApp/answerError.jsp", */
 	/* url: "http://merchant.billingbuddy.com/Merchant/answerProcessor.jsp", */
 	url: "<%=merchantVO.getMerchantConfigurationVO().getUrlDeny()%>",
@@ -236,6 +272,6 @@ $.ajax({
     fail: function(jqXHR, textStatus ) {
 		alert( "Request failed " + textStatus +"-->"+jqXHR.status);
 	}
-});	 
+});	  --%>
 	
 </script>

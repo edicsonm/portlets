@@ -144,7 +144,32 @@
 	<script type="text/javascript">
 		$("#msgid").attr("class", "information red");	
 		$("#msgid").html("Sending payment information to the merchant. Please wait.");
+		var URL = "<%=merchantVO.getMerchantConfigurationVO().getUrlApproved()%>";
+		URL += "?jsoncallback=?";
 		$.ajax({
+			type: "GET",
+			url: URL,
+			dataType: "jsonp",
+			contentType: "application/json",
+			data: { approbationNumber: <%=transactionVO.getId()%>, orderNumber:<%=transactionVO.getOrderNumber()%>},
+			/*jsonpCallback: "metodo2",*/
+			success: function (response) {				
+				$("#msgid").attr("class", "information orange");
+	        	$("#msgid").html("The merchant has received the payment at "+response.date+". You can close this window." + response);
+		    }, 
+		    error: function(jqXHR, textStatus, errorThrown) {
+	        	$("#msgid").attr("class", "information red");	
+	        	$("#msgid").html("An error occurred with number " + jqXHR.status);
+	        	alert("Error " + jqXHR.status + ":"+textStatus);
+	            alert("Error " + jqXHR.responseText );
+	        },
+	        fail: function(jqXHR, textStatus ) {
+				alert( "Request failed " + textStatus +"-->"+jqXHR.status);
+			}
+		});
+		
+		
+		<%-- Esta es la version que estab funcionando-- $.ajax({
 	    	/* url: "http://192.168.0.10:8080/MerchantApp/answerProcessor.jsp", */
 	    	url: "<%=merchantVO.getMerchantConfigurationVO().getUrlApproved()%>",
 	    	/* url: "http://merchant.billingbuddy.com/Merchant/answerProcessor.jsp", */
@@ -159,14 +184,14 @@
 	        error: function(jqXHR, textStatus, errorThrown) {
 	        	$("#msgid").attr("class", "information red");	
 	        	$("#msgid").html("An error occurred with number " + jqXHR.status);
-	        	/* alert("Error " + jqXHR.status + ":"+textStatus);
-	            alert("Error " + jqXHR.responseText ); */
+	        	alert("Error " + jqXHR.status + ":"+textStatus);
+	            alert("Error " + jqXHR.responseText );
 	        },
 	        fail: function(jqXHR, textStatus ) {
 				alert( "Request failed " + textStatus +"-->"+jqXHR.status);
 			}
 	    });	 
-	
+	 --%>
 		 <%-- $.ajax({
 		    type : 'POST',
 		    dataType: "html",

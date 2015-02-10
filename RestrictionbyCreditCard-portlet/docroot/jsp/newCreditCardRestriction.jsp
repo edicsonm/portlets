@@ -25,7 +25,7 @@
 	CreditCardRestrictionVO creditCardRestrictionVO = (CreditCardRestrictionVO)session.getAttribute("creditCardRestrictionVO");
 %>
 
-<portlet:actionURL name="saveMerchantRestriction" var="submitForm">
+<portlet:actionURL name="saveCreditCardRestriction" var="submitForm">
 	<portlet:param name="jspPage" value="/jsp/view.jsp" />
 </portlet:actionURL>
 
