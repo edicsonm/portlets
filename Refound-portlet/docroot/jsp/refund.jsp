@@ -113,26 +113,26 @@
 	session.setAttribute("orderByTypeRefunds", orderByTypeRefunds);
 %>
 <script type="text/javascript">
-function listRefunds() {
-	var url = '<%=ajaxResourceUrl%>';
-    $.ajax({
-    type : "POST",
-    url : url,
-    cache:false,
-    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-    dataType: "html",
-    data: {orderNumber:<%=chargeVO.getTransactionId()%>},
-    success : function(data){
-    	alert("Termina: " + data);
-    	<%-- $( "#listRefunds" ).load('<%=renderRequest.getContextPath()%>'+'/jsp/refunds.jsp'); --%>
-    	$( "#listRefunds" ).load("<%=ajaxUrl%>");
-    },error : function(XMLHttpRequest, textStatus, errorThrown){
-          alert("XMLHttpRequest..." + XMLHttpRequest);
-          alert("textStatus..." + textStatus);
-          alert("errorThrown..." + errorThrown);
-    }
-  });
-};
+	function listRefunds() {
+		var url = '<%=ajaxResourceUrl%>';
+	    $.ajax({
+	    type : "POST",
+	    url : url,
+	    cache:false,
+	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+	    dataType: "html",
+	    data: {orderNumber:<%=chargeVO.getTransactionId()%>},
+	    success : function(data){
+	    	alert("Termina: " + data);
+	    	<%-- $( "#listRefunds" ).load('<%=renderRequest.getContextPath()%>'+'/jsp/refunds.jsp'); --%>
+	    	$( "#listRefunds" ).load("<%=ajaxUrl%>");
+	    },error : function(XMLHttpRequest, textStatus, errorThrown){
+	          alert("XMLHttpRequest..." + XMLHttpRequest);
+	          alert("textStatus..." + textStatus);
+	          alert("errorThrown..." + errorThrown);
+	    }
+	  });
+	};
 </script>
 
 <aui:form action="<%= submitForm %>" method="post">

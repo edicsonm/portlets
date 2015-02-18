@@ -30,7 +30,7 @@ import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
 
-public class FormReportAmountByDay extends MVCPortlet {
+public class FormReportRejectedsByDay extends MVCPortlet {
 	
 	private ReportFacade reportFacade = ReportFacade.getInstance();
 	
@@ -39,15 +39,15 @@ public class FormReportAmountByDay extends MVCPortlet {
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
 		HttpSession session = request.getSession();
 		try {
-			session.removeAttribute("transactionVOAmount");
+			session.removeAttribute("transactionVORejected");
 			TransactionVO transactionVO = new TransactionVO();
-			StringWriter report = reportFacade.searchAmountByDay(transactionVO);
+			StringWriter report = reportFacade.searchRejectedByDay(transactionVO);
 			
 			System.out.println("transactionVO.getInitialDateReport(): "+ transactionVO.getInitialDateReport());
 			System.out.println("transactionVO.getFinalDateReport(): " + transactionVO.getFinalDateReport());
 			
-			session.setAttribute("reportAmount", report.toString());
-			session.setAttribute("transactionVOAmount", transactionVO);
+			session.setAttribute("reportRejected", report.toString());
+			session.setAttribute("transactionVORejected", transactionVO);
 		} catch (ReportFacadeException e) {
 			e.printStackTrace();
 			PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
@@ -66,29 +66,38 @@ public class FormReportAmountByDay extends MVCPortlet {
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(resourceRequest);
 		HttpSession session = request.getSession();
         try {
-			session.removeAttribute("transactionVOAmount");
-			session.removeAttribute("reportAmount");
+			session.removeAttribute("transactionVORejected");
+			session.removeAttribute("reportRejected");
 			
 			TransactionVO transactionVO = new TransactionVO();
 			Date date;
 			try {
-				date = Utilities.getDateFormat(5).parse(resourceRequest.getParameter("fromDay") + "-"+(Integer.parseInt(resourceRequest.getParameter("fromMonth")) + 1)+"-"+resourceRequest.getParameter("fromYear"));
+				
+				date = Utilities.getDateFormat(6).parse(resourceRequest.getParameter("fromDateRejectec"));
 				transactionVO.setInitialDateReport(Utilities.getDateFormat(2).format(date));
-				date = Utilities.getDateFormat(5).parse(resourceRequest.getParameter("toDay") + "-"+(Integer.parseInt(resourceRequest.getParameter("toMonth")) + 1)+"-"+resourceRequest.getParameter("toYear"));
+				date = Utilities.getDateFormat(6).parse(resourceRequest.getParameter("toDateRejectec"));
 				transactionVO.setFinalDateReport(Utilities.getDateFormat(2).format(date));
+				
+				System.out.println("transactionVO.getInitialDateReport(): " + transactionVO.getInitialDateReport());
+				System.out.println("transactionVO.getFinalDateReport(): " + transactionVO.getFinalDateReport());
+				
+//				date = Utilities.getDateFormat(5).parse(resourceRequest.getParameter("fromDay") + "-"+(Integer.parseInt(resourceRequest.getParameter("fromMonth")) + 1)+"-"+resourceRequest.getParameter("fromYear"));
+//				transactionVO.setInitialDateReport(Utilities.getDateFormat(2).format(date));
+//				date = Utilities.getDateFormat(5).parse(resourceRequest.getParameter("toDay") + "-"+(Integer.parseInt(resourceRequest.getParameter("toMonth")) + 1)+"-"+resourceRequest.getParameter("toYear"));
+//				transactionVO.setFinalDateReport(Utilities.getDateFormat(2).format(date));
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
 			
-			StringWriter report = reportFacade.searchAmountByDay(transactionVO);
+			StringWriter report = reportFacade.searchRejectedByDay(transactionVO);
 			resourceResponse.setContentType("text/html");
 			PrintWriter writer = resourceResponse.getWriter();
 			writer.print(report.toString());
 	        writer.flush();
 	        writer.close();
-			session.setAttribute("transactionVOAmount", transactionVO);
+			session.setAttribute("transactionVORejected", transactionVO);
 		} catch (ReportFacadeException e) {
 			e.printStackTrace();
 //			PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
