@@ -19,5 +19,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/BillingBuddyServer"/>
+	<classpathentry kind="lib" path="/run/media/Edicson/Informacion IPG/Servidor/liferay/tomcat-7.0.40/lib/BillingBuddyCommon.jar"/>
+	<classpathentry kind="lib" path="/run/media/Edicson/Informacion IPG/Servidor/liferay/tomcat-7.0.40/lib/BBUtils.jar"/>
 	<classpathentry kind="output" path="docroot/WEB-INF/classes"/>
 </classpath>

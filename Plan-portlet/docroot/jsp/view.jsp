@@ -55,6 +55,7 @@
 </portlet:renderURL>
 
 <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURL" />
+
 <aui:form method="post">
 	<div class="table">
 		<div class="row">

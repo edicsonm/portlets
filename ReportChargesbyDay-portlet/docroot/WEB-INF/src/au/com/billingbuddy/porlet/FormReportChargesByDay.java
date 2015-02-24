@@ -42,10 +42,6 @@ public class FormReportChargesByDay extends MVCPortlet {
 			session.removeAttribute("transactionVOCharges");
 			TransactionVO transactionVO = new TransactionVO();
 			StringWriter report = reportFacade.searchChargesByDay(transactionVO);
-			
-			System.out.println("transactionVO.getInitialDateReport(): "+ transactionVO.getInitialDateReport());
-			System.out.println("transactionVO.getFinalDateReport(): " + transactionVO.getFinalDateReport());
-			
 			session.setAttribute("reportCharges", report.toString());
 			session.setAttribute("transactionVOCharges", transactionVO);
 		} catch (ReportFacadeException e) {
@@ -72,9 +68,9 @@ public class FormReportChargesByDay extends MVCPortlet {
 			TransactionVO transactionVO = new TransactionVO();
 			Date date;
 			try {
-				date = Utilities.getDateFormat(5).parse(resourceRequest.getParameter("fromDay") + "-"+(Integer.parseInt(resourceRequest.getParameter("fromMonth")) + 1)+"-"+resourceRequest.getParameter("fromYear"));
+				date = Utilities.getDateFormat(6).parse(resourceRequest.getParameter("fromDateCharges"));
 				transactionVO.setInitialDateReport(Utilities.getDateFormat(2).format(date));
-				date = Utilities.getDateFormat(5).parse(resourceRequest.getParameter("toDay") + "-"+(Integer.parseInt(resourceRequest.getParameter("toMonth")) + 1)+"-"+resourceRequest.getParameter("toYear"));
+				date = Utilities.getDateFormat(6).parse(resourceRequest.getParameter("toDateCharges"));
 				transactionVO.setFinalDateReport(Utilities.getDateFormat(2).format(date));
 			} catch (NumberFormatException e) {
 				e.printStackTrace();

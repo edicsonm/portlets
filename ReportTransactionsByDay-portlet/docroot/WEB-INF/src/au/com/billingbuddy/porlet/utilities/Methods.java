@@ -1,4 +1,4 @@
-package au.com.billigbuddy.porlet.utilities;
+package au.com.billingbuddy.porlet.utilities;
 
 import java.util.ArrayList;
 import java.util.Collections;

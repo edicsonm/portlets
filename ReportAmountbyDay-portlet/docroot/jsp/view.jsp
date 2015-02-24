@@ -78,12 +78,8 @@
 	    cache:false,
 	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 	    dataType: "html",
-	    data: {fromDay: $("#<portlet:namespace />fromday").find('option:selected').attr('value'), 
-	    	   fromMonth: $("#<portlet:namespace />frommonth").find('option:selected').attr('value'), 
-	    	   fromYear: $("#<portlet:namespace />fromyear").find('option:selected').attr('value'),
-	    	   toDay: $("#<portlet:namespace />today").find('option:selected').attr('value'), 
-	    	   toMonth: $("#<portlet:namespace />tomonth").find('option:selected').attr('value'), 
-	    	   toYear: $("#<portlet:namespace />toyear").find('option:selected').attr('value')},
+	    data: {fromDateAmount: $("#<portlet:namespace />fromDateAmount").val(),
+	    	toDateAmount: $("#<portlet:namespace />toDateAmount").val()},
 	    success : function(data){
 	    	$("#reportAmount").html(data);	    	
 	    },error : function(XMLHttpRequest, textStatus, errorThrown){
@@ -94,65 +90,44 @@
 	  });
 	};
 </script>
+<aui:script>
+    
+    AUI().use('aui-datepicker', function(A) {
+       var fromDate = new A.DatePicker({
+         trigger: '#<portlet:namespace />fromDateAmount',
+       }).render('##<portlet:namespace />fromDateAmountPicker');
+    });
+    
+    AUI().use('aui-datepicker', function(A) {
+        var toDate = new A.DatePicker({
+          trigger: '#<portlet:namespace />toDateAmount',
+        }).render('##<portlet:namespace />toDateAmountPicker');
+     });
 
+</aui:script>
 <aui:form method="post">
 	<div class="table">
-		<div class="row">
-			<div class="column1-3-Report">
-				<span class="aui-field aui-field-select aui-field-menu"> 
-					<span class="aui-field-content"> 
-						<label for="from" class="aui-field-label"><fmt:message key="label.from"/>
-							<span class="taglib-icon-help">
-								<img tabindex="0" src="${themeDisplay.pathThemeImages}/portlet/help.png" onmouseover="Liferay.Portal.ToolTip.show(this);" onfocus="Liferay.Portal.ToolTip.show(this);" onblur="Liferay.Portal.ToolTip.hide();" alt="">
-								<span id="helpFrom" class="aui-helper-hidden-accessible tooltip-text"><fmt:message key="help.from"/></span>
-							</span>
-						</label>
-						<span class="aui-field-element "> 
-							<liferay-ui:input-date formName="from" dayParam="fromDay" dayValue="<%= fromCalendar.get(Calendar.DATE) %>" disabled="<%=false%>" firstDayOfWeek="<%= cal.getFirstDayOfWeek() - 1 %>"
-						    	monthParam="fromMonth" monthValue="<%= fromCalendar.get(Calendar.MONTH) %>" yearParam="fromYear" yearValue="<%= fromCalendar.get(Calendar.YEAR) %>"
-						    	yearRangeStart="<%= cal.get(Calendar.YEAR) - 15 %>" yearRangeEnd="<%= cal.get(Calendar.YEAR) %>" />
-						</span>
-						
-						<script type="text/javascript">
-							jQuery('#<portlet:namespace />fromday').hide();
-							jQuery('#<portlet:namespace />frommonth').hide();
-							jQuery('#<portlet:namespace />fromyear').hide();
-							/* jQuery('.aui-datepicker-button-wrapper').hide(); */
-						</script>
-						
-					</span>
-				</span>
-			</div>
-			<div class="column2-3-Report">
-				<span class="aui-field aui-field-select aui-field-menu"> 
-					<span class="aui-field-content"> 
-						<label for="to" class="aui-field-label"><fmt:message key="label.to"/>
-							<span class="taglib-icon-help">
-								<img tabindex="0" src="${themeDisplay.pathThemeImages}/portlet/help.png" onmouseover="Liferay.Portal.ToolTip.show(this);" onfocus="Liferay.Portal.ToolTip.show(this);" onblur="Liferay.Portal.ToolTip.hide();" alt="">
-								<span id="toAt" class="aui-helper-hidden-accessible tooltip-text"><fmt:message key="help.to"/></span>
-							</span>
-						</label>
-						<span class="aui-field-element "> 
-							<liferay-ui:input-date  formName="to" dayParam="toDay" dayValue="<%= toCalendar.get(Calendar.DATE) %>" disabled="<%=false%>" firstDayOfWeek="<%= cal.getFirstDayOfWeek() - 1 %>"
-						    	monthParam="toMonth" monthValue="<%= toCalendar.get(Calendar.MONTH) %>" yearParam="toYear" yearValue="<%= toCalendar.get(Calendar.YEAR) %>"
-						    	yearRangeStart="<%= cal.get(Calendar.YEAR) - 15 %>" yearRangeEnd="<%= cal.get(Calendar.YEAR) %>" />
-						</span>
-						
-						<script type="text/javascript">
-							jQuery('#<portlet:namespace />today').hide();
-							jQuery('#<portlet:namespace />tomonth').hide();
-							jQuery('#<portlet:namespace />toyear').hide();
-							/* jQuery('.aui-datepicker-button-wrapper').hide(); */
-						</script>
-						
-					</span>
-				</span>
-			</div>
-			<div class="column3-3-Report">
-				<aui:button type="button" name="listRefunds" onClick="createGraphicAmount();" value="label.search" />
+		<div class="section">
+			<div class="row">
+				<div class="column1-3-Report">
+					<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace />fromDateAmountPicker">
+						<aui:input onkeypress="return false;" label="label.from" helpMessage="help.from" showRequiredLabel="false" size="10" type="text" required="true" name="fromDateAmount">
+							 <aui:validator name="date" />
+						</aui:input>
+					</div>
+				</div>
+				<div class="column2-3-Report">
+					<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace  />toDateAmountPicker">
+						<aui:input onkeypress="return false;" label="label.to" helpMessage="help.to" showRequiredLabel="false" size="10" type="text" required="true" name="toDateAmount">
+							 <aui:validator name="date" />
+						</aui:input>
+					</div>
+				</div>
+				<div class="column3-3-Report">
+					<aui:button type="button" name="listRefunds" onClick="createGraphicAmount();" value="label.search" />
+				</div>
 			</div>
 		</div>
-		
 		<%-- <div class="row">
 			<div class="column1-1">
 				 <liferay-ui:calendar year="2013" month="1" headerPattern="dd/MM/yyyy" day="3"/>  

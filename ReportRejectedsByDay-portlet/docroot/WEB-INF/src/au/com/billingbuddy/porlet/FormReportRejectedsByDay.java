@@ -42,10 +42,6 @@ public class FormReportRejectedsByDay extends MVCPortlet {
 			session.removeAttribute("transactionVORejected");
 			TransactionVO transactionVO = new TransactionVO();
 			StringWriter report = reportFacade.searchRejectedByDay(transactionVO);
-			
-			System.out.println("transactionVO.getInitialDateReport(): "+ transactionVO.getInitialDateReport());
-			System.out.println("transactionVO.getFinalDateReport(): " + transactionVO.getFinalDateReport());
-			
 			session.setAttribute("reportRejected", report.toString());
 			session.setAttribute("transactionVORejected", transactionVO);
 		} catch (ReportFacadeException e) {
@@ -78,8 +74,8 @@ public class FormReportRejectedsByDay extends MVCPortlet {
 				date = Utilities.getDateFormat(6).parse(resourceRequest.getParameter("toDateRejectec"));
 				transactionVO.setFinalDateReport(Utilities.getDateFormat(2).format(date));
 				
-				System.out.println("transactionVO.getInitialDateReport(): " + transactionVO.getInitialDateReport());
-				System.out.println("transactionVO.getFinalDateReport(): " + transactionVO.getFinalDateReport());
+//				System.out.println("transactionVO.getInitialDateReport(): " + transactionVO.getInitialDateReport());
+//				System.out.println("transactionVO.getFinalDateReport(): " + transactionVO.getFinalDateReport());
 				
 //				date = Utilities.getDateFormat(5).parse(resourceRequest.getParameter("fromDay") + "-"+(Integer.parseInt(resourceRequest.getParameter("fromMonth")) + 1)+"-"+resourceRequest.getParameter("fromYear"));
 //				transactionVO.setInitialDateReport(Utilities.getDateFormat(2).format(date));

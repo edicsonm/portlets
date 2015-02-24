@@ -20,12 +20,6 @@
 <%@ page import="com.liferay.portal.theme.ThemeDisplay" %>
 <%@ page import="com.liferay.portal.kernel.util.WebKeys" %>
 <%@taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
-
-
-
-<%@ taglib prefix="aui" uri="http://liferay.com/tld/aui" %>
-
-
 <style>
 	circle {
 		stroke: #ffffff;
@@ -87,8 +81,7 @@
 	          alert("errorThrown..." + errorThrown);
 	    }
 	  });
-	};
-	
+	};	
 </script>
 <aui:script>
     
@@ -108,31 +101,27 @@
 
 <aui:form method="post">
 	<div class="table">
-		<div class="row">
-			<div class="column1-3-Report">
-				<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace />fromDateRejectecPicker">
-					<aui:input onkeypress="return false;" label="label.from" helpMessage="help.from" showRequiredLabel="false" size="10" type="text" required="true" name="fromDateRejectec">
-						 <aui:validator name="date" />
-					</aui:input>
+		<div class="section">
+			<div class="row">
+				<div class="column1-3-Report">
+					<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace />fromDateRejectecPicker">
+						<aui:input onkeypress="return false;" label="label.from" helpMessage="help.from" showRequiredLabel="false" size="10" type="text" required="true" name="fromDateRejectec">
+							 <aui:validator name="date" />
+						</aui:input>
+					</div>
 				</div>
-			</div>
-			<div class="column2-3-Report">
-				<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace  />toDateRejectecPicker">
-					<aui:input onkeypress="return false;" label="label.to" helpMessage="help.to" showRequiredLabel="false" size="10" type="text" required="true" name="toDateRejectec">
-						 <aui:validator name="date" />
-					</aui:input>
+				<div class="column2-3-Report">
+					<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace  />toDateRejectecPicker">
+						<aui:input onkeypress="return false;" label="label.to" helpMessage="help.to" showRequiredLabel="false" size="10" type="text" required="true" name="toDateRejectec">
+							 <aui:validator name="date" />
+						</aui:input>
+					</div>
 				</div>
-			</div>
-			<div class="column3-3-Report">
-				<aui:button type="button" name="listRefunds" onClick="createGraphicRejected();" value="label.search" />
+				<div class="column3-3-Report">
+					<aui:button type="button" name="listRefunds" onClick="createGraphicRejected();" value="label.search" />
+				</div>
 			</div>
 		</div>
-		<%-- <div class="row">
-			<div class="column1-1">
-				 <liferay-ui:calendar year="2013" month="1" headerPattern="dd/MM/yyyy" day="3"/>  
-			</div>
-		</div> --%>
-		
 		<div class="row">
 			<div id="reportRejected">
 			<%out.print(session.getAttribute("reportRejected"));%>
