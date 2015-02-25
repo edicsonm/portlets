@@ -25,15 +25,15 @@
 	ArrayList<CountryVO> listCountries = (ArrayList<CountryVO>)session.getAttribute("listCountries");
 %>
 
-<portlet:actionURL name="editCountryRestriction" var="submitForm">
-	<portlet:param name="jspPage" value="/jsp/view.jsp" />
+<portlet:actionURL name="editCountryRestriction" var="submitFormEditCountryRestriction">
+	<portlet:param name="mvcPath" value="/jsp/view.jsp" />
 </portlet:actionURL>
 
 <portlet:renderURL var="goBack">
-	<portlet:param name="jspPage" value="/jsp/view.jsp" />
+	<portlet:param name="mvcPath" value="/jsp/view.jsp" />
 </portlet:renderURL>
 
-<aui:form  action="<%= submitForm %>" method="post">
+<aui:form  action="<%= submitFormEditCountryRestriction %>" method="post">
 	<div class="table">
 		<div class="section">
 			<div class="row">

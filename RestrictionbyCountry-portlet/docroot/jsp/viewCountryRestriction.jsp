@@ -20,20 +20,21 @@
 <fmt:setBundle basename="Language"/>
 <liferay-ui:error key="ProcessorMDTR.saveCountryRestriction.CountryRestrictionDAOException" message="error.ProcessorMDTR.saveCountryRestriction.CountryRestrictionDAOException" />
 <% 
+	System.out.print("Ejecuta pa pagina viewCountryRestriction.jsp");	
 	ArrayList<CountryRestrictionVO> resultsListSubscriptions = (ArrayList<CountryRestrictionVO>)session.getAttribute("results");
 	CountryRestrictionVO countryRestrictionVO = (CountryRestrictionVO)resultsListSubscriptions.get(Integer.parseInt(ParamUtil.getString(request, "indice")));
 	request.setAttribute("countryRestrictionVO", countryRestrictionVO);
 %>
 
-<portlet:actionURL name="editCountryRestriction" var="submitForm">
-	<portlet:param name="jspPage" value="/jsp/view.jsp" />
+<portlet:actionURL name="editCountryRestriction" var="submitFormEditCountryRestriction">
+	<portlet:param name="mvcPath" value="/jsp/view.jsp" />
 </portlet:actionURL>
 
-<portlet:renderURL var="goBack">
-	<portlet:param name="jspPage" value="/jsp/view.jsp" />
+<portlet:renderURL var="goBackEditCountryRestriction">
+	<portlet:param name="mvcPath" value="/jsp/view.jsp" />
 </portlet:renderURL>
 
-<aui:form  action="<%= submitForm %>" method="post">
+<aui:form  action="<%= submitFormEditCountryRestriction %>" method="post">
 	<div class="table">
 		<div class="section">
 			<div class="row">
@@ -77,7 +78,7 @@
 			<div class="row">
 				<div class="column1-2">
 						<span class="goBack" >
-							<a href="<%= goBack %>"><fmt:message key="label.goBack"/></a>
+							<a href="<%= goBackEditCountryRestriction %>"><fmt:message key="label.goBack"/></a>
 						</span>
 					</div>
 				<div class="column2-2">

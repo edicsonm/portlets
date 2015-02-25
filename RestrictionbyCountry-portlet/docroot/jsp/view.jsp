@@ -55,13 +55,14 @@
 	<portlet:param name="jspPage" value="/jsp/newSubscription.jsp" />
 </portlet:renderURL> --%>
 
-<portlet:actionURL var="listCountries" name="listCountries"/>
+<portlet:actionURL var="listCountriesCountryRestriction" name="listCountriesCountryRestriction"/>
 
-<liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURL" />
+<liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLCountryRestriction" />
+
 <aui:form method="post">
 	<div class="table">
 		<div class="row">
-			<liferay-ui:search-container emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURL%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
+			<liferay-ui:search-container emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURLCountryRestriction%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
 				<liferay-ui:search-container-results>
 					<%
 						listCountryRestrictions = Methods.orderCountryRestriction(listCountryRestrictions,orderByCol,orderByType);
@@ -74,22 +75,22 @@
 				</liferay-ui:search-container-results>
 				<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.CountryRestrictionVO" rowVar="posi" indexVar="indice" keyProperty="id" modelVar="countryRestrictionVO">
 					
-					<liferay-portlet:renderURL varImpl="rowURL">
+					<liferay-portlet:renderURL varImpl="rowURLCountryRestriction">
 							<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
-							<portlet:param name="jspPage" value="/jsp/viewCountryRestriction.jsp" />
+							<portlet:param name="mvcPath" value="/jsp/viewCountryRestriction.jsp" />
 					</liferay-portlet:renderURL>
 					
-					<liferay-ui:search-container-column-text name="label.country" property="countryVO.name" value="countryVO.name" orderable="true" orderableProperty="countryVO.name" href="<%= rowURL %>"/>
+					<liferay-ui:search-container-column-text name="label.country" property="countryVO.name" value="countryVO.name" orderable="true" orderableProperty="countryVO.name" href="<%= rowURLCountryRestriction %>"/>
 					<liferay-ui:search-container-column-text name="label.value" property="value" value="value" orderable="false" orderableProperty="value"/>
 					<liferay-ui:search-container-column-text name="label.concept" property="concept" value="concept" orderable="false" orderableProperty="concept"/>
 					<liferay-ui:search-container-column-text name="Accion">
 						<liferay-ui:icon-menu>
 							
-							<portlet:actionURL var="editURL" name="listCountriesEditCountryRestriction">
+							<portlet:actionURL var="editURLCountryRestriction" name="listCountriesEditCountryRestriction">
 								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
 								<portlet:param name="mvcPath" value="/jsp/editCountryRestriction.jsp" />
 							</portlet:actionURL>
-							<liferay-ui:icon image="edit" message="label.edit" url="<%=editURL.toString()%>" />
+							<liferay-ui:icon image="edit" message="label.edit" url="<%=editURLCountryRestriction.toString()%>" />
 							
 							<%-- <liferay-portlet:renderURL varImpl="editURL">
 								<portlet:param name="mvcPath" value="/jsp/editSubscription.jsp" />
@@ -97,10 +98,10 @@
 							</liferay-portlet:renderURL>
 							<liferay-ui:icon image="edit" message="label.edit" url="<%=editURL.toString()%>" /> --%>
 							
-							<portlet:actionURL var="deleteURL" name="deleteCountryRestriction">
+							<portlet:actionURL var="deleteURLCountryRestriction" name="deleteCountryRestriction">
 								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
 							</portlet:actionURL>
-							<liferay-ui:icon-delete message="label.delete" url="<%=deleteURL.toString()%>" />
+							<liferay-ui:icon-delete message="label.delete" url="<%=deleteURLCountryRestriction.toString()%>" />
 							 
 						</liferay-ui:icon-menu>
 					</liferay-ui:search-container-column-text>
@@ -113,7 +114,7 @@
 		<div class="row">
 			<div class="column1-2">
 				<span class="newSubscription" >
-					<a href="<%= listCountries %>"><fmt:message key="label.newCountryRestriction"/></a>
+					<a href="<%= listCountriesCountryRestriction %>"><fmt:message key="label.newCountryRestriction"/></a>
 				</span>
 			</div>
 			<div class="column2-2">

@@ -97,7 +97,7 @@ public class FormCountryRestriction extends MVCPortlet {
 		}
 	}
 	
-	public void listCountries(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+	public void listCountriesCountryRestriction(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
 		try {
 			HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 			HttpSession session = request.getSession();
