@@ -3,6 +3,7 @@ package au.com.billingbuddy.porlet;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Iterator;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -36,25 +37,43 @@ public class FormManageRestritionsByCountry extends MVCPortlet {
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
 		HttpSession session = request.getSession();
 		
-		Enumeration<String> enume = request.getParameterNames();
-		while (enume.hasMoreElements()){
-			String variable = enume.nextElement();
-	         System.out.println(variable + "-->" + request.getParameter(variable));
-	      }
+		ArrayList<CountryBlockListVO> listCountryBlockList = (ArrayList<CountryBlockListVO>)session.getAttribute("listCountryBlockList");
 		
-		try {
-			ArrayList<CountryBlockListVO> listCountryBlockList = procesorFacade.listCountryBlockList();
-			session.setAttribute("listCountryBlockList", listCountryBlockList);
-		} catch (ProcesorFacadeException e) {
-			e.printStackTrace();
-			PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
-			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
-			SessionMessages.add(renderRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
-			SessionErrors.add(renderRequest,e.getErrorCode());
-			System.out.println("e.getMessage(): " + e.getMessage());
-			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
-			System.out.println("e.getErrorCode(): " + e.getErrorCode());
-		}
+		/*if(listCountryBlockList == null){*/
+			try {
+				listCountryBlockList = procesorFacade.listCountryBlockList();
+				session.setAttribute("listCountryBlockListOriginal", listCountryBlockList);
+				session.setAttribute("listCountryBlockList", listCountryBlockList);
+			} catch (ProcesorFacadeException e) {
+				e.printStackTrace();
+				PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+				SessionMessages.add(renderRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+				SessionErrors.add(renderRequest,e.getErrorCode());
+				System.out.println("e.getMessage(): " + e.getMessage());
+				System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
+				System.out.println("e.getErrorCode(): " + e.getErrorCode());
+			}
+		/*}else{
+			
+			Enumeration<String> enume = request.getParameterNames();
+			while (enume.hasMoreElements()){
+				String variable = enume.nextElement();
+				System.out.println(variable + "-->" + request.getParameter(variable));
+			}*/
+			
+			/*int delta = Integer.parseInt(request.getParameter("delta"));
+			int cur = Integer.parseInt(request.getParameter("cur"));
+			for (int i = (delta*(cur-1)); i <= ((delta*cur)-1); i++) {
+				CountryBlockListVO countryBlockListVO = (CountryBlockListVO)listCountryBlockList.get(i);
+				String transaction = request.getParameter("transaction_"+countryBlockListVO.getCountryVO().getNumeric());
+				String merchantServerLocation = request.getParameter("merchantServerLocation_"+countryBlockListVO.getCountryVO().getNumeric());
+				System.out.println("position: " + i + ":" +transaction + ":" + merchantServerLocation);
+				countryBlockListVO.setTransaction(transaction);
+				countryBlockListVO.setMerchantServerLocation(merchantServerLocation);
+				listCountryBlockList.set(i, countryBlockListVO);
+			}*/
+		/*}*/
 		super.doView(renderRequest, renderResponse);
 	}
 	
@@ -63,29 +82,66 @@ public class FormManageRestritionsByCountry extends MVCPortlet {
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 		HttpSession session = request.getSession();
 		ArrayList<CountryBlockListVO> listCountryBlockList = (ArrayList<CountryBlockListVO>)session.getAttribute("listCountryBlockList");
-		
-		
-		Enumeration<String> enume = request.getParameterNames();
+		try {
+			/*int delta = Integer.parseInt(request.getParameter("delta"));
+			int cur = Integer.parseInt(request.getParameter("cur"));
+			for (int i = (delta*(cur-1)); i <= ((delta*cur)-1); i++) {*/
+			
+			for (int i = 0; i < listCountryBlockList.size(); i++) {
+				
+				CountryBlockListVO countryBlockListVO = (CountryBlockListVO)listCountryBlockList.get(i);
+				/*CountryBlockListVO countryBlockListVO = (CountryBlockListVO) iterator.next();*/
+				String transaction = request.getParameter("transaction_"+countryBlockListVO.getCountryVO().getNumeric());
+				String merchantServerLocation = request.getParameter("merchantServerLocation_"+countryBlockListVO.getCountryVO().getNumeric());
+				String merchantRegistrationLocation = request.getParameter("merchantRegistrationLocation_"+countryBlockListVO.getCountryVO().getNumeric());
+				String creditCardIssueLocation = request.getParameter("creditCardIssueLocation_"+countryBlockListVO.getCountryVO().getNumeric());
+				String creditCardHolderLocation = request.getParameter("creditCardHolderLocation_"+countryBlockListVO.getCountryVO().getNumeric());
+				
+				/*System.out.println("position: " + i + ":" +transaction + ":" + merchantServerLocation);*/
+				countryBlockListVO.setTransaction(transaction!= null?"1":"0");
+				countryBlockListVO.setMerchantServerLocation(merchantServerLocation!= null?"1":"0");
+				countryBlockListVO.setMerchantRegistrationLocation(merchantRegistrationLocation!= null?"1":"0");
+				countryBlockListVO.setCreditCardIssueLocation(creditCardIssueLocation!= null?"1":"0");
+				countryBlockListVO.setCreditCardHolderLocation(creditCardHolderLocation!= null?"1":"0");
+				listCountryBlockList.set(i, countryBlockListVO);
+			}
+			
+			procesorFacade.updateCountryBlockList((ArrayList<CountryBlockListVO>)session.getAttribute("listCountryBlockListOriginal"),listCountryBlockList);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		/*Enumeration<String> enume = request.getParameterNames();
 		while (enume.hasMoreElements()){
 			String variable = enume.nextElement();
 			System.out.println(variable + "<-->" + request.getParameter(variable));
-		}
+		}*/
 		
-		String idCountries = (String)request.getParameter("containerCountriesPrimaryKeys");
+		/*String idCountries = (String)request.getParameter("containerCountriesPrimaryKeys");
 		for (String idCountry: idCountries.split(",")){
-			String attribute = request.getParameter("transaction_"+idCountry);
-			if(!BBUtils.isNullOrEmpty(attribute)){
-				System.out.println("attribute: " + attribute);
-				int position = listCountryBlockList.indexOf(new CountryBlockListVO(attribute));
+			String transaction = request.getParameter("transaction_"+idCountry);
+			String merchantServerLocation = request.getParameter("merchantServerLocation_"+idCountry);
+			int position = listCountryBlockList.indexOf(new CountryBlockListVO(idCountry));
+			System.out.println("position: " + position + ":" +transaction + ":" + merchantServerLocation);
+			CountryBlockListVO countryBlockListVO = (CountryBlockListVO)listCountryBlockList.get(position);
+			countryBlockListVO.setTransaction(transaction);
+			countryBlockListVO.setMerchantServerLocation(merchantServerLocation);
+			listCountryBlockList.set(position, countryBlockListVO);
+			if(!BBUtils.isNullOrEmpty(transaction)){
+				System.out.println("attribute: " + transaction);
+				int position = listCountryBlockList.indexOf(new CountryBlockListVO(transaction));
 				if(position != -1){
 					System.out.println("position: " + position);
 					CountryBlockListVO countryBlockListVO = (CountryBlockListVO)listCountryBlockList.get(position);
+					countryBlockListVO.setTransaction("0");
 					System.out.println("Valor anterior:" + countryBlockListVO.getCountryVO().getName());
 				}
+			}else{
+				
 			}
 //			System.out.println("idCountry: " + idCountry + "-->" +listCountryBlockList.indexOf(new CountryBlockListVO(idCountry)));
-		}
-		
+		}*/
+		session.setAttribute("listCountryBlockList", listCountryBlockList);
 	}
 	
 //	public void searchTransactionsByDay(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException{

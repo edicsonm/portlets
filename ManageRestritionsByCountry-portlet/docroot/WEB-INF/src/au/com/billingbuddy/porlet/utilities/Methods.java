@@ -10,12 +10,12 @@ import au.com.billingbuddy.vo.objects.CountryBlockListVO;
 public class Methods {
 	
 	public static void orderCountryBlockList(String campo, ArrayList<CountryBlockListVO> list) {
-		BeanComparator<CountryBlockListVO> comparator= new BeanComparator<CountryBlockListVO>(campo);
+		BeanComparator comparator= new BeanComparator(campo);
 		Collections.sort(list, comparator);
 	}
 	
 	public static ArrayList<CountryBlockListVO> orderCountryBlockList(ArrayList<CountryBlockListVO> list, String orderByCol, String orderByType ) {
-		BeanComparator<CountryBlockListVO> comparator= new BeanComparator<CountryBlockListVO>(orderByCol);
+		BeanComparator comparator= new BeanComparator(orderByCol);
 		if(list != null){
 			if(orderByType.equals("asc")){
 				Collections.sort(list, comparator);

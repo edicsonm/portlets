@@ -48,7 +48,7 @@
 	if(listCountryBlockList == null) listCountryBlockList = new ArrayList<CountryBlockListVO>();
 %>
 
-<liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLCountryBlockList" />
+<liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLCountryBlockList"/>
 
 <portlet:actionURL name="savePlan" var="submitFormManageRestrictionsByContry">
 	<portlet:param name="mvcPath" value="/jsp/view.jsp" />
@@ -57,75 +57,53 @@
 <aui:form action="<%= submitFormManageRestrictionsByContry %>" method="post">
 	<div class="table">
 		<div class="row">
-			<liferay-ui:search-container emptyResultsMessage="label.empty" delta="30"  id="containerCountries"  iteratorURL="<%=renderURLCountryBlockList%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
+			<div class="column1-2">
+				<span class="newSubscription" >
+					<aui:button type="submit" name="save" value="label.save" />
+				</span>
+			</div>
+			<div class="column2-2">
+			</div>
+		</div> 
+		<div class="row">
+			<liferay-ui:search-container  emptyResultsMessage="label.empty" iteratorURL="<%=renderURLCountryBlockList%>" id="containerCountries" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
 				<liferay-ui:search-container-results>
 					<%
 						listCountryBlockList = Methods.orderCountryBlockList(listCountryBlockList,orderByCol,orderByType);
 						results = ListUtil.subList(listCountryBlockList, searchContainer.getStart(), searchContainer.getEnd());
 						total = listCountryBlockList.size();
-						pageContext.setAttribute("results", results);
+						pageContext.setAttribute("results", listCountryBlockList);
 						pageContext.setAttribute("total", total);
 						session.setAttribute("results", results);
 				    %>
 				</liferay-ui:search-container-results>
 				<liferay-ui:search-container-row  className="au.com.billingbuddy.vo.objects.CountryBlockListVO"  rowVar="posi" indexVar="indice" keyProperty="countryVO.numeric" modelVar="countryBlockListVO">
-					<%-- <liferay-portlet:renderURL varImpl="rowURLCountryRestriction">
-							<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
-							<portlet:param name="mvcPath" value="/jsp/viewCountryRestriction.jsp" />
-					</liferay-portlet:renderURL> --%>
-					<%-- <liferay-ui:search-container-column-text name="label.country" property="countryVO.name" value="countryVO.name" orderable="true" orderableProperty="countryVO.name" href="<%= rowURLCountryRestriction %>"/> --%>
 					<liferay-ui:search-container-column-text name="label.country" property="countryVO.name" value="countryVO.name" orderable="true" orderableProperty="countryVO.name"/>
-					<%-- <liferay-ui:search-container-column-text name="label.transaction" property="transaction" value="transaction" orderable="false" orderableProperty="value"/>
-					<liferay-ui:search-container-column-text name="label.merchantServerLocation" property="merchantServerLocation" value="merchantServerLocation" orderable="false" orderableProperty="merchantServerLocation"/>
-					 --%>
 					
 					<liferay-ui:search-container-column-text name="label.transaction">
-						<input type="checkbox" name="transaction_<%=countryBlockListVO.getCountryVO().getNumeric()%>" id="transaction_<%=countryBlockListVO.getCountryVO().getNumeric()%>" value="<%=countryBlockListVO.getCountryVO().getNumeric()%>">
+						<input type="checkbox" <%= countryBlockListVO.getTransaction().equalsIgnoreCase("1")?"checked":""%> name="transaction_<%=countryBlockListVO.getCountryVO().getNumeric()%>" id="transaction_<%=countryBlockListVO.getCountryVO().getNumeric()%>" value="<%=countryBlockListVO.getCountryVO().getNumeric()%>">
 					</liferay-ui:search-container-column-text>
-					
 					<liferay-ui:search-container-column-text name="label.merchantServerLocation">
-						<input type="checkbox" name="merchantServerLocation_<%=countryBlockListVO.getCountryVO().getNumeric()%>" id="merchantServerLocation_<%=countryBlockListVO.getCountryVO().getNumeric()%>" value="<%=countryBlockListVO.getCountryVO().getNumeric()%>">
+						<input type="checkbox" <%= countryBlockListVO.getMerchantServerLocation().equalsIgnoreCase("1")?"checked":""%> name="merchantServerLocation_<%=countryBlockListVO.getCountryVO().getNumeric()%>" id="merchantServerLocation_<%=countryBlockListVO.getCountryVO().getNumeric()%>" value="<%=countryBlockListVO.getCountryVO().getNumeric()%>">
 					</liferay-ui:search-container-column-text>
 					
+					<liferay-ui:search-container-column-text name="label.merchantRegistrationLocation">
+						<input type="checkbox" <%= countryBlockListVO.getMerchantRegistrationLocation().equalsIgnoreCase("1")?"checked":""%> name="merchantRegistrationLocation_<%=countryBlockListVO.getCountryVO().getNumeric()%>" id="merchantRegistrationLocation_<%=countryBlockListVO.getCountryVO().getNumeric()%>" value="<%=countryBlockListVO.getCountryVO().getNumeric()%>">
+					</liferay-ui:search-container-column-text>
 					
-					<%-- <liferay-ui:search-container-column-text name="Accion">
-						<liferay-ui:icon-menu>
-							
-							<portlet:actionURL var="editURLCountryRestriction" name="listCountriesEditCountryRestriction">
-								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
-								<portlet:param name="mvcPath" value="/jsp/editCountryRestriction.jsp" />
-							</portlet:actionURL>
-							<liferay-ui:icon image="edit" message="label.edit" url="<%=editURLCountryRestriction.toString()%>" />
-							
-							<liferay-portlet:renderURL varImpl="editURL">
-								<portlet:param name="mvcPath" value="/jsp/editSubscription.jsp" />
-								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
-							</liferay-portlet:renderURL>
-							<liferay-ui:icon image="edit" message="label.edit" url="<%=editURL.toString()%>" />
-							
-							<portlet:actionURL var="deleteURLCountryRestriction" name="deleteCountryRestriction">
-								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
-							</portlet:actionURL>
-							<liferay-ui:icon-delete message="label.delete" url="<%=deleteURLCountryRestriction.toString()%>" />
-							 
-						</liferay-ui:icon-menu>
-					</liferay-ui:search-container-column-text> --%>
+					<liferay-ui:search-container-column-text name="label.creditCardIssueLocation">
+						<input type="checkbox" <%= countryBlockListVO.getCreditCardIssueLocation().equalsIgnoreCase("1")?"checked":""%> name="creditCardIssueLocation_<%=countryBlockListVO.getCountryVO().getNumeric()%>" id="creditCardIssueLocation_<%=countryBlockListVO.getCountryVO().getNumeric()%>" value="<%=countryBlockListVO.getCountryVO().getNumeric()%>">
+					</liferay-ui:search-container-column-text>
+					
+					<liferay-ui:search-container-column-text name="label.creditCardHolderLocation">
+						<input type="checkbox" <%= countryBlockListVO.getCreditCardHolderLocation().equalsIgnoreCase("1")?"checked":""%> name="creditCardHolderLocation_<%=countryBlockListVO.getCountryVO().getNumeric()%>" id="creditCardHolderLocation_<%=countryBlockListVO.getCountryVO().getNumeric()%>" value="<%=countryBlockListVO.getCountryVO().getNumeric()%>">
+					</liferay-ui:search-container-column-text>
 					
 				</liferay-ui:search-container-row>
-				<liferay-ui:search-iterator />
+				<%-- <liferay-ui:search-iterator /> --%>
+				<liferay-ui:search-iterator searchContainer="<%= searchContainer %>"  paginate="<%= false %>" />
 			</liferay-ui:search-container>
 		</div>
-		
-		<%-- <div class="row">
-			<div class="column1-2">
-				<span class="newSubscription" >
-					<a href="<%= listCountriesCountryRestriction %>"><fmt:message key="label.newCountryRestriction"/></a>
-				</span>
-			</div>
-			<div class="column2-2">
-			</div>
-		</div> --%>
-		
 		<div class="row">
 			<div class="column1-2">
 				<span class="newSubscription" >
