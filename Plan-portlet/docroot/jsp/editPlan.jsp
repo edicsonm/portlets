@@ -15,6 +15,7 @@
 %>
 <%@ include file="init.jsp" %>
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
+
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>

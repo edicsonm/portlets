@@ -40,4 +40,6 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="au.com.billingbuddy.vo.objects.MerchantVO" %>
 <%@ page import="au.com.billingbuddy.vo.objects.CountryVO" %>
+<%@ page import="au.com.billingbuddy.vo.objects.BusinessTypeVO" %>
+<%@ page import="au.com.billingbuddy.vo.objects.IndustryVO" %>
 

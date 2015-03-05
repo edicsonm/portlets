@@ -49,7 +49,7 @@
 	if(listMerchants == null) listMerchants = new ArrayList<MerchantVO>();
 %>
 
-<portlet:actionURL var="listCountries" name="listCountries"/>
+<portlet:actionURL var="newMerchant" name="newMerchant"/>
 
 <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURL" />
 <aui:form method="post">
@@ -74,7 +74,7 @@
 					</liferay-portlet:renderURL>
 					
 					<liferay-ui:search-container-column-text name="label.merchant" property="name" value="name" orderable="true" orderableProperty="name" href="<%= rowURL %>"/>
-					<liferay-ui:search-container-column-text name="label.country" property="countryVO.name" value="countryVO.name" orderable="false" orderableProperty="countryVO.name"/>
+					<liferay-ui:search-container-column-text name="label.countryBusinessInformation" property="countryVOBusiness.name" value="countryVOBusiness.name" orderable="false" orderableProperty="countryVOBusiness.name"/>
 					<%-- <liferay-ui:search-container-column-text name="label.concept" property="concept" value="concept" orderable="false" orderableProperty="concept"/> --%>
 					<liferay-ui:search-container-column-text name="Accion">
 						<liferay-ui:icon-menu>
@@ -107,7 +107,7 @@
 		<div class="row">
 			<div class="column1-2">
 				<span class="newMerchant" >
-					<a href="<%= listCountries %>"><fmt:message key="label.newMerchant"/></a>
+					<a href="<%= newMerchant %>"><fmt:message key="label.newMerchant"/></a>
 				</span>
 			</div>
 			<div class="column2-2">

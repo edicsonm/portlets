@@ -11,12 +11,12 @@ import au.com.billingbuddy.vo.objects.RefundVO;
 public class Methods {
 	
 	public static void orderTransactions(String campo, ArrayList<ChargeVO> lista) {
-		BeanComparator<ChargeVO> comparator= new BeanComparator<ChargeVO>(campo);
+		BeanComparator comparator= new BeanComparator(campo);
 		Collections.sort(lista, comparator);
 	}
 	
 	public static ArrayList<ChargeVO> orderCharges(ArrayList<ChargeVO> lista, String orderByCol, String orderByType ) {
-		BeanComparator<ChargeVO> comparator= new BeanComparator<ChargeVO>(orderByCol);
+		BeanComparator comparator= new BeanComparator(orderByCol);
 		if(lista != null){
 			if(orderByType.equals("asc")){
 				Collections.sort(lista, comparator);
@@ -29,12 +29,12 @@ public class Methods {
 	}
 	
 	public static void orderRefunds(String campo, ArrayList<RefundVO> lista) {
-		BeanComparator<RefundVO> comparator= new BeanComparator<RefundVO>(campo);
+		BeanComparator comparator= new BeanComparator(campo);
 		Collections.sort(lista, comparator);
 	}
 	
 	public static ArrayList<RefundVO> orderRefunds(ArrayList<RefundVO> listaRefunds, String orderByCol, String orderByType ) {
-		BeanComparator<RefundVO> comparator= new BeanComparator<RefundVO>(orderByCol);
+		BeanComparator comparator= new BeanComparator(orderByCol);
 		if(listaRefunds != null){
 			if(orderByType.equals("asc")){
 				Collections.sort(listaRefunds, comparator);

@@ -10,12 +10,12 @@ import au.com.billingbuddy.vo.objects.PlanVO;
 public class Methods {
 	
 	public static void orderTransactions(String campo, ArrayList<PlanVO> lista) {
-		BeanComparator<PlanVO> comparator= new BeanComparator<PlanVO>(campo);
+		BeanComparator comparator= new BeanComparator(campo);
 		Collections.sort(lista, comparator);
 	}
 	
 	public static ArrayList<PlanVO> orderPlans(ArrayList<PlanVO> lista, String orderByCol, String orderByType ) {
-		BeanComparator<PlanVO> comparator= new BeanComparator<PlanVO>(orderByCol);
+		BeanComparator comparator= new BeanComparator(orderByCol);
 		if(lista != null){
 			if(orderByType.equals("asc")){
 				Collections.sort(lista, comparator);
