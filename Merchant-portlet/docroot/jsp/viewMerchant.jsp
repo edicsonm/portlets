@@ -34,7 +34,7 @@
 			<div class="row">
 				<div class="row">
 					<div class="column1-1">
-						<label class="aui-field-label sub-title"><fmt:message key="label.informationMerchant"/></label>
+						<label class="aui-field-label sub-title"><fmt:message key="label.informationBusiness"/></label>
 					</div>
 				</div>
 			</div>
@@ -47,10 +47,194 @@
 					<c:out value="${merchantVO.name}"/>
 				</div>
 				<div class="column3-4">
-					<label class="aui-field-label"><fmt:message key="label.country"/></label>
+					<label class="aui-field-label"><fmt:message key="label.tradingName"/></label>
 				</div>
 				<div class="column4-4">
-					<c:out value="${merchantVO.countryVO.name}"/>
+					<c:out value="${merchantVO.tradingName}"/>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="column1-4">
+					<label class="aui-field-label"><fmt:message key="label.legalPhysicalAddress"/></label>
+				</div>
+				<div class="column2-4">
+					<c:out value="${merchantVO.legalPhysicalAddress}"/>
+				</div>
+				<div class="column3-4">
+					<label class="aui-field-label"><fmt:message key="label.statementAddress"/></label>
+				</div>
+				<div class="column4-4">
+					<c:out value="${merchantVO.statementAddress}"/>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="column1-4">
+					<label class="aui-field-label"><fmt:message key="label.taxFileNumber"/></label>
+				</div>
+				<div class="column2-4">
+					<c:out value="${merchantVO.legalPhysicalAddress}"/>
+				</div>
+				<div class="column3-4">
+					<label class="aui-field-label"></label>
+				</div>
+				<div class="column4-4">
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="column1-4">
+					<label class="aui-field-label"><fmt:message key="label.cityBusinessInformation"/></label>
+				</div>
+				<div class="column2-4">
+					<c:out value="${merchantVO.cityBusinessInformation}"/>
+				</div>
+				<div class="column3-4">
+					<label class="aui-field-label"><fmt:message key="label.postCodeBusinessInformation"/></label>
+				</div>
+				<div class="column4-4">
+					<c:out value="${merchantVO.postCodeBusinessInformation}"/>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="column1-4">
+					<label class="aui-field-label"><fmt:message key="label.countryBusinessInformation"/></label>
+				</div>
+				<div class="column2-4">
+					<c:out value="${merchantVO.countryVOBusiness.name}"/>
+				</div>
+				<div class="column3-4">
+				</div>
+				<div class="column4-4">
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="column1-4">
+					<label class="aui-field-label"><fmt:message key="label.businessType"/></label>
+				</div>
+				<div class="column2-4">
+					<c:out value="${merchantVO.businessTypeVO.description}"/>
+				</div>
+				<div class="column3-4">
+					<label class="aui-field-label"><fmt:message key="label.industry"/></label>
+				</div>
+				<div class="column4-4">
+					<c:out value="${merchantVO.industryVO.description}"/>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="column1-4">
+					<label class="aui-field-label"><fmt:message key="label.issuedBusinessID"/></label>
+				</div>
+				<div class="column2-4">
+					<c:out value="${merchantVO.issuedBusinessID}"/>
+				</div>
+				<div class="column3-4">
+					<label class="aui-field-label"><fmt:message key="label.issuedPersonalID"/></label>
+				</div>
+				<div class="column4-4">
+					<c:out value="${merchantVO.issuedPersonalID}"/>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="column1-4">
+					<label class="aui-field-label"><fmt:message key="label.typeAccountApplication"/></label>
+				</div>
+				<div class="column2-4">
+					<c:out value="${merchantVO.typeAccountApplication}"/>
+				</div>
+				<div class="column3-4">
+					<label class="aui-field-label"><fmt:message key="label.estimatedAnnualSales"/></label>
+				</div>
+				<div class="column4-4">
+					<c:out value="${merchantVO.estimatedAnnualSales}"/>
+				</div>
+			</div>
+			
+			
+			<div class="row">
+				<div class="row">
+					<div class="column1-1">
+						<label class="aui-field-label sub-title"><fmt:message key="label.informationPersonal"/></label>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="column1-4">
+					<label class="aui-field-label"><fmt:message key="label.firstName"/></label>
+				</div>
+				<div class="column2-4">
+					<c:out value="${merchantVO.firstName}"/>
+				</div>
+				<div class="column3-4">
+					<label class="aui-field-label"><fmt:message key="label.lastName"/></label>
+				</div>
+				<div class="column4-4">
+					<c:out value="${merchantVO.lastName}"/>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="column1-4">
+					<label class="aui-field-label"><fmt:message key="label.phoneNumber"/></label>
+				</div>
+				<div class="column2-4">
+					<c:out value="${merchantVO.phoneNumber}"/>
+				</div>
+				<div class="column3-4">
+					<label class="aui-field-label"><fmt:message key="label.faxNumber"/></label>
+				</div>
+				<div class="column4-4">
+					<c:out value="${merchantVO.faxNumber}"/>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="column1-4">
+					<label class="aui-field-label"><fmt:message key="label.emailAddress"/></label>
+				</div>
+				<div class="column2-4">
+					<c:out value="${merchantVO.emailAddress}"/>
+				</div>
+				<div class="column3-4">
+					<label class="aui-field-label"><fmt:message key="label.alternateEmailAddress"/></label>
+				</div>
+				<div class="column4-4">
+					<c:out value="${merchantVO.alternateEmailAddress}"/>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="column1-4">
+					<label class="aui-field-label"><fmt:message key="label.cityPersonalInformation"/></label>
+				</div>
+				<div class="column2-4">
+					<c:out value="${merchantVO.cityPersonalInformation}"/>
+				</div>
+				<div class="column3-4">
+					<label class="aui-field-label"><fmt:message key="label.postCodePersonalInformation"/></label>
+				</div>
+				<div class="column4-4">
+					<c:out value="${merchantVO.postCodePersonalInformation}"/>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="column1-4">
+					<label class="aui-field-label"><fmt:message key="label.countryPersonalInformation"/></label>
+				</div>
+				<div class="column2-4">
+					<c:out value="${merchantVO.countryVOPersonalInformation.name}"/>
+				</div>
+				<div class="column3-4">
+				</div>
+				<div class="column4-4">
 				</div>
 			</div>
 			

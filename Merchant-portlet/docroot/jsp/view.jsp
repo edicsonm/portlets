@@ -85,16 +85,14 @@
 							</portlet:actionURL>
 							<liferay-ui:icon image="edit" message="label.edit" url="<%=editURL.toString()%>" />
 							
-							<%-- <liferay-portlet:renderURL varImpl="editURL">
-								<portlet:param name="mvcPath" value="/jsp/editMerchant.jsp" />
-								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
-							</liferay-portlet:renderURL>
-							<liferay-ui:icon image="edit" message="label.edit" url="<%=editURL.toString()%>" /> --%>
-							
-							<portlet:actionURL var="deleteURL" name="deleteMerchant">
+							<portlet:actionURL var="inactivateURLMerchant" name="inactivateMerchant">
 								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
 							</portlet:actionURL>
-							<liferay-ui:icon-delete message="label.delete" url="<%=deleteURL.toString()%>" />
+							<% if(merchantVO.getStatus().equalsIgnoreCase("0")){%>
+								<liferay-ui:icon-deactivate  label="label.inactivate" url="<%=inactivateURLMerchant.toString()%>" />
+							<%}else{ %>
+								<liferay-ui:icon image="activate" label="label.inactivate" url="<%= inactivateURLMerchant.toString() %>" />
+							<%}%>
 							 
 						</liferay-ui:icon-menu>
 					</liferay-ui:search-container-column-text>
