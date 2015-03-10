@@ -31,33 +31,17 @@
 </portlet:renderURL>
 
 <aui:form  action="<%= submitFormIndustry %>" method="post">
-	<div class="table">
-		<div class="section">
-			<div class="row">
-				<div class="row">
-					<div class="column1-1">
-						<label class="aui-field-label sub-title"><fmt:message key="label.informationIndustry"/></label>
-					</div>
-				</div>
+	<fieldset class="fieldset">
+		<legend class="fieldset-legend">
+			<span class="legend"><fmt:message key="label.informationIndustry"/> </span>
+		</legend>
+		<div class="">
+			<div class="control-group">
+				<aui:input label="label.description" helpMessage="help.description" showRequiredLabel="false" type="text" required="true" name="description" value="${industryVO.description}">
+				</aui:input>
 			</div>
-			
-			<div class="row">
-				<div class="column1-1">
-					<aui:input label="label.description" helpMessage="help.description" showRequiredLabel="false" type="text" required="true" name="description" value="${industryVO.description}">
-					</aui:input>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-2">
-						<span class="goBack" >
-							<a href="<%= goBackIndustry %>"><fmt:message key="label.goBack"/></a>
-						</span>
-					</div>
-				<div class="column2-2">
-					<aui:button type="submit" name="save" value="label.save" />
-				</div>
-			</div>
+			<a href="<%= goBackIndustry %>"><fmt:message key="label.goBack"/></a>
+			<aui:button type="submit" name="save" value="label.save" />
 		</div>
-	</div>
+	</fieldset>
 </aui:form>

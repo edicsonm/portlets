@@ -60,12 +60,11 @@
 
 <aui:form method="post">
 	<div class="table">
-		<div class="row">
 			<liferay-ui:search-container emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURLBusinessType%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
 				<liferay-ui:search-container-results>
 					<%
 					listBusinessTypes = Methods.orderBusinessType(listBusinessTypes,orderByCol,orderByType);
-						results = ListUtil.subList(listBusinessTypes, searchContainer.getStart(), searchContainer.getEnd());
+						results = new ArrayList<BusinessTypeVO>(ListUtil.subList(listBusinessTypes, searchContainer.getStart(), searchContainer.getEnd()));
 						total = listBusinessTypes.size();
 						pageContext.setAttribute("results", results);
 						pageContext.setAttribute("total", total);
@@ -103,7 +102,6 @@
 				</liferay-ui:search-container-row>
 				<liferay-ui:search-iterator />
 			</liferay-ui:search-container>
-		</div>
 		
 		<div class="row">
 			<div class="column1-2">

@@ -60,12 +60,11 @@
 
 <aui:form method="post">
 	<div class="table">
-		<div class="row">
 			<liferay-ui:search-container emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURLIndustry%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
 				<liferay-ui:search-container-results>
 					<%
 						listIndustries = Methods.orderIndustry(listIndustries,orderByCol,orderByType);
-						results = ListUtil.subList(listIndustries, searchContainer.getStart(), searchContainer.getEnd());
+						results = new ArrayList<IndustryVO>(ListUtil.subList(listIndustries, searchContainer.getStart(), searchContainer.getEnd()));
 						total = listIndustries.size();
 						pageContext.setAttribute("results", results);
 						pageContext.setAttribute("total", total);
@@ -103,9 +102,12 @@
 				</liferay-ui:search-container-row>
 				<liferay-ui:search-iterator />
 			</liferay-ui:search-container>
-		</div>
 		
-		<div class="row">
+		<span class="newElement" >
+			<a href="<%= newIndustry %>"><fmt:message key="label.newIndustry"/></a>
+		</span>
+		
+		<%-- <div class="row">
 			<div class="column1-2">
 				<span class="newElement" >
 					<a href="<%= newIndustry %>"><fmt:message key="label.newIndustry"/></a>
@@ -113,7 +115,7 @@
 			</div>
 			<div class="column2-2">
 			</div>
-		</div>
+		</div> --%>
 		
 	</div>
 </aui:form>

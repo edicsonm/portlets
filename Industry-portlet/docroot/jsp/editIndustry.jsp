@@ -14,12 +14,26 @@
  */
 %>
 <%@ include file="init.jsp" %>
+
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
 
 <liferay-ui:error key="ProcessorMDTR.updateIndustry.IndustryDAOException" message="error.ProcessorMDTR.updateIndustry.IndustryDAOException" />
+<aui:script>
+/* AUI().use('aui-form-validator', function (A) {
+    formValidator = new A.FormValidator({
+        boundingBox: '#myForm',
+        messageContainer: '<div class="alert alert-error" role="alert"></div>',
+    });
+    formValidator.printStackErrorBefore = formValidator.printStackError;
+    formValidator.printStackError = function(field, container, errors) {
+        field.placeBefore(container)
+		formValidator.printStackErrorBefore(field, container, errors);
+	};
+}); */
+</aui:script>
 <%
 	ArrayList<IndustryVO> resultsListCharge = (ArrayList<IndustryVO>)session.getAttribute("results");
 	IndustryVO industryVO = (IndustryVO)resultsListCharge.get(Integer.parseInt(ParamUtil.getString(request, "indiceIndustry")));
@@ -27,40 +41,72 @@
 	request.setAttribute("industryVO", industryVO);
 	session.setAttribute("industryVO", industryVO);
 %>
+
 <portlet:actionURL name="editIndustry" var="editURLIndustry">
-	<portlet:param name="jspPage" value="/jsp/viewIndustry.jsp" />
+<portlet:param name="jspPage" value="/jsp/viewIndustry.jsp" />
 </portlet:actionURL>
 
 <portlet:renderURL var="goBackIndustry">
-	<portlet:param name="jspPage" value="/jsp/viewIndustry.jsp" />
+<portlet:param name="jspPage" value="/jsp/viewIndustry.jsp" />
 </portlet:renderURL>
 
-<aui:form  action="<%= editURLIndustry %>" method="post">
-	<div class="table">
-		<div class="section">
-			<div class="row">
-				<div class="row">
-					<div class="column1-1">
-						<label class="aui-field-label sub-title"><fmt:message key="label.informationIndustry"/></label>
-					</div>
-				</div>
+
+<%-- <aui:form  id="myForm" action="<%= editURLIndustry %>" method="post">
+	
+	<aui:input label="label.description" required="true" helpMessage="help.description" showRequiredLabel="false" type="text" name="description" value="${businessTypeVO.description}"></aui:input>
+	
+	<input name="<portlet:namespace/>uno" class="aui-field-required" id="<portlet:namespace/>uno"  type="text">
+	
+	<aui:button type="submit" name="save" value="label.save" />
+</aui:form> --%>
+
+ 
+<%-- <form id="myForm" name="myForm" action="<%= editURLIndustry %>" method="post">
+  <fieldset class="fieldset">
+		<legend class="fieldset-legend">
+			<span class="legend"><fmt:message key="label.informationIndustry"/> </span>
+		</legend>
+		<div class="">
+			<div class="control-group">
+				<aui:input label="label.description" required="true" helpMessage="help.description" showRequiredLabel="false" type="text" name="description" value="${businessTypeVO.description}"></aui:input>
+				<label class="control-label" for="description"><fmt:message key="label.informationIndustry"/></label>
+				<input name="description" id="description" class="aui-field-required" type="text">
 			</div>
-			<div class="row">
-				<div class="column1-1">
-					<aui:input label="label.description" helpMessage="help.description" showRequiredLabel="false" type="text" required="true" name="description" value="${industryVO.description}">
-					</aui:input>
-				</div>
-			</div>
-			<div class="row">
-				<div class="column1-2">
-						<span class="goBack" >
-							<a class="btn" href="<%= goBackIndustry %>"><fmt:message key="label.goBack"/></a>
-						</span>
-					</div>
-				<div class="column2-2">
-					<aui:button type="submit" name="save" value="label.save" />
-				</div>
-			</div>
+			<a class="btn" href="<%= goBackIndustry %>"><fmt:message key="label.goBack"/></a>
+			<aui:button type="submit" name="save" value="label.save" />
 		</div>
-	</div>
+</fieldset>
+</form> --%>
+
+<aui:form id="myForm" name="myForm" action="<%= editURLIndustry %>" method="post">
+	<fieldset class="fieldset">
+		<legend class="fieldset-legend">
+			<span class="legend"><fmt:message key="label.informationIndustry"/> </span>
+		</legend>
+		<div class="">
+			<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
+			<div class="control-group">
+				<aui:input label="label.description" required="true" helpMessage="help.description" showRequiredLabel="false" type="text" name="description" value="${industryVO.description}"></aui:input>
+			</div>
+			<a class="btn" href="<%= goBackIndustry %>"><fmt:message key="label.goBack"/></a>
+			<aui:button type="submit" name="save" value="label.save" />
+		</div>
+	</fieldset>
 </aui:form>
+
+<!--   <p>
+    <label class="aui-field-label" for="name">Name:</label>
+    <input class="aui-field-required" type="text" name="name" />
+  </p>
+  <p>
+    <label class="aui-field-label" for="email">Email:</label>
+    <input class="aui-field-required aui-field-email" type="text" name="email" />
+  </p>
+  <p>
+    <label class="aui-field-label" for="age">Age:</label>
+    <input class="aui-field-required aui-field-digits" type="text" name="age" />
+  </p>
+  <p>
+    <input class="aui-button-input" type="submit" value="Submit" />
+    <input class="aui-button-input" type="reset" value="Reset" />
+  </p> -->

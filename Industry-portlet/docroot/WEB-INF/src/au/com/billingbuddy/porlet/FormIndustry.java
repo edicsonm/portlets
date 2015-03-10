@@ -90,6 +90,10 @@ public class FormIndustry extends MVCPortlet {
 		HttpSession session = request.getSession();
 		IndustryVO industryVO = (IndustryVO)session.getAttribute("industryVO");
 		industryVO.setDescription(actionRequest.getParameter("description"));
+		
+		System.out.println("description: " + actionRequest.getParameter("description"));
+		System.out.println("uno: " + actionRequest.getParameter("uno"));
+		
 		try {
 			procesorFacade.updateIndustry(industryVO);
 			if(industryVO.getStatus().equalsIgnoreCase("success")) {

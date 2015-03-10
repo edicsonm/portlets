@@ -14,7 +14,7 @@ public class Methods {
 		Collections.sort(list, comparator);
 	}
 	
-	public static ArrayList orderCertificates(ArrayList list, String orderByCol, String orderByType ) {
+	public static ArrayList<CertificateVO> orderCertificates(ArrayList<CertificateVO> list, String orderByCol, String orderByType ) {
 		BeanComparator comparator= new BeanComparator(orderByCol);
 		if(list != null){
 			if(orderByType.equals("asc")){

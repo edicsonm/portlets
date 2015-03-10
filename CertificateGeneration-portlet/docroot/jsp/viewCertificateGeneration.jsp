@@ -31,7 +31,7 @@
 	<portlet:param name="idCertificate" value="<%=certificateVO.getId()%>" />
 </portlet:resourceURL>
 
-<portlet:renderURL var="goBack">
+<portlet:renderURL var="goBackIndustryCertificate">
 	<portlet:param name="jspPage" value="/jsp/view.jsp" />
 </portlet:renderURL>
 
@@ -60,38 +60,41 @@
 </script>
 
 <aui:form method="post">
+
+<fieldset class="fieldset">
+	<legend class="fieldset-legend">
+		<span class="legend"><fmt:message key="label.informationCertificateGeneration"/> </span>
+	</legend>
+	<div class="">
+		<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
+		<div class="details">
+			<dl class="property-list">
+				<dt><fmt:message key="label.merchant"/></dt>
+				<dd><c:out value="${certificateVO.merchantId}"/></dd>
+				
+				<dt><fmt:message key="label.commonName"/></dt>
+				<dd><c:out value="${certificateVO.commonName}"/></dd>
+				
+				<dt><fmt:message key="label.creationTime"/></dt>
+				<dd><c:out value="<%=Utilities.formatDate(certificateVO.getCreationTime()) %>"/></dd>
+				
+				<!-- <dt>Fecha de nacimiento</dt>
+				<dd>1/01/70</dd>
+				<dt>Género</dt>
+				<dd>Hombre</dd> -->
+			</dl>
+		</div>
+		<a href="<%= goBackIndustryCertificate %>"><fmt:message key="label.goBack"/></a>
+		<a href="<%=downloadCertificate%>"><fmt:message key="label.downloadCertificate"/></a>
+	</div>
+</fieldset>
+
+
 	<div class="table">
 		<div class="section">
-			<div class="row">
-				<div class="row">
-					<div class="column1-1">
-						<label class="aui-field-label sub-title"><fmt:message key="label.informationCertificateGeneration"/></label>
-					</div>
-				</div>
-			</div>
+			
 			
 			<div class="row">
-				<div class="column1-4">
-					<label class="aui-field-label"><fmt:message key="label.merchant"/></label>
-				</div>
-				<div class="column2-4">
-					<c:out value="${certificateVO.merchantId}"/>
-				</div>
-				<div class="column3-4">
-					<label class="aui-field-label"><fmt:message key="label.commonName"/></label>
-				</div>
-				<div class="column4-4">
-					<c:out value="${certificateVO.commonName}"/>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-4">
-					<label class="aui-field-label"><fmt:message key="label.creationTime"/></label>
-				</div>
-				<div class="column2-4">
-					<c:out value="<%=Utilities.formatDate(certificateVO.getCreationTime()) %>"/>
-				</div>
 				<div class="column3-4">
 					<label class="aui-field-label"><fmt:message key="label.expirationTime"/></label>
 				</div>
@@ -119,12 +122,12 @@
 			<div class="row">
 				<div class="column1-2">
 					<span class="goBack" >
-						<a  href="<%= goBack %>"><fmt:message key="label.goBack"/></a>
+						
 					</span>
 				</div>
 				<div class="column2-2">
 					<span class="goBack" >
-						<a href="<%=downloadCertificate%>"><fmt:message key="label.downloadCertificate"/></a>
+						
 						<%-- <input type="button" value="Submit" onClick="location.href = '<portlet:resourceURL><portlet:param name="idCertificate" value="<%=certificateVO.getId()%>" /></portlet:resourceURL>'" /> --%>
 					</span>
 				</div>

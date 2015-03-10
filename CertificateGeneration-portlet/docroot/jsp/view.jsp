@@ -59,12 +59,11 @@
 <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURL" />
 <aui:form method="post">
 	<div class="table">
-		<div class="row">
 			<liferay-ui:search-container emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURL%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
 				<liferay-ui:search-container-results>
 					<%
 						listCertificates = Methods.orderCertificates(listCertificates,orderByCol,orderByType);
-						results = ListUtil.subList(listCertificates, searchContainer.getStart(), searchContainer.getEnd());
+						results = new ArrayList<CertificateVO>(ListUtil.subList(listCertificates, searchContainer.getStart(), searchContainer.getEnd()));
 						total = listCertificates.size();
 						pageContext.setAttribute("results", results);
 						pageContext.setAttribute("total", total);
@@ -107,7 +106,6 @@
 				</liferay-ui:search-container-row>
 				<liferay-ui:search-iterator />
 			</liferay-ui:search-container>
-		</div>
 		
 		<div class="row">
 			<div class="column1-2">

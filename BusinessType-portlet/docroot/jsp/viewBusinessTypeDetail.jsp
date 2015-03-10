@@ -28,36 +28,19 @@
 </portlet:renderURL>
 
 <aui:form method="post">
-	<div class="table">
-		<div class="section">
-			<div class="row">
-				<div class="row">
-					<div class="column1-1">
-						<label class="aui-field-label sub-title"><fmt:message key="label.informationBusinessType"/></label>
-					</div>
-				</div>
+
+	<fieldset class="fieldset">
+		<legend class="fieldset-legend">
+			<span class="legend"><fmt:message key="label.informationBusinessType"/> </span>
+		</legend>
+		<div class="">
+			<div class="details">
+				<dl class="property-list">
+					<dt><fmt:message key="label.description"/></dt>
+					<dd><c:out value="${businessTypeVO.description}"/></dd>
+				</dl>
 			</div>
-			<div class="row">
-				<div class="column1-4">
-					<label class="aui-field-label"><fmt:message key="label.description"/></label>
-				</div>
-				<div class="column2-4">
-					<c:out value="${businessTypeVO.description}"/>
-				</div>
-				<div class="column3-4">
-				</div>
-				<div class="column4-4">
-				</div>
-			</div>
-			<div class="row">
-				<div class="column1-2">
-						<span class="goBack" >
-							<a href="<%= goBackBusinessType %>"><fmt:message key="label.goBack"/></a>
-						</span>
-					</div>
-				<div class="column2-2">
-				</div>
-			</div>
+			<a href="<%= goBackBusinessType %>"><fmt:message key="label.goBack"/></a>
 		</div>
-	</div>
+	</fieldset>
 </aui:form>

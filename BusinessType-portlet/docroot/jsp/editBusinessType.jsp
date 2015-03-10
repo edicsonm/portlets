@@ -36,31 +36,17 @@
 </portlet:renderURL>
 
 <aui:form  action="<%= editURLBusinessType %>" method="post">
-	<div class="table">
-		<div class="section">
-			<div class="row">
-				<div class="row">
-					<div class="column1-1">
-						<label class="aui-field-label sub-title"><fmt:message key="label.informationBusinessType"/></label>
-					</div>
-				</div>
+	<fieldset class="fieldset">
+		<legend class="fieldset-legend">
+			<span class="legend"><fmt:message key="label.informationBusinessType"/> </span>
+		</legend>
+		<div class="">
+			<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
+			<div class="control-group">
+				<aui:input label="label.description" required="true" helpMessage="help.description" showRequiredLabel="false" type="text" name="description" value="${businessTypeVO.description}"></aui:input>
 			</div>
-			<div class="row">
-				<div class="column1-1">
-					<aui:input label="label.description" helpMessage="help.description" showRequiredLabel="false" type="text" required="true" name="description" value="${businessTypeVO.description}">
-					</aui:input>
-				</div>
-			</div>
-			<div class="row">
-				<div class="column1-2">
-						<span class="goBack" >
-							<a class="btn" href="<%= goBackBusinessType %>"><fmt:message key="label.goBack"/></a>
-						</span>
-					</div>
-				<div class="column2-2">
-					<aui:button type="submit" name="save" value="label.save" />
-				</div>
-			</div>
+			<a class="btn" href="<%= goBackBusinessType %>"><fmt:message key="label.goBack"/></a>
+			<aui:button type="submit" name="save" value="label.save" />
 		</div>
-	</div>
+	</fieldset>
 </aui:form>
