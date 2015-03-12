@@ -19,6 +19,7 @@
 
 <portlet:actionURL var="keepInformation" name="keepInformation">
 	<portlet:param name="action" value="saveBusinessInformation"/>
+	<portlet:param name="jspPage" value="/jsp/newMerchant.jsp"/>
 	<portlet:param name="tabs" value="<%=tabs1%>"/>
 </portlet:actionURL>
 

@@ -25,25 +25,21 @@
 		<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
 		<div class="control-group">
 			<aui:input name="firstName"  label="label.firstName" helpMessage="help.firstName" value="${merchantVO.firstName}" showRequiredLabel="false" type="text" required="true">
-				<aui:validator name="alphanum"/>
 			</aui:input>
 		</div>
 		
 		<div class="control-group">
 			<aui:input name="lastName"  label="label.lastName" helpMessage="help.lastName" value="${merchantVO.lastName}" showRequiredLabel="false" type="text" required="true">
-				<aui:validator name="alphanum"/>
 			</aui:input>
 		</div>
 		
 		<div class="control-group">
 			<aui:input name="phoneNumber"  label="label.phoneNumber" helpMessage="help.phoneNumber" value="${merchantVO.phoneNumber}" showRequiredLabel="false" type="text" required="true">
-				<aui:validator name="alphanum"/>
 			</aui:input>
 		</div>
 		
 		<div class="control-group">
 			<aui:input name="faxNumber"  label="label.faxNumber" helpMessage="help.faxNumber" value="${merchantVO.faxNumber}" showRequiredLabel="false" type="text" required="true">
-				<aui:validator name="alphanum"/>
 			</aui:input>
 		</div>
 		

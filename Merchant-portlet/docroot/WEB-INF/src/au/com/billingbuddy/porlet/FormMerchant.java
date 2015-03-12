@@ -174,6 +174,7 @@ public class FormMerchant extends MVCPortlet {
 			actionResponse.setRenderParameter("tabs", "Business");
 		}
 		session.setAttribute("merchantVO", merchantVO);
+		actionResponse.setRenderParameter("jspPage", actionRequest.getParameter("jspPage"));
 	}
 	
 	public void saveMerchant(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
@@ -273,9 +274,53 @@ public class FormMerchant extends MVCPortlet {
 			SessionErrors.add(actionRequest,e.getErrorCode());
 		}
 		actionResponse.setRenderParameter("jspPage", "/jsp/editMerchant.jsp");
-	}	
+	}
 	
-	public void editMerchant(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+	public void updateMerchant(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
+		HttpSession session = request.getSession();
+		MerchantVO merchantVO = (MerchantVO)session.getAttribute("merchantVO");
+		merchantVO.setFirstName(actionRequest.getParameter("firstName"));
+		merchantVO.setLastName(actionRequest.getParameter("lastName"));
+		merchantVO.setPhoneNumber(actionRequest.getParameter("phoneNumber"));
+		merchantVO.setFaxNumber(actionRequest.getParameter("faxNumber"));
+		merchantVO.setEmailAddress(actionRequest.getParameter("emailAddress"));
+		merchantVO.setAlternateEmailAddress(actionRequest.getParameter("alternateEmailAddress"));
+		merchantVO.setCityPersonalInformation(actionRequest.getParameter("cityPersonalInformation"));
+		merchantVO.setPostCodePersonalInformation(actionRequest.getParameter("postCodePersonalInformation"));
+		merchantVO.setCountryNumericPersonalInformation(actionRequest.getParameter("countryPersonalInformation"));
+		
+		session.setAttribute("merchantVO", merchantVO);
+		try {
+			procesorFacade.updateMerchant(merchantVO);
+			if(merchantVO.getStatus().equalsIgnoreCase("success")) {
+				ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants();
+				session.setAttribute("listMerchants", listMerchants);
+				SessionMessages.add(actionRequest, "merchantUpdatedSuccessfully");
+				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
+			} else {
+				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+				SessionErrors.add(actionRequest, "error");
+				SessionErrors.add(actionRequest,merchantVO.getMessage());
+				session.setAttribute("merchantVO", merchantVO);
+				actionResponse.setRenderParameter("jspPage", "/jsp/editMerchant.jsp");
+			}
+		} catch (ProcesorFacadeException e) {
+			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+			SessionErrors.add(actionRequest,e.getErrorCode());
+			System.out.println("e.getMessage(): " + e.getMessage());
+			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
+			System.out.println("e.getErrorCode(): " + e.getErrorCode());
+			session.setAttribute("merchantVO", merchantVO);
+			actionResponse.setRenderParameter("jspPage", "/jsp/editMerchant.jsp");
+		}
+	}
+	
+	public void editMerchant2(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 		HttpSession session = request.getSession();
 		MerchantVO merchantVO = (MerchantVO)session.getAttribute("merchantVO");
