@@ -70,7 +70,7 @@
 		<div class="details">
 			<dl class="property-list">
 				<dt><fmt:message key="label.merchant"/></dt>
-				<dd><c:out value="${certificateVO.merchantId}"/></dd>
+				<dd><c:out value="${certificateVO.merchantVO.name}"/></dd>
 				
 				<dt><fmt:message key="label.commonName"/></dt>
 				<dd><c:out value="${certificateVO.commonName}"/></dd>
@@ -78,63 +78,20 @@
 				<dt><fmt:message key="label.creationTime"/></dt>
 				<dd><c:out value="<%=Utilities.formatDate(certificateVO.getCreationTime()) %>"/></dd>
 				
-				<!-- <dt>Fecha de nacimiento</dt>
-				<dd>1/01/70</dd>
-				<dt>Género</dt>
-				<dd>Hombre</dd> -->
-			</dl>
-		</div>
-		<a href="<%= goBackIndustryCertificate %>"><fmt:message key="label.goBack"/></a>
-		<a href="<%=downloadCertificate%>"><fmt:message key="label.downloadCertificate"/></a>
-	</div>
-</fieldset>
-
-
-	<div class="table">
-		<div class="section">
-			
-			
-			<div class="row">
-				<div class="column3-4">
-					<label class="aui-field-label"><fmt:message key="label.expirationTime"/></label>
-				</div>
-				<div class="column4-4">
-					<c:out value="<%=Utilities.formatDate(certificateVO.getExpirationTime()) %>"/>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-4">
-					<label class="aui-field-label"><fmt:message key="label.status"/></label>
-				</div>
-				<div class="column2-4">
+				<dt><fmt:message key="label.expirationTime"/></dt>
+				<dd><c:out value="<%=Utilities.formatDate(certificateVO.getExpirationTime()) %>"/></dd>
+				
+				<dt><fmt:message key="label.status"/></dt>
+				<dd>
 					<%
 						if(!certificateVO.getStatus().equalsIgnoreCase("1")) {%><fmt:message key="label.active"/><%
 						}else{%> <fmt:message key="label.inactive"/><%}
 					%>
-				</div>
-				<div class="column3-4">
-				</div>
-				<div class="column4-4">
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-2">
-					<span class="goBack" >
-						
-					</span>
-				</div>
-				<div class="column2-2">
-					<span class="goBack" >
-						
-						<%-- <input type="button" value="Submit" onClick="location.href = '<portlet:resourceURL><portlet:param name="idCertificate" value="<%=certificateVO.getId()%>" /></portlet:resourceURL>'" /> --%>
-					</span>
-				</div>
-			</div>
-			<div class="row">
-				<div id="certificate"></div>
-			</div>
+				</dd>
+			</dl>
 		</div>
+		<a href="<%= goBackIndustryCertificate %>"><fmt:message key="label.goBack"/></a>
+		<a class="btn btn-primary" href="<%= downloadCertificate %>"><fmt:message key="label.downloadCertificate"/></a>
 	</div>
+</fieldset>
 </aui:form>

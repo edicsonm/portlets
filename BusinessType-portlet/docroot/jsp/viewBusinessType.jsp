@@ -103,15 +103,7 @@
 				<liferay-ui:search-iterator />
 			</liferay-ui:search-container>
 		
-		<div class="row">
-			<div class="column1-2">
-				<span class="newElement" >
-					<a href="<%= newBusinessType %>"><fmt:message key="label.newBusinessType"/></a>
-				</span>
-			</div>
-			<div class="column2-2">
-			</div>
-		</div>
+		<a href="<%= newBusinessType %>"><fmt:message key="label.newBusinessType"/></a>
 		
 	</div>
 </aui:form>

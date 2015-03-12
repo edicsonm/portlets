@@ -36,8 +36,8 @@
 
 
 <portlet:resourceURL var="searchMerchantInformation" >
-	<%-- <portlet:param name="action" value="chargeMerchantInformation" />
-	<portlet:param name="idMerchant" value="<%=certificateVO.getId()%>" /> --%>
+	<portlet:param name="action" value="chargeMerchantInformation" />
+	<%-- <portlet:param name="idMerchant" value="<%=certificateVO.getId()%>" /> --%>
 </portlet:resourceURL>
 
 <script>
@@ -81,122 +81,123 @@ function searchMerchantInformation(){
 
 </script>
 <aui:form  action="<%= submitForm %>" method="post">
-	<div class="table">
-		<div class="section">
+	<fieldset class="fieldset">
+		<legend class="fieldset-legend">
+			<span class="legend"><fmt:message key="label.informationCertificateGeneration"/> </span>
+		</legend>
+		<div class="">
+			
+			<div class="control-group">
+				<aui:select name="merchant" onChange="searchMerchantInformation();" helpMessage="help.merchant" label="label.merchant" id="merchant">
+					<c:forEach var="merchantVO" items="${listMerchants}">
+						<aui:option value="${merchantVO.id}" label="${merchantVO.name}" selected="${merchantVO.id==certificateVO.merchantId}"/>
+					</c:forEach>
+				</aui:select>
+			</div>
+			
+			<div class="control-group">
+				<aui:input label="label.commonName" helpMessage="help.commonName" showRequiredLabel="false" type="text" required="true" name="commonName" value="${certificateVO.commonName}">
+					<aui:validator name="required"/>
+				</aui:input>
+			</div>
+			
+			<div class="control-group">
+				<aui:input label="label.organization" helpMessage="help.organization" showRequiredLabel="false" type="text" required="true" name="organization" value="${certificateVO.organization}">
+				</aui:input>
+			</div>
+			
+			
+			<div class="control-group">
+				<aui:input label="label.organizationUnit" helpMessage="help.organizationUnit" name="organizationUnit" value="${certificateVO.organizationUnit}" showRequiredLabel="false" type="text" required="true">
+				</aui:input>
+			</div>
+			
+			<div class="control-group">
+				<aui:input label="label.country" helpMessage="help.country" name="country" value="${certificateVO.country}" showRequiredLabel="false" type="text" required="true">
+				</aui:input>
+			</div>
+			
+			
 			<div class="row">
-				<div class="row">
-					<div class="column1-1">
-						<label class="aui-field-label sub-title"><fmt:message key="label.informationCertificateGeneration"/></label>
+				<div class="column1-2">
+					<div class="control-group">
+						<aui:input label="label.passwordKeyStore" helpMessage="help.passwordKeyStore" name="passwordKeyStore" value="${certificateVO.passwordKeyStore}" showRequiredLabel="false" type="text" required="true">
+						</aui:input>
+					</div>
+				</div>
+				<div class="column2-2">
+					<div class="control-group">
+						<aui:input label="label.passwordKeyStoreConfirmation" helpMessage="help.passwordKeyStoreConfirmation" showRequiredLabel="false" type="password" required="true" name="passwordKeyStoreConfirmation" value="${certificateVO.passwordKeyStore}">
+							<aui:validator name="equalTo">'#<portlet:namespace />passwordKeyStore'</aui:validator>
+						</aui:input>
 					</div>
 				</div>
 			</div>
 			
 			<div class="row">
-				<div class="column1-1">
-					<aui:select name="merchant" onChange="searchMerchantInformation();" helpMessage="help.merchant" label="label.merchant" id="merchant">
-						<%-- <aui:option value="" label=""/> --%>
-						<c:forEach var="merchantVO" items="${listMerchants}">
-							<aui:option value="${merchantVO.id}" label="${merchantVO.name}" selected="${merchantVO.id==certificateVO.merchantId}"/>
-						</c:forEach>
-					</aui:select>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-1">
-					<aui:input label="label.commonName" helpMessage="help.commonName" showRequiredLabel="false" type="text" id="commonName" required="true" name="commonName" value="${certificateVO.commonName}">
-						<aui:validator name="required"/>
-					</aui:input>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-1">
-					<aui:input label="label.organization" helpMessage="help.organization" showRequiredLabel="false" type="text" required="true" name="organization" value="${certificateVO.organization}">
-						<aui:validator name="required"/>
-					</aui:input>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-1">
-					<aui:input label="label.organizationUnit" helpMessage="help.organizationUnit" showRequiredLabel="false" type="text" required="true" name="organizationUnit" value="${certificateVO.organizationUnit}">
-						<aui:validator name="required"/>
-					</aui:input>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-1">
-					<aui:input label="label.country" helpMessage="help.country" showRequiredLabel="false" type="text" required="true" name="country" value="${certificateVO.country}">
-						<aui:validator name="required"/>
-					</aui:input>
-				</div>
-			</div>
-			
-			
-			<div class="row">
 				<div class="column1-2">
-					<aui:input label="label.passwordKeyStore" helpMessage="help.passwordKeyStore" showRequiredLabel="false" type="password" required="true" name="passwordKeyStore" value="${certificateVO.passwordKeyStore}">
-						<aui:validator name="required"/>
-					</aui:input>
+					<div class="control-group">
+						<aui:input label="label.passwordkey" helpMessage="help.passwordkey" name="passwordkey" value="${certificateVO.passwordkey}" showRequiredLabel="false" type="text" required="true">
+						</aui:input>
+					</div>
 				</div>
 				<div class="column2-2">
-					<aui:input label="label.passwordKeyStoreConfirmation" helpMessage="help.passwordKeyStoreConfirmation" showRequiredLabel="false" type="password" required="true" name="passwordKeyStoreConfirmation" value="${certificateVO.passwordKeyStore}">
-						<aui:validator name="equalTo">'#<portlet:namespace />passwordKeyStore'</aui:validator>
-					</aui:input>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-2">
-					<aui:input label="label.passwordkey" helpMessage="help.passwordkey" showRequiredLabel="false" type="password" required="true" name="passwordkey" value="${certificateVO.passwordkey}">
-						<aui:validator name="required"/>
-					</aui:input>
-				</div>
-				<div class="column2-2">
-					<aui:input label="label.passwordkeyConfirmation" helpMessage="help.passwordkeyConfirmation" showRequiredLabel="false" type="password" required="true" name="passwordkeyConfirmation" value="${certificateVO.passwordkey}">
-						<aui:validator name="equalTo">'#<portlet:namespace />passwordkey'</aui:validator>
-					</aui:input>
+					<div class="control-group">
+						<aui:input label="label.passwordkeyConfirmation" helpMessage="help.passwordkeyConfirmation" showRequiredLabel="false" type="password" required="true" name="passwordkeyConfirmation" value="${certificateVO.passwordkey}">
+								<aui:validator name="equalTo">'#<portlet:namespace />passwordkey'</aui:validator>
+							</aui:input>
+					</div>
 				</div>
 			</div>
 			
 			<%-- <div class="row">
 				<div class="column1-2">
-					<aui:input label="label.privacyKeyStore" helpMessage="help.privacyKeyStore" showRequiredLabel="false" type="password" required="true" name="privacyKeyStore" value="${certificateVO.privacyKeyStore}">
-						<aui:validator name="required"/>
-					</aui:input>
+					<div class="control-group">
+						<aui:input label="label.privacyKeyStore" helpMessage="help.privacyKeyStore" name="privacyKeyStore" value="${certificateVO.privacyKeyStore}" showRequiredLabel="false" type="text" required="true" >
+						</aui:input>
+					</div>
 				</div>
 				<div class="column2-2">
-					<aui:input label="label.privacyKeyStoreConfirmation" helpMessage="help.privacyKeyStoreConfirmation" showRequiredLabel="false" type="password" required="true" name="privacyKeyStoreConfirmation" value="${certificateVO.privacyKeyStoreConfirmation}">
-						<aui:validator name="equalTo">'#<portlet:namespace />privacyKeyStore'</aui:validator>
-					</aui:input>
+					<div class="control-group">
+						<aui:input label="label.privacyKeyStoreConfirmation" helpMessage="help.privacyKeyStoreConfirmation" showRequiredLabel="false" type="password" required="true" name="privacyKeyStoreConfirmation" value="${certificateVO.privacyKeyStoreConfirmation}">
+							<aui:validator name="equalTo">'#<portlet:namespace />privacyKeyStore'</aui:validator>
+						</aui:input>
+					</div>
 				</div>
 			</div> --%>
+			
+			<div class="control-group">
+				<aui:input label="label.keyName" helpMessage="help.keyName" name="keyName" value="${certificateVO.keyName}" showRequiredLabel="false" type="text" required="true" >
+				</aui:input>
+			</div>
+			
+			<a href="<%= goBack %>"><fmt:message key="label.goBack"/></a>
+			<aui:button type="submit" name="save" value="label.save" />
+		</div>
+	</fieldset>
+</aui:form>
+	
+	
+	
+<%-- <aui:form  method="post">	
+	<div class="table">
+		<div class="section">
+			
+			
 			
 			
 			
 			<div class="row">
 				<div class="column1-1">
-					<aui:input label="label.keyName" helpMessage="help.keyName" showRequiredLabel="false" type="text" required="true" name="keyName" value="${certificateVO.keyName}">
-						<%-- <aui:validator name="alphanum"/> --%>
+					<aui:input label="label.keyName" helpMessage="help.keyName" showRequiredLabel="false" type="text" required="true" name="keyName" value="">
+						
 					</aui:input>
 				</div>
 			</div>
 			
-			<div class="row">
-				<div class="column1-2">
-						<span class="goBack" >
-							<a href="<%= goBack %>"><fmt:message key="label.goBack"/></a>
-						</span>
-					</div>
-				<div class="column2-2">
-					<aui:button type="submit" name="save" value="label.save" />
-				</div>
-			</div>
 		</div>
 	</div>
-</aui:form>
+</aui:form> --%>
 <script>
 	searchMerchantInformation();
 </script>

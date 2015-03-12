@@ -107,15 +107,5 @@
 			<a href="<%= newIndustry %>"><fmt:message key="label.newIndustry"/></a>
 		</span>
 		
-		<%-- <div class="row">
-			<div class="column1-2">
-				<span class="newElement" >
-					<a href="<%= newIndustry %>"><fmt:message key="label.newIndustry"/></a>
-				</span>
-			</div>
-			<div class="column2-2">
-			</div>
-		</div> --%>
-		
 	</div>
 </aui:form>

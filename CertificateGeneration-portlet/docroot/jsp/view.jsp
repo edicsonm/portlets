@@ -59,7 +59,7 @@
 <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURL" />
 <aui:form method="post">
 	<div class="table">
-			<liferay-ui:search-container emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURL%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
+			<liferay-ui:search-container emptyResultsMessage="label.empty" delta="2" iteratorURL="<%=renderURL%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
 				<liferay-ui:search-container-results>
 					<%
 						listCertificates = Methods.orderCertificates(listCertificates,orderByCol,orderByType);
@@ -77,7 +77,7 @@
 							<portlet:param name="jspPage" value="/jsp/viewCertificateGeneration.jsp" />
 					</liferay-portlet:renderURL>
 					
-					<liferay-ui:search-container-column-text name="label.merchant" property="merchantId" value="merchantId" orderable="true" orderableProperty="merchantId" href="<%= rowURL %>"/>
+					<liferay-ui:search-container-column-text name="label.merchant" property="merchantVO.name" value="merchantVO.name" orderable="true" orderableProperty="merchantVO.name" href="<%= rowURL %>"/>
 					<liferay-ui:search-container-column-text name="label.commonName" property="commonName" value="commonName" orderable="false" orderableProperty="commonName"/>
 					<liferay-ui:search-container-column-text name="label.creationTime" value="<%=Utilities.formatDate(certificateVO.getCreationTime()) %>" orderable="false" orderableProperty="creationTime"/>
 					<%if(!certificateVO.getStatus().equalsIgnoreCase("1")) {%>
@@ -107,15 +107,9 @@
 				<liferay-ui:search-iterator />
 			</liferay-ui:search-container>
 		
-		<div class="row">
-			<div class="column1-2">
-				<span class="newMerchant" >
-					<a href="<%= listMerchantsAndCountries %>"><fmt:message key="label.newCertificateGeneration"/></a>
-				</span>
-			</div>
-			<div class="column2-2">
-			</div>
-		</div>
+			<span class="newMerchant" >
+				<a href="<%= listMerchantsAndCountries %>"><fmt:message key="label.newCertificateGeneration"/></a>
+			</span>
 		
 	</div>
 </aui:form>

@@ -36,6 +36,7 @@
 			<span class="legend"><fmt:message key="label.informationIndustry"/> </span>
 		</legend>
 		<div class="">
+			<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
 			<div class="control-group">
 				<aui:input label="label.description" helpMessage="help.description" showRequiredLabel="false" type="text" required="true" name="description" value="${industryVO.description}">
 				</aui:input>
