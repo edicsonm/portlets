@@ -59,7 +59,7 @@
 				<liferay-ui:search-container-results>
 					<%
 						listMerchants = Methods.orderMerchant(listMerchants,orderByCol,orderByType);
-						results = ListUtil.subList(listMerchants, searchContainer.getStart(), searchContainer.getEnd());
+						results = new ArrayList<MerchantVO>(ListUtil.subList(listMerchants, searchContainer.getStart(), searchContainer.getEnd()));
 						total = listMerchants.size();
 						pageContext.setAttribute("results", results);
 						pageContext.setAttribute("total", total);
