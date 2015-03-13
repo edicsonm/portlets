@@ -59,19 +59,8 @@ public class FormReportAmountByDay extends MVCPortlet {
 			transactionVO.setInitialDateReport(BBUtils.getCurrentDate(2,-1*(150)));
 			transactionVO.setFinalDateReport(BBUtils.getCurrentDate(2,0));
 			
-//			for (Map.Entry entry : GraphTemplate.getMap().entrySet()) {
-//			    System.out.println(entry.getKey() + ", " + entry.getValue());
-//			}
-			
 			StreamSource xslStream = new StreamSource("/mnt/Informacion/NuevoBB/Liferay/tomcat-7.0.42/webapps/ReportAmountbyDay-portlet/WEB-INF/src/graphTemplate/graphTemplate.xsl");
-//			StreamSource xslStream = new StreamSource(renderRequest.getContextPath() + "/WEB-INF/src/graphTemplate/graphTemplate.xsl");
-			
-//			StringWriter report = reportFacade.searchAmountByDay(transactionVO, xslStream, GraphTemplate.getMap());
-			
 			ArrayList<TransactionVO> listAmountsByDay = procesorFacade.searchAmountByDay(transactionVO);
-			
-			System.out.println("listAmountsByDay.size(); " + listAmountsByDay.size());
-			
 			ReporteAmountByDay reporteAmountByDay = new ReporteAmountByDay(xslStream, GraphTemplate.getMap());
 			StringWriter report = reporteAmountByDay.CreateXml(listAmountsByDay);
 			
@@ -118,11 +107,10 @@ public class FormReportAmountByDay extends MVCPortlet {
 				e.printStackTrace();
 			}
 			
-			
 			StreamSource xslStream = new StreamSource("/mnt/Informacion/NuevoBB/Liferay/tomcat-7.0.42/webapps/ReportAmountbyDay-portlet/WEB-INF/src/graphTemplate/graphTemplate.xsl");
-//			StreamSource xslStream = new StreamSource(resourceRequest.getContextPath() + "/WEB-INF/src/graphTemplate/graphTemplate.xsl");
-//			StreamSource xslStream = new StreamSource("graphTemplate/graphTemplate.xsl");
-			StringWriter report = reportFacade.searchAmountByDay(transactionVO, xslStream, GraphTemplate.getMap());
+			ArrayList<TransactionVO> listAmountsByDay = procesorFacade.searchAmountByDay(transactionVO);
+			ReporteAmountByDay reporteAmountByDay = new ReporteAmountByDay(xslStream, GraphTemplate.getMap());
+			StringWriter report = reporteAmountByDay.CreateXml(listAmountsByDay);
 			
 			resourceResponse.setContentType("text/html");
 			PrintWriter writer = resourceResponse.getWriter();
@@ -130,7 +118,7 @@ public class FormReportAmountByDay extends MVCPortlet {
 	        writer.flush();
 	        writer.close();
 			session.setAttribute("transactionVOAmount", transactionVO);
-		} catch (ReportFacadeException e) {
+		} catch (ProcesorFacadeException | ReporteAmountByDayException e) {
 			e.printStackTrace();
 //			PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 //			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;

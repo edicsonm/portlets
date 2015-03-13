@@ -1,3 +1,4 @@
+<%@page import="au.com.billigbuddy.utils.BBUtils"%>
 <%
 /**
  * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
@@ -15,11 +16,22 @@
 %>
 <%@ include file="init.jsp" %>
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
+<%@ taglib uri="http://www.billingbuddy.com/.com/bbtlds" prefix="Utils" %>
 <%@ page import="java.util.Enumeration"%>
 
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
+
+<liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURL" />
+
+<portlet:actionURL name="searchTransactionsByDay" var="submitForm">
+</portlet:actionURL>
+
+<portlet:resourceURL var="viewContentURL">
+    <portlet:param name="action" value="view_content"/>
+</portlet:resourceURL>
+
 <% 
 
 	String orderByColAnterior = (String)session.getAttribute("orderByCol");
@@ -51,83 +63,129 @@
 	if(transactionVOAux != null){
 		System.out.println("Fecha guardada: " + Utilities.getDateFormat(6).format(Utilities.getDateFormat(2).parse(transactionVOAux.getInitialDateReport())));
 	}
+	
+	TransactionVO transactionVOTransactions = (TransactionVO)session.getAttribute("transactionVOTransactions");
+	
 %>
 <aui:script>
-    
-    AUI().use('aui-datepicker', function(A) {
-       var fromDate = new A.DatePicker({
-         trigger: '#<portlet:namespace />fromDateTransactions',
-         mask: '%m/%d/%Y',
-         calendar: {
-       	 	setValue: true
-         }
-       }).render('#<portlet:namespace />fromDateTransactionsPicker');
-       <%
-       	if(transactionVOAux!=null){
-       		%>
-       		A.one('#<portlet:namespace />fromDateTransactions').val('<%= Utilities.getDateFormat(6).format(Utilities.getDateFormat(2).parse(transactionVOAux.getInitialDateReport()))%>'); 
-       		<%
-       	}
-       %>
-       /* A.one('#<portlet:namespace />fromDateTransactions').val('<%= transactionVOAux!=null ? Utilities.getDateFormat(6).format(Utilities.getDateFormat(2).parse(transactionVOAux.getInitialDateReport())): "new Date()"%>'); */
-    });
-    
-    AUI().use('aui-datepicker', function(A) {
-        var toDate = new A.DatePicker({
-          trigger: '#<portlet:namespace />toDateTransactions',
-          mask: '%m/%d/%Y',
-          calendar: {
-         	 	setValue: true
-           }
-        }).render('#<portlet:namespace />toDateTransactionsPicker');
-        <%
-       	if(transactionVOAux!=null){
-       		%>
-       		A.one('#<portlet:namespace />toDateTransactions').val('<%= Utilities.getDateFormat(6).format(Utilities.getDateFormat(2).parse(transactionVOAux.getFinalDateReport()))%>'); 
-       		<%
-       	}
-       %>
-        /* A.one('#<portlet:namespace />toDateTransactions').val(new Date()); */
-     });
 
+     YUI().use('aui-datepicker', function(Y) {
+ 	    new Y.DatePicker(
+ 	    	{
+ 	        trigger: '#<portlet:namespace />fromDateTransactions',
+ 	        popover: {
+ 	          zIndex: 1
+ 	        }
+ 	      });
+ 	  }
+ 	);
+   
+   YUI().use(
+ 		  'aui-datepicker',
+ 		  function(Y) {
+ 		    new Y.DatePicker(
+ 		      {
+ 		        trigger: '#<portlet:namespace />toDateTransactions',
+ 		        popover: {
+ 		          zIndex: 1
+ 		        }
+ 		      });
+ 		  }
+ 		);
+     
+   function GetContent() {
+       var url='<%=viewContentURL %>';
+       
+       AUI().io.request(
+           url,
+           {
+               method: 'POST',
+               form: {id: '<portlet:namespace />frm'},
+               data: {
+                       <portlet:namespace/>param1: "param1",
+                       <portlet:namespace/>param2: "param2"
+                     },
+               on: {
+                   failure: function() {
+                               alert('failure');
+                            },
+                   success: function(event, id, obj) {
+                               var instance = this;
+                               var message = instance.get('responseData');
+                               AUI().one('#<portlet:namespace/>contentview').html(message);
+                            }
+               }
+           }
+       );
+   }
+   
+   /* AUI().use('aui-loading-mask',
+           function(A) {
+               if (A.one('#<portlet:namespace/>contentview').loadingmask == null) {
+                   A.one('#<portlet:namespace/>contentview').plug(A.LoadingMask, {background: '#000'});
+                   A.one('#<portlet:namespace/>contentview').loadingmask.show();
+               }
+           }
+	);
+   
+   AUI().use('aui-loading-mask',
+           function(A){
+               A.one('#<portlet:namespace/>contentview').loadingmask.hide();
+               A.one('#<portlet:namespace/>contentview').unplug();
+           }
+	); */
+   
 </aui:script>
 
-<liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURL" />
-
-<portlet:actionURL name="searchTransactionsByDay" var="submitForm">
-</portlet:actionURL>
-
- <aui:form action="<%= submitForm %>" method="post">
-	<div class="table">
-		<div class="section">
-			<div class="row">
-				<div class="column1-3-Report">
-					<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace />fromDateTransactionsPicker">
-						<aui:input onkeypress="return false;" label="label.from" helpMessage="help.from" showRequiredLabel="false" size="10" type="text" required="true" name="fromDateTransactions">
-							 <aui:validator name="date" />
-						</aui:input>
+<aui:form id="frm" action="<%= submitForm %>" method="post">
+ 	<fieldset class="fieldset">
+		<legend class="fieldset-legend">
+			<span class="legend"><fmt:message key="label.reportDescription"/> </span>
+		</legend>
+		<div class="">
+			
+			<div id="contenedor">
+				<div id="contenidos">
+					<div id="columna1">
+						<div class="control-group">
+							<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace />fromDateTransactionsPicker">
+								<aui:input onkeypress="return false;" value="<%= transactionVOTransactions.getInitialDateReport()%>" label="label.from" helpMessage="help.from" showRequiredLabel="false" size="10" type="text" required="false" name="fromDateTransactions">
+									 <aui:validator name="date" />
+								</aui:input>
+							</div>
+						</div>
 					</div>
-				</div>
-				<div class="column2-3-Report">
-					<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace  />toDateTransactionsPicker">
-						<aui:input onkeypress="return false;" label="label.to" helpMessage="help.to" showRequiredLabel="false" size="10" type="text" required="true" name="toDateTransactions">
-							 <aui:validator name="date" />
-						</aui:input>
+					<div id="columna2">
+						<div class="control-group">
+							<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace  />toDateTransactionsPicker">
+								<aui:input onkeypress="return false;" value="<%= transactionVOTransactions.getFinalDateReport()%>" label="label.to" helpMessage="help.to" showRequiredLabel="false" size="10" type="text" required="false" name="toDateTransactions">
+									 <aui:validator name="date" />
+								</aui:input>
+							</div>
+						</div>
 					</div>
-				</div>
-				<div class="column3-3-Report">
-					<aui:button type="submit" name="listTransactions" value="label.search" />
-					<%-- <aui:button type="button" name="test-button" value="label.search" /> --%>
-					<%-- <aui:button value="redirectButton" onClick="<%=renderURL.toString()%>" name="redirectButton" /> --%>
+					<div id="columna3">
+						<div class="control-group">
+							<%-- <aui:button type="button" name="listRefunds" onClick="createGraphicAmount();" value="label.search" /> --%>
+							<aui:button type="submit" name="listTransactions" value="label.search" />
+						</div>
+					</div>
 				</div>
 			</div>
-		</div>
-		<div class="row">	
+		<!-- </div> -->
+		 <%-- <aui:button name="load" onClick='<%=renderResponse.getNamespace() + "GetContent('param1', 'param2');" %>' /> --%>
+		<%-- <aui:button name="load" value="Ejecutar" onClick="GetContent()" />
+		<div id="<portlet:namespace/>contentview"></div> --%>
+		
+	<!-- </fieldset> -->
+ 
+	<!-- <div class="table">
+		<div class="row"> -->	
 			<liferay-ui:search-container emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURL%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
 				<liferay-ui:search-container-results>
 					<%
 						listTransactionsByDay = Methods.orderReportTransactionsByDay(listTransactionsByDay,orderByCol,orderByType);
-						results = ListUtil.subList(listTransactionsByDay, searchContainer.getStart(), searchContainer.getEnd());
+						results = new ArrayList(ListUtil.subList(listTransactionsByDay, searchContainer.getStart(), searchContainer.getEnd()));
 						total = listTransactionsByDay.size();
 						pageContext.setAttribute("results", results);
 						pageContext.setAttribute("total", total);
@@ -142,22 +200,19 @@
 							<portlet:param name="tranId" value="<%=String.valueOf(transactionVO.getId())%>"/>
 					</liferay-portlet:renderURL>
 					
-					<liferay-ui:search-container-column-text name="label.amount" property="chargeVO.amount" value="chargeVO.amount" orderable="false" orderableProperty="chargeVO.amount" href="<%= rowURL %>"/>
+					<liferay-ui:search-container-column-text name="label.amount" value="${Utils:stripeToCurrency(transactionVO.chargeVO.amount, transactionVO.chargeVO.currency)}" orderable="false" orderableProperty="chargeVO.amount" href="<%= rowURL %>"/>
 					<liferay-ui:search-container-column-text name="label.date" property="creationTime" value="creationTime" orderable="false" orderableProperty="creationTime"/>
-					<liferay-ui:search-container-column-text name="label.brand" property="cardVO.brand" value="cardVO.brand" orderable="false" orderableProperty="cardVO.brand"/>
+					<liferay-ui:search-container-column-text name="label.brand" value="${Utils:printString(transactionVO.cardVO.brand)}" orderable="false" orderableProperty="cardVO.brand"/>
+					<liferay-ui:search-container-column-text name="label.currency" value="${Utils:toUpperCase(transactionVO.chargeVO.currency)}" orderable="false" orderableProperty="chargeVO.currency"/>
 					
 					<%-- <liferay-ui:search-container-column-text name="label.date" value="<%=Utilities.formatDate(transactionVO.getCreationTime(),3,3) %>" orderable="true" orderableProperty="creationTime" />
 					<liferay-ui:search-container-column-text name="label.volume" property="totalDateReport" value="totalDateReport" orderable="false" orderableProperty="totalDateReport"/>
-					<liferay-ui:search-container-column-text name="label.amount" value="<%=Utilities.stripeToCurrency(transactionVO.getAmountDateReport(),\"AUD\") %>" orderable="true" orderableProperty="amount" /> --%>
+					<liferay-ui:search-container-column-text name="label.amount" value="<%=BBUtils.stripeToCurrency(transactionVO.getAmountDateReport(),\"AUD\") %>" orderable="true" orderableProperty="amount" /> --%>
 				</liferay-ui:search-container-row>
 				<liferay-ui:search-iterator />
 			</liferay-ui:search-container>
+		<!-- </div>
+	</div> -->
 		</div>
-	</div>
-	<!-- <ul id="navlist">
-		<li id="home"><a href="default.asp"></a></li>
-	</ul> -->
-	
-	<img id="home" src="img_trans.gif"><br><br>
-	<img id="next" src="img_trans.gif">
+	</fieldset>
 </aui:form>

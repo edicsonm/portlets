@@ -11,6 +11,7 @@ import javax.portlet.ActionResponse;
 import javax.portlet.PortletConfig;
 import javax.portlet.PortletException;
 import javax.portlet.PortletMode;
+import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.portlet.ResourceRequest;
@@ -19,6 +20,7 @@ import javax.portlet.WindowState;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import au.com.billigbuddy.utils.BBUtils;
 import au.com.billingbuddy.business.objects.ReportFacade;
 import au.com.billingbuddy.common.objects.Utilities;
 import au.com.billingbuddy.exceptions.objects.ReportFacadeException;
@@ -46,8 +48,16 @@ public class FormReportTransactionsByDay extends MVCPortlet {
 		try {
 			
 			TransactionVO transactionVO = new TransactionVO();
+//			transactionVO.setInitialDateReport(BBUtils.getCurrentDate(2,-1*(Integer.parseInt(ConfigurationSystem.getKey("days.PROC_SEARCH_AMOUNT_BY_DAY")))));
+			transactionVO.setInitialDateReport(BBUtils.getCurrentDate(2,-1*(150)));
+			transactionVO.setFinalDateReport(BBUtils.getCurrentDate(2,0));
+			
 			ArrayList<TransactionVO> listTransactionsByDay = reportFacade.searchTransactionsByDay(transactionVO);
 			session.setAttribute("listTransactionsByDay", listTransactionsByDay);
+			
+			transactionVO.setInitialDateReport(BBUtils.getCurrentDate(6,-1*(150)));
+			transactionVO.setFinalDateReport(BBUtils.getCurrentDate(6,0));
+			session.setAttribute("transactionVOTransactions", transactionVO);
 		} catch (ReportFacadeException e) {
 			e.printStackTrace();
 			PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
@@ -58,6 +68,8 @@ public class FormReportTransactionsByDay extends MVCPortlet {
 			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
 			System.out.println("e.getErrorCode(): " + e.getErrorCode());
 		}
+		
+//		include("/hola.jsp", renderRequest, renderResponse, PortletRequest.RESOURCE_PHASE);
 		super.doView(renderRequest, renderResponse);
 	}
 	
@@ -105,42 +117,53 @@ public class FormReportTransactionsByDay extends MVCPortlet {
 		HttpSession session = request.getSession();
 		TransactionVO transactionVO = new TransactionVO();
 		System.out.println("Ejecuta searchTransactionsByDay en FormReportTransactionsByDay");
-		try {
-			Date date;
-			try {
-				date = Utilities.getDateFormat(6).parse(resourceRequest.getParameter("fromDateTransactions"));
-				transactionVO.setInitialDateReport(Utilities.getDateFormat(2).format(date));
-				date = Utilities.getDateFormat(6).parse(resourceRequest.getParameter("toDateTransactions"));
-				transactionVO.setFinalDateReport(Utilities.getDateFormat(2).format(date));
-				
-				System.out.println("transactionVO.getInitialDateReport(): " + transactionVO.getInitialDateReport());
-				System.out.println("transactionVO.getFinalDateReport(): " + transactionVO.getFinalDateReport());
-				
-			} catch (NumberFormatException e) {
-				e.printStackTrace();
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-			
-			ArrayList<TransactionVO> listTransactionsByDay = reportFacade.searchTransactionsByDay(transactionVO);
-			System.out.println("listTransactionsByDay.size(): " + listTransactionsByDay.size());
-			session.setAttribute("listTransactionsByDay", listTransactionsByDay);
-		} catch (ReportFacadeException e) {
-			e.printStackTrace();
-			System.out.println("transactionVO.getMessage(): " + transactionVO.getMessage());
-			PortletConfig portletConfig = (PortletConfig)resourceRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
-			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
-			SessionMessages.add(resourceRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
-			SessionErrors.add(resourceRequest, "error");
-			System.out.println("transactionVO.getMessage(): " + transactionVO.getMessage());
-			SessionErrors.add(resourceRequest,transactionVO.getMessage());
-			session.setAttribute("chargeVO", transactionVO);
-		}
-		resourceResponse.setContentType("text/html");
-		PrintWriter writer = resourceResponse.getWriter();
-		writer.print("procesado....");
-        writer.flush();
-        writer.close();
+		
+		System.out.println("param1: " + resourceRequest.getParameter("param1"));
+		System.out.println("param2: " + resourceRequest.getParameter("param2"));
+		
+		String action = resourceRequest.getParameter("action");
+        //load view for folder content
+        if (action.equals("view_content")) {
+            include("/hola.jsp", resourceRequest, resourceResponse, PortletRequest.RESOURCE_PHASE);
+        }
+		
+		
+//		try {
+//			Date date;
+//			try {
+//				date = Utilities.getDateFormat(6).parse(resourceRequest.getParameter("fromDateTransactions"));
+//				transactionVO.setInitialDateReport(Utilities.getDateFormat(2).format(date));
+//				date = Utilities.getDateFormat(6).parse(resourceRequest.getParameter("toDateTransactions"));
+//				transactionVO.setFinalDateReport(Utilities.getDateFormat(2).format(date));
+//				
+//				System.out.println("transactionVO.getInitialDateReport(): " + transactionVO.getInitialDateReport());
+//				System.out.println("transactionVO.getFinalDateReport(): " + transactionVO.getFinalDateReport());
+//				
+//			} catch (NumberFormatException e) {
+//				e.printStackTrace();
+//			} catch (ParseException e) {
+//				e.printStackTrace();
+//			}
+//			
+//			ArrayList<TransactionVO> listTransactionsByDay = reportFacade.searchTransactionsByDay(transactionVO);
+//			System.out.println("listTransactionsByDay.size(): " + listTransactionsByDay.size());
+//			session.setAttribute("listTransactionsByDay", listTransactionsByDay);
+//		} catch (ReportFacadeException e) {
+//			e.printStackTrace();
+//			System.out.println("transactionVO.getMessage(): " + transactionVO.getMessage());
+//			PortletConfig portletConfig = (PortletConfig)resourceRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+//			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+//			SessionMessages.add(resourceRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+//			SessionErrors.add(resourceRequest, "error");
+//			System.out.println("transactionVO.getMessage(): " + transactionVO.getMessage());
+//			SessionErrors.add(resourceRequest,transactionVO.getMessage());
+//			session.setAttribute("chargeVO", transactionVO);
+//		}
+//		resourceResponse.setContentType("text/html");
+//		PrintWriter writer = resourceResponse.getWriter();
+//		writer.print("procesado....");
+//        writer.flush();
+//        writer.close();
 	}
 	
 	

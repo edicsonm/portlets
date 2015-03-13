@@ -78,13 +78,7 @@
 		        trigger: '#<portlet:namespace />toDateAmount',
 		        popover: {
 		          zIndex: 1
-		        }/* ,
-		        on: {
-		          selectionChange: function(event) {
-		            console.log(event.newSelection);
-		            alert(event.newSelection);
-		          }
-		        } */
+		        }
 		      });
 		  }
 		);
