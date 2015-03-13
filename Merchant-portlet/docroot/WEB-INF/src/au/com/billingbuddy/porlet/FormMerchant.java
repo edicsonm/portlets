@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletConfig;
@@ -25,16 +27,20 @@ import au.com.billingbuddy.vo.objects.CountryVO;
 import au.com.billingbuddy.vo.objects.IndustryVO;
 import au.com.billingbuddy.vo.objects.MerchantVO;
 
+import com.liferay.mail.service.MailServiceUtil;
+import com.liferay.portal.kernel.mail.MailMessage;
 import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
 import com.liferay.portal.kernel.portlet.LiferayPortletMode;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.JavaConstants;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.PortletURLFactoryUtil;
+import com.liferay.util.ContentUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
 
 public class FormMerchant extends MVCPortlet {
@@ -200,6 +206,28 @@ public class FormMerchant extends MVCPortlet {
 				ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants();
 				session.setAttribute("listMerchants", listMerchants);
 				SessionMessages.add(actionRequest, "merchantSavedSuccessfully");
+				
+				 try {
+					InternetAddress fromAddress = new InternetAddress("edicson@billingbuddy.com"); // from address
+					InternetAddress toAddress = new InternetAddress("edicson@billingbuddy.com");  // to address
+		            
+					// email body , here we are getting email structure creating the content folder in 
+					//the src and create the file with the extension as tmpl.
+					String body = ContentUtil.get("/templates/sample.tmpl", true);  
+					String subject = "subject"; // email subject
+					body = StringUtil.replace(body, new String []{"[$NAME$]","[$DESC$]"}, new String []{"Name","Description"}); // replacing the body with our content.
+					MailMessage mailMessage = new MailMessage();
+					mailMessage.setTo(toAddress);
+					mailMessage.setFrom(fromAddress);
+					mailMessage.setSubject(subject);
+					mailMessage.setBody(body);
+					mailMessage.setHTMLFormat(true);
+					MailServiceUtil.sendEmail(mailMessage); // Sending message
+					
+				} catch (AddressException e1) {
+					e1.printStackTrace();
+				}
+				
 				actionResponse.setRenderParameter("jspPage", "/jsp/view_riginal.jsp");
 			} else {
 				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
@@ -297,6 +325,28 @@ public class FormMerchant extends MVCPortlet {
 				ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants();
 				session.setAttribute("listMerchants", listMerchants);
 				SessionMessages.add(actionRequest, "merchantUpdatedSuccessfully");
+				
+				try {
+					InternetAddress fromAddress = new InternetAddress("edicson@billingbuddy.com"); // from address
+					InternetAddress toAddress = new InternetAddress("edicson@billingbuddy.com");  // to address
+		            
+					// email body , here we are getting email structure creating the content folder in 
+					//the src and create the file with the extension as tmpl.
+					String body = ContentUtil.get("/templates/sampleUpdate.tmpl", true);  
+					String subject = "subject"; // email subject
+					body = StringUtil.replace(body, new String []{"[$NAME$]","[$DESC$]"}, new String []{"Name","Description"}); // replacing the body with our content.
+					MailMessage mailMessage = new MailMessage();
+					mailMessage.setTo(toAddress);
+					mailMessage.setFrom(fromAddress);
+					mailMessage.setSubject(subject);
+					mailMessage.setBody(body);
+					mailMessage.setHTMLFormat(true);
+					MailServiceUtil.sendEmail(mailMessage); // Sending message
+					
+				} catch (AddressException e1) {
+					e1.printStackTrace();
+				}
+				
 				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
 			} else {
 				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);

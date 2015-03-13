@@ -1,4 +1,4 @@
-package au.com.billigbuddy.porlet.utilities;
+package au.com.billingbuddy.porlet.utilities;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,12 +10,12 @@ import au.com.billingbuddy.vo.objects.TransactionVO;
 public class Methods {
 	
 	public static void orderReportAmountByDay(String campo, ArrayList<TransactionVO> list) {
-		BeanComparator<TransactionVO> comparator= new BeanComparator<TransactionVO>(campo);
+		BeanComparator comparator= new BeanComparator(campo);
 		Collections.sort(list, comparator);
 	}
 	
 	public static ArrayList<TransactionVO> orderReportAmountByDay(ArrayList<TransactionVO> list, String orderByCol, String orderByType ) {
-		BeanComparator<TransactionVO> comparator= new BeanComparator<TransactionVO>(orderByCol);
+		BeanComparator comparator= new BeanComparator(orderByCol);
 		if(list != null){
 			if(orderByType.equals("asc")){
 				Collections.sort(list, comparator);
