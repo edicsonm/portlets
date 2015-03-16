@@ -208,7 +208,7 @@ public class FormMerchant extends MVCPortlet {
 				SessionMessages.add(actionRequest, "merchantSavedSuccessfully");
 				
 				 try {
-					InternetAddress fromAddress = new InternetAddress("edicson@billingbuddy.com"); // from address
+					InternetAddress fromAddress = new InternetAddress("pepitoperez@billingbuddy.com"); // from address
 					InternetAddress toAddress = new InternetAddress("edicson@billingbuddy.com");  // to address
 		            
 					// email body , here we are getting email structure creating the content folder in 
@@ -327,7 +327,7 @@ public class FormMerchant extends MVCPortlet {
 				SessionMessages.add(actionRequest, "merchantUpdatedSuccessfully");
 				
 				try {
-					InternetAddress fromAddress = new InternetAddress("edicson@billingbuddy.com"); // from address
+					InternetAddress fromAddress = new InternetAddress("pepitoperexedfsfd@billingbuddy.com"); // from address
 					InternetAddress toAddress = new InternetAddress("edicson@billingbuddy.com");  // to address
 		            
 					// email body , here we are getting email structure creating the content folder in 
