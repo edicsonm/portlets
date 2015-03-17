@@ -32,7 +32,6 @@ public class FormManageRestritionsByCountry extends MVCPortlet {
 	
 	@Override
 	public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
-		System.out.println("Ejecuta doView en FormReportTransactionsByDay ");
 		
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
 		HttpSession session = request.getSession();

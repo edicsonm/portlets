@@ -41,8 +41,6 @@ public class FormReportTransactionsByDay extends MVCPortlet {
 	
 	@Override
 	public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
-		System.out.println("Ejecuta doView en FormReportTransactionsByDay ");
-		
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
 		HttpSession session = request.getSession();
 		try {
@@ -84,27 +82,26 @@ public class FormReportTransactionsByDay extends MVCPortlet {
 				transactionVO.setInitialDateReport(Utilities.getDateFormat(2).format(date));
 				date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("toDateTransactions"));
 				transactionVO.setFinalDateReport(Utilities.getDateFormat(2).format(date));
-				
-				System.out.println("transactionVO.getInitialDateReport(): " + transactionVO.getInitialDateReport());
-				System.out.println("transactionVO.getFinalDateReport(): " + transactionVO.getFinalDateReport());
-				
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
 			ArrayList<TransactionVO> listTransactionsByDay = reportFacade.searchTransactionsByDay(transactionVO);
-			System.out.println("listTransactionsByDay.size(): " + listTransactionsByDay.size());
 			session.setAttribute("transactionVO", transactionVO);
+			
+			transactionVO.setInitialDateReport(actionRequest.getParameter("fromDateTransactions"));
+			transactionVO.setFinalDateReport(actionRequest.getParameter("toDateTransactions"));
+			
+	        session.setAttribute("transactionVOTransactions", transactionVO);
 			session.setAttribute("listTransactionsByDay", listTransactionsByDay);
+			
 		} catch (ReportFacadeException e) {
 			e.printStackTrace();
-			System.out.println("transactionVO.getMessage(): " + transactionVO.getMessage());
 			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 			SessionErrors.add(actionRequest, "error");
-			System.out.println("transactionVO.getMessage(): " + transactionVO.getMessage());
 			SessionErrors.add(actionRequest,transactionVO.getMessage());
 			session.setAttribute("chargeVO", transactionVO);
 		}
@@ -116,10 +113,6 @@ public class FormReportTransactionsByDay extends MVCPortlet {
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(resourceRequest);
 		HttpSession session = request.getSession();
 		TransactionVO transactionVO = new TransactionVO();
-		System.out.println("Ejecuta searchTransactionsByDay en FormReportTransactionsByDay");
-		
-		System.out.println("param1: " + resourceRequest.getParameter("param1"));
-		System.out.println("param2: " + resourceRequest.getParameter("param2"));
 		
 		String action = resourceRequest.getParameter("action");
         //load view for folder content

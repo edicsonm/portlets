@@ -45,8 +45,10 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
 import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
 
 public class FormCertificateGeneration extends MVCPortlet {
+	
 	private ProcesorFacade procesorFacade = ProcesorFacade.getInstance();
 	private SecurityFacade securityFacade  = SecurityFacade.getInstance();
+	
 	@Override
 	public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);

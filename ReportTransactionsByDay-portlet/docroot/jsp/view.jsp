@@ -57,15 +57,7 @@
 
 	ArrayList<TransactionVO> listTransactionsByDay = (ArrayList<TransactionVO>)session.getAttribute("listTransactionsByDay");
 	if(listTransactionsByDay == null) listTransactionsByDay = new ArrayList<TransactionVO>();
-	System.out.println("listTransactionsByDay.size() en view.jsp: " + listTransactionsByDay.size());
-	
-	TransactionVO transactionVOAux = (TransactionVO)session.getAttribute("transactionVO");
-	if(transactionVOAux != null){
-		System.out.println("Fecha guardada: " + Utilities.getDateFormat(6).format(Utilities.getDateFormat(2).parse(transactionVOAux.getInitialDateReport())));
-	}
-	
 	TransactionVO transactionVOTransactions = (TransactionVO)session.getAttribute("transactionVOTransactions");
-	
 %>
 <aui:script>
 
@@ -201,7 +193,7 @@
 					</liferay-portlet:renderURL>
 					
 					<liferay-ui:search-container-column-text name="label.amount" value="${Utils:stripeToCurrency(transactionVO.chargeVO.amount, transactionVO.chargeVO.currency)}" orderable="false" orderableProperty="chargeVO.amount" href="<%= rowURL %>"/>
-					<liferay-ui:search-container-column-text name="label.date" property="creationTime" value="creationTime" orderable="false" orderableProperty="creationTime"/>
+					<liferay-ui:search-container-column-text name="label.date" value="${Utils:formatDate(3,transactionVO.creationTime,3)}" orderable="false" orderableProperty="creationTime"/>
 					<liferay-ui:search-container-column-text name="label.brand" value="${Utils:printString(transactionVO.cardVO.brand)}" orderable="false" orderableProperty="cardVO.brand"/>
 					<liferay-ui:search-container-column-text name="label.currency" value="${Utils:toUpperCase(transactionVO.chargeVO.currency)}" orderable="false" orderableProperty="chargeVO.currency"/>
 					

@@ -118,6 +118,7 @@ public class FormReportAmountByDay extends MVCPortlet {
 	        writer.flush();
 	        writer.close();
 			session.setAttribute("transactionVOAmount", transactionVO);
+			
 		} catch (ProcesorFacadeException | ReporteAmountByDayException e) {
 			e.printStackTrace();
 //			PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);

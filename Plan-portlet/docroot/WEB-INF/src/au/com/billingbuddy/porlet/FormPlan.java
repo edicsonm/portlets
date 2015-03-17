@@ -15,7 +15,11 @@ import javax.servlet.http.HttpSession;
 import au.com.billingbuddy.business.objects.ProcesorFacade;
 import au.com.billingbuddy.common.objects.Utilities;
 import au.com.billingbuddy.exceptions.objects.ProcesorFacadeException;
+import au.com.billingbuddy.vo.objects.CountryVO;
+import au.com.billingbuddy.vo.objects.CurrencyVO;
+import au.com.billingbuddy.vo.objects.MerchantVO;
 import au.com.billingbuddy.vo.objects.PlanVO;
+import au.com.billingbuddy.vo.objects.SubscriptionVO;
 
 import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
 import com.liferay.portal.kernel.servlet.SessionErrors;
@@ -32,6 +36,7 @@ public class FormPlan extends MVCPortlet {
 		try {
 			HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
 			HttpSession session = request.getSession();
+			
 			ArrayList<PlanVO> listPlans = procesorFacade.listPlans(new PlanVO());
 			session.setAttribute("listPlans", listPlans);
 		} catch (ProcesorFacadeException e) {
@@ -45,6 +50,46 @@ public class FormPlan extends MVCPortlet {
 			System.out.println("e.getErrorCode(): " + e.getErrorCode());
 		}
 		super.doView(renderRequest, renderResponse);
+	}
+	
+	public void listCurrencies(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+		try {
+			HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
+			HttpSession session = request.getSession();
+			
+			ArrayList<CurrencyVO> listCurrencies = procesorFacade.listCurrencies();
+			session.setAttribute("listCurrencies", listCurrencies);
+			
+		} catch (ProcesorFacadeException e) {
+			e.printStackTrace();
+			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+			SessionErrors.add(actionRequest,e.getErrorCode());
+		}
+		actionResponse.setRenderParameter("jspPage", "/jsp/newPlan.jsp");
+	}
+	
+	
+	public void listCurrenciesEditPlan(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+		try {
+			HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
+			HttpSession session = request.getSession();
+			
+			ArrayList<PlanVO> resultsListPlans = (ArrayList<PlanVO>)session.getAttribute("results");
+			PlanVO planVO = (PlanVO)resultsListPlans.get(Integer.parseInt(actionRequest.getParameter("indice")));
+			session.setAttribute("planVO", planVO);
+			
+			ArrayList<CurrencyVO> listCurrencies = procesorFacade.listCurrencies();
+			session.setAttribute("listCurrencies", listCurrencies);
+		} catch (ProcesorFacadeException e) {
+			e.printStackTrace();
+			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+			SessionErrors.add(actionRequest,e.getErrorCode());
+		}
+		actionResponse.setRenderParameter("mvcPath", "/jsp/editPlan.jsp");
 	}
 	
 	public void savePlan(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {

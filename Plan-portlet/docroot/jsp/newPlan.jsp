@@ -21,91 +21,74 @@
 <liferay-ui:error key="ProcessorMDTR.savePlan.PlanDAOException" message="error.ProcessorMDTR.savePlan.PlanDAOException" />
 <% 
 	PlanVO planVO = (PlanVO)session.getAttribute("planVO");
+	ArrayList<CurrencyVO> listCurrencies = (ArrayList<CurrencyVO>)session.getAttribute("listCurrencies");
 %>
 
 <portlet:actionURL name="savePlan" var="submitForm">
 	<portlet:param name="jspPage" value="/jsp/view.jsp" />
 </portlet:actionURL>
 
-<portlet:renderURL var="goBack">
+<portlet:renderURL var="goBackPlan">
 	<portlet:param name="jspPage" value="/jsp/view.jsp" />
 </portlet:renderURL>
 
 <aui:form  action="<%= submitForm %>" method="post">
-	<div class="table">
-		<div class="section">
-			<div class="row">
-				<div class="row">
-					<div class="column1-1">
-						<label class="aui-field-label sub-title"><fmt:message key="label.informationPlan"/></label>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="column1-1">
-					<aui:input label="label.amount" helpMessage="help.amount" showRequiredLabel="false" type="text" required="true" name="amount" value="${planVO.amount}">
-						<aui:validator name="digits"/>
-					</aui:input>
-				</div>
+	<fieldset class="fieldset">
+		<legend class="fieldset-legend">
+			<span class="legend"><fmt:message key="label.informationPlan"/> </span>
+		</legend>
+		<div class="">
+			<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
+			
+			<div class="control-group">
+				<aui:input label="label.amount" helpMessage="help.amount" showRequiredLabel="false" type="text" required="true" name="amount" value="${planVO.amount}">
+					<aui:validator name="digits"/>
+				</aui:input>
 			</div>
 			
-			<div class="row">
-				<div class="column1-1">
-					<aui:input label="label.currency" helpMessage="help.currency" showRequiredLabel="false" size="3" type="text" required="true" name="currency" value="${planVO.currency}">
-					</aui:input>
-				</div>
+			<div class="control-group">
+				<%-- <aui:input label="label.currency" helpMessage="help.currency" showRequiredLabel="false" size="3" type="text" required="true" name="currency" value="${planVO.currency}">
+				</aui:input> --%>
+				<aui:select name="currency" onChange="searchMerchantInformation();" helpMessage="help.currency" label="label.currency" id="currency">
+					<c:forEach var="currencyVO" items="${listCurrencies}">
+						<aui:option value="${currencyVO.alphabeticCode}" label="${currencyVO.alphabeticCode}" selected="${currencyVO.alphabeticCode==planVO.currency}"/>
+					</c:forEach>
+				</aui:select>
 			</div>
 			
-			<div class="row">
-				<div class="column1-1">
-					<aui:select name="interval" helpMessage="help.interval" label="label.interval" id="interval">
-						<aui:option value="Day" label="label.day" selected="${planVO.interval=='Day'}"/>
-						<aui:option value="Week" label="label.week" selected="${planVO.interval=='Week'}"/>
-						<aui:option value="Month" label="label.month" selected="${planVO.interval=='Month'}"/>
-						<aui:option value="Year" label="label.year" selected="${planVO.interval=='Year'}"/>
-					</aui:select>
-				</div>
+			<div class="control-group">
+				<aui:select name="interval" helpMessage="help.interval" label="label.interval" id="interval">
+					<aui:option value="Day" label="label.day" selected="${planVO.interval=='Day'}"/>
+					<aui:option value="Week" label="label.week" selected="${planVO.interval=='Week'}"/>
+					<aui:option value="Month" label="label.month" selected="${planVO.interval=='Month'}"/>
+					<aui:option value="Year" label="label.year" selected="${planVO.interval=='Year'}"/>
+				</aui:select>
+			</div>
+			<div class="control-group">
+				<aui:input label="label.intervalCount" helpMessage="help.intervalCount" showRequiredLabel="false" type="text" required="false" name="intervalCount" value="${planVO.intervalCount}">
+					<aui:validator name="digits"/>
+				</aui:input>
+			</div>
+			<div class="control-group">
+				<aui:input label="label.name" helpMessage="help.name" showRequiredLabel="false" type="text" required="true" name="name" value="${planVO.name}">
+					</aui:input>
 			</div>
 			
-			<div class="row">
-				<div class="column1-1">
-					<aui:input label="label.intervalCount" helpMessage="help.intervalCount" showRequiredLabel="false" type="text" required="false" name="intervalCount" value="${planVO.intervalCount}">
-						<aui:validator name="digits"/>
-					</aui:input>
-				</div>
+			<div class="control-group">
+				<aui:input label="label.trialPeriodDays"  helpMessage="help.trialPeriodDays" showRequiredLabel="false" type="text" required="false" name="trialPeriodDays" value="${planVO.trialPeriodDays}">
+					<aui:validator name="digits"/>
+				</aui:input>
 			</div>
 			
-			<div class="row">
-				<div class="column1-1">
-					<aui:input label="label.name" helpMessage="help.name" showRequiredLabel="false" type="text" required="true" name="name" value="${planVO.name}">
-					</aui:input>
-				</div>
+			
+			<div class="control-group">
+				<aui:input label="label.statementDescriptor" helpMessage="help.statementDescriptor" showRequiredLabel="false" type="textarea" required="false" name="statementDescriptor" value="${planVO.statementDescriptor}">
+				</aui:input>
 			</div>
 			
-			<div class="row">
-				<div class="column1-1">
-					<aui:input label="label.trialPeriodDays"  helpMessage="help.trialPeriodDays" showRequiredLabel="false" type="text" required="false" name="trialPeriodDays" value="${planVO.trialPeriodDays}">
-						<aui:validator name="digits"/>
-					</aui:input>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-1">
-					<aui:input label="label.statementDescriptor" helpMessage="help.statementDescriptor" showRequiredLabel="false" type="textarea" required="false" name="statementDescriptor" value="${planVO.statementDescriptor}">
-					</aui:input>
-				</div>
-			</div>
-			<div class="row">
-				<div class="column1-2">
-						<span class="goBack" >
-							<a href="<%= goBack %>"><fmt:message key="label.goBack"/></a>
-						</span>
-					</div>
-				<div class="column2-2">
-					<aui:button type="submit" name="save" value="label.save" />
-				</div>
-			</div>
+			<a href="<%= goBackPlan %>"><fmt:message key="label.goBack"/></a>
+			<aui:button type="submit" name="save" value="label.save" />
 		</div>
-	</div>
+	</fieldset>
+	
 </aui:form>
