@@ -2,8 +2,6 @@ package au.com.billingbuddy.porlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Iterator;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -11,13 +9,9 @@ import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletConfig;
 import javax.portlet.PortletException;
-import javax.portlet.PortletPreferences;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import au.com.billingbuddy.business.objects.ProcesorFacade;
@@ -30,16 +24,12 @@ import au.com.billingbuddy.vo.objects.MerchantVO;
 import com.liferay.mail.service.MailServiceUtil;
 import com.liferay.portal.kernel.mail.MailMessage;
 import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
-import com.liferay.portal.kernel.portlet.LiferayPortletMode;
-import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.servlet.PortalSessionThreadLocal;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
-import com.liferay.portlet.PortletURLFactoryUtil;
 import com.liferay.util.ContentUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
 
@@ -49,17 +39,17 @@ public class FormMerchant extends MVCPortlet {
 	@Override
 	public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
 		System.out.println("Ejecuta doView");
-//		Enumeration<String> val = renderRequest.getAttributeNames();
-//		while(val.hasMoreElements()){
-//			System.out.println(val.nextElement());
-//		}
+		HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
+		HttpSession session = request.getSession();
+		String UserId = (String)PortalSessionThreadLocal.getHttpSession().getAttribute("UserId");
+		
 		try {
-			HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
-			HttpSession session = request.getSession();
-			ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants();
+//			ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
+//			User user = themeDisplay.getRealUser();
+			
+			ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants(new MerchantVO(String.valueOf(PortalUtil.getUserId(request))));
 			session.setAttribute("listMerchants", listMerchants);
-			
-			
+			System.out.println("listMerchants.size(): " + listMerchants.size());
 			/**/
 			ArrayList<CountryVO> listCountries = procesorFacade.listCountries();
 			session.setAttribute("listCountries", listCountries);
@@ -81,6 +71,7 @@ public class FormMerchant extends MVCPortlet {
 			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
 			System.out.println("e.getErrorCode(): " + e.getErrorCode());
 		}
+		
 		super.doView(renderRequest, renderResponse);
 	}
 	
@@ -203,7 +194,10 @@ public class FormMerchant extends MVCPortlet {
 		try {
 			procesorFacade.saveMerchant(merchantVO);
 			if(merchantVO.getStatus().equalsIgnoreCase("success")) {
-				ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants();
+				String UserId = (String)PortalSessionThreadLocal.getHttpSession().getAttribute("UserId");
+				merchantVO.setUserId(UserId);
+				
+				ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants(merchantVO);
 				session.setAttribute("listMerchants", listMerchants);
 				SessionMessages.add(actionRequest, "merchantSavedSuccessfully");
 				
@@ -322,7 +316,10 @@ public class FormMerchant extends MVCPortlet {
 		try {
 			procesorFacade.updateMerchant(merchantVO);
 			if(merchantVO.getStatus().equalsIgnoreCase("success")) {
-				ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants();
+				String UserId = (String)PortalSessionThreadLocal.getHttpSession().getAttribute("UserId");
+				merchantVO.setUserId(UserId);
+				
+				ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants(merchantVO);
 				session.setAttribute("listMerchants", listMerchants);
 				SessionMessages.add(actionRequest, "merchantUpdatedSuccessfully");
 				
@@ -405,7 +402,9 @@ public class FormMerchant extends MVCPortlet {
 		try {
 			procesorFacade.updateMerchant(merchantVO);
 			if(merchantVO.getStatus().equalsIgnoreCase("success")) {
-				ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants();
+				String UserId = (String)PortalSessionThreadLocal.getHttpSession().getAttribute("UserId");
+				merchantVO.setUserId(UserId);
+				ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants(merchantVO);
 				session.setAttribute("listMerchants", listMerchants);
 				SessionMessages.add(actionRequest, "merchantUpdatedSuccessfully");
 				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
@@ -440,7 +439,11 @@ public class FormMerchant extends MVCPortlet {
 		try {
 			procesorFacade.deleteMerchant(merchantVO);
 			if(merchantVO.getStatus().equalsIgnoreCase("success")) {
-				ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants();
+				
+				String UserId = (String)PortalSessionThreadLocal.getHttpSession().getAttribute("UserId");
+				merchantVO.setUserId(UserId);
+				
+				ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants(merchantVO);
 				session.setAttribute("listMerchants", listMerchants);
 				SessionMessages.add(actionRequest, "merchantDeletedSuccessfully");
 			}else{

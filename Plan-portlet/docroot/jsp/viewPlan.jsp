@@ -28,69 +28,59 @@
 </portlet:renderURL>
 
 <aui:form method="post">
-	<div class="table">
-		<div class="section">
-			<div class="row">
-				<div class="row">
-					<div class="column1-1">
-						<label class="aui-field-label sub-title"><fmt:message key="label.informationPlan"/></label>
+<fieldset class="fieldset">
+	<legend class="fieldset-legend">
+		<span class="legend"><fmt:message key="label.informationPlan"/> </span>
+	</legend>
+	<div class="">
+		<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
+		<div class="details">
+			<div id="contenedor">
+				<div id="contenidos">
+					<div id="columna1-2">
+						<dl class="property-list">
+							<dt><fmt:message key="label.name"/></dt>
+							<dd><c:out value="${planVO.name}"/></dd>
+						</dl>
+					</div>
+					<div id="columna2-2">
+						<dl class="property-list">
+							<dt><fmt:message key="label.amount"/></dt>
+							<dd><c:out value="${planVO.amount}"/></dd>
+						</dl>
 					</div>
 				</div>
-			</div>
-			<div class="row">
-				<div class="column1-4">
-					<label class="aui-field-label"><fmt:message key="label.name"/></label>
-				</div>
-				<div class="column2-4">
-					<c:out value="${planVO.name}"/>
-				</div>
-				<div class="column3-4">
-					<label class="aui-field-label"><fmt:message key="label.amount"/></label>
-				</div>
-				<div class="column4-4">
-					<c:out value="${planVO.amount}"/>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-4">
-					<label class="aui-field-label"><fmt:message key="label.currency"/></label>
-				</div>
-				<div class="column2-4">
-					<c:out value="${planVO.currency}"/>
-				</div>
-				<div class="column3-4">
-					<label class="aui-field-label"><fmt:message key="label.statementDescriptor"/></label>
-				</div>
-				<div class="column4-4">
-					<c:out value="${planVO.statementDescriptor}"/>
-				</div>
-				
-			</div>
-			
-			<div class="row">
-				<div class="column1-4">
-					<label class="aui-field-label"><fmt:message key="label.interval"/></label>
-				</div>
-				<div class="column2-4">
-					<c:out value="${planVO.interval}"/>
-				</div>
-				<div class="column3-4">
-					<label class="aui-field-label"><fmt:message key="label.trialPeriodDays"/></label>
-				</div>
-				<div class="column4-4">
-					<c:out value="${planVO.trialPeriodDays}"/>
-				</div>
-			</div>
-			<div class="row">
-				<div class="column1-2">
-						<span class="goBack" >
-							<a href="<%= goBack %>"><fmt:message key="label.goBack"/></a>
-						</span>
+				<div id="contenidos">
+					<div id="columna1-2">
+						<dl class="property-list">
+							<dt><fmt:message key="label.currency"/></dt>
+							<dd><c:out value="${planVO.currency}"/></dd>
+						</dl>
 					</div>
-				<div class="column2-2">
+					<div id="columna2-2">
+						<dl class="property-list">
+							<dt><fmt:message key="label.statementDescriptor"/></dt>
+							<dd><c:out value="${planVO.statementDescriptor}"/></dd>
+						</dl>
+					</div>
+				</div>
+				<div id="contenidos">
+					<div id="columna1-2">
+						<dl class="property-list">
+							<dt><fmt:message key="label.interval"/></dt>
+							<dd><c:out value="${planVO.interval}"/></dd>
+						</dl>
+					</div>
+					<div id="columna2-2">
+						<dl class="property-list">
+							<dt><fmt:message key="label.trialPeriodDays"/></dt>
+							<dd><c:out value="${planVO.trialPeriodDays}"/></dd>
+						</dl>
+					</div>
 				</div>
 			</div>
 		</div>
+		<a href="<%= goBack %>"><fmt:message key="label.goBack"/></a>
 	</div>
+</fieldset>
 </aui:form>

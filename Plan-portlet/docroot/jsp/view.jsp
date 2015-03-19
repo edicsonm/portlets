@@ -89,13 +89,6 @@
 						</portlet:actionURL>
 						<liferay-ui:icon image="edit" message="label.edit" url="<%=editURL.toString()%>" />
 						
-						<%-- <liferay-portlet:renderURL varImpl="editURL">
-							<portlet:param name="mvcPath" value="/jsp/editPlan.jsp" />
-							<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
-							<portlet:param name="idPlan" value="<%=String.valueOf(planVO.getId())%>"/>
-						</liferay-portlet:renderURL>
-						<liferay-ui:icon image="edit" message="label.edit" url="<%=editURL.toString()%>" /> --%>
-						
 						<portlet:actionURL var="deleteURL" name="deletePlan">
 							<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
 						</portlet:actionURL>

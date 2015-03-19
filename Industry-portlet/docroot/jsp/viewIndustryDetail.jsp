@@ -35,14 +35,16 @@
 		<div class="">
 			<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
 			<div class="details">
-				<dl class="property-list">
-					<dt><fmt:message key="label.description"/></dt>
-					<dd><c:out value="${industryVO.description}"/></dd>
-					<!-- <dt>Fecha de nacimiento</dt>
-					<dd>1/01/70</dd>
-					<dt>Género</dt>
-					<dd>Hombre</dd> -->
-				</dl>
+				<div id="contenedor">
+					<div id="contenidos">
+						<div id="columna1-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.description"/></dt>
+								<dd><c:out value="${industryVO.description}"/></dd>
+							</dl>
+						</div>
+					</div>
+				</div>
 			</div>
 			<a href="<%= goBackIndustry %>"><fmt:message key="label.goBack"/></a>
 		</div>

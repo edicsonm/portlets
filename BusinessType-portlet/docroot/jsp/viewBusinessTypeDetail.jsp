@@ -24,21 +24,27 @@
 	request.setAttribute("businessTypeVO", businessTypeVO);
 %>
 <portlet:renderURL var="goBackBusinessType">
-	<portlet:param name="mvc" value="/jsp/viewBusinessType.jsp" />
+	<portlet:param name="mvc" value="/jsp/viewBusinessType.jsp"/>
 </portlet:renderURL>
 
 <aui:form method="post">
-
 	<fieldset class="fieldset">
 		<legend class="fieldset-legend">
-			<span class="legend"><fmt:message key="label.informationBusinessType"/> </span>
+			<span class="legend"><fmt:message key="label.informationBusinessType"/></span>
 		</legend>
 		<div class="">
+			<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
 			<div class="details">
-				<dl class="property-list">
-					<dt><fmt:message key="label.description"/></dt>
+				<div id="contenedor">
+					<div id="contenidos">
+						<div id="columna1-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.description"/></dt>
 					<dd><c:out value="${businessTypeVO.description}"/></dd>
-				</dl>
+							</dl>
+						</div>
+					</div>
+				</div>
 			</div>
 			<a href="<%= goBackBusinessType %>"><fmt:message key="label.goBack"/></a>
 		</div>

@@ -37,14 +37,9 @@
 
 <portlet:resourceURL var="searchMerchantInformation" >
 	<portlet:param name="action" value="chargeMerchantInformation" />
-	<%-- <portlet:param name="idMerchant" value="<%=certificateVO.getId()%>" /> --%>
 </portlet:resourceURL>
 
 <script>
-/* 	$("select#_CertificateGeneration_WAR_CertificateGenerationportlet_merchant").change(function() {
-		alert( "Handler for .change() called." );
-	});
- */
 function searchMerchantInformation(){
 	var url = '<%=searchMerchantInformation%>';
     $.ajax({

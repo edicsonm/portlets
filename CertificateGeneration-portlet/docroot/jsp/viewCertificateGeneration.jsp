@@ -68,27 +68,49 @@
 	<div class="">
 		<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
 		<div class="details">
-			<dl class="property-list">
-				<dt><fmt:message key="label.merchant"/></dt>
-				<dd><c:out value="${certificateVO.merchantVO.name}"/></dd>
-				
-				<dt><fmt:message key="label.commonName"/></dt>
-				<dd><c:out value="${certificateVO.commonName}"/></dd>
-				
-				<dt><fmt:message key="label.creationTime"/></dt>
-				<dd><c:out value="<%=Utilities.formatDate(certificateVO.getCreationTime()) %>"/></dd>
-				
-				<dt><fmt:message key="label.expirationTime"/></dt>
-				<dd><c:out value="<%=Utilities.formatDate(certificateVO.getExpirationTime()) %>"/></dd>
-				
-				<dt><fmt:message key="label.status"/></dt>
-				<dd>
-					<%
-						if(!certificateVO.getStatus().equalsIgnoreCase("1")) {%><fmt:message key="label.active"/><%
-						}else{%> <fmt:message key="label.inactive"/><%}
-					%>
-				</dd>
-			</dl>
+		<div id="contenedor">
+			<div id="contenidos">
+				<div id="columna1-2">
+					<dl class="property-list">
+						<dt><fmt:message key="label.merchant"/></dt>
+						<dd><c:out value="${certificateVO.merchantVO.name}"/></dd>
+					</dl>
+				</div>
+				<div id="columna2-2">
+					<dl class="property-list">
+						<dt><fmt:message key="label.commonName"/></dt>
+						<dd><c:out value="${certificateVO.commonName}"/></dd>
+					</dl>
+				</div>
+			</div>
+			<div id="contenidos">
+				<div id="columna1-2">
+					<dl class="property-list">
+						<dt><fmt:message key="label.creationTime"/></dt>
+						<dd><c:out value="<%=Utilities.formatDate(certificateVO.getCreationTime()) %>"/></dd>
+					</dl>
+				</div>
+				<div id="columna2-2">
+					<dl class="property-list">
+						<dt><fmt:message key="label.expirationTime"/></dt>
+						<dd><c:out value="${Utils:formatDate(3,certificateVO.expirationTime,5)}"/></dd>
+					</dl>
+				</div>
+			</div>
+			<div id="contenidos">
+				<div id="columna1-2">
+					<dl class="property-list">
+						<dt><fmt:message key="label.status"/></dt>
+						<dd>
+							<%
+								if(!certificateVO.getStatus().equalsIgnoreCase("1")) {%><fmt:message key="label.active"/><%
+								}else{%> <fmt:message key="label.inactive"/><%}
+							%>
+						</dd>
+					</dl>
+				</div>
+			</div>
+		</div>
 		</div>
 		<a href="<%= goBackIndustryCertificate %>"><fmt:message key="label.goBack"/></a>
 		<a class="btn btn-primary" href="<%= downloadCertificate %>"><fmt:message key="label.downloadCertificate"/></a>

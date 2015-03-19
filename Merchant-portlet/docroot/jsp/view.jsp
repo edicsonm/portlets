@@ -74,7 +74,7 @@
 					</liferay-portlet:renderURL>
 					
 					<liferay-ui:search-container-column-text name="label.merchant" property="name" value="name" orderable="true" orderableProperty="name" href="<%= rowURL %>"/>
-					<liferay-ui:search-container-column-text name="label.countryBusinessInformation" property="countryVOBusiness.name" value="countryVOBusiness.name" orderable="false" orderableProperty="countryVOBusiness.name"/>
+					<liferay-ui:search-container-column-text name="label.countryBusinessInformation" value="${merchantVO.countryVOBusiness.name}" orderable="false" orderableProperty="countryVOBusiness.name"/>
 					<%-- <liferay-ui:search-container-column-text name="label.concept" property="concept" value="concept" orderable="false" orderableProperty="concept"/> --%>
 					<liferay-ui:search-container-column-text name="Accion">
 						<liferay-ui:icon-menu>

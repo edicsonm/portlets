@@ -50,10 +50,6 @@
 	if(listSubscriptions == null) listSubscriptions = new ArrayList<SubscriptionVO>();
 %>
 
-<%-- <portlet:renderURL var="newSubscription">
-	<portlet:param name="jspPage" value="/jsp/newSubscription.jsp" />
-</portlet:renderURL> --%>
-
 <portlet:actionURL var="listPlan" name="listPlan"/>
 
 <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURL" />
@@ -91,12 +87,6 @@
 								<portlet:param name="mvcPath" value="/jsp/editSubscription.jsp" />
 							</portlet:actionURL>
 							<liferay-ui:icon image="edit" message="label.edit" url="<%=editURL.toString()%>" />
-							
-							<%-- <liferay-portlet:renderURL varImpl="editURL">
-								<portlet:param name="mvcPath" value="/jsp/editSubscription.jsp" />
-								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
-							</liferay-portlet:renderURL>
-							<liferay-ui:icon image="edit" message="label.edit" url="<%=editURL.toString()%>" /> --%>
 							
 							<portlet:actionURL var="deleteURL" name="deleteSubscription">
 								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
