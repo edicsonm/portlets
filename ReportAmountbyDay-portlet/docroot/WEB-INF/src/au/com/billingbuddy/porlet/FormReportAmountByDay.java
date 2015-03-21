@@ -31,6 +31,7 @@ import au.com.billingbuddy.exceptions.objects.ReportFacadeException;
 import au.com.billingbuddy.exceptions.objects.ReporteAmountByDayException;
 import au.com.billingbuddy.porlet.reports.ReporteAmountByDay;
 import au.com.billingbuddy.porlet.utilities.GraphTemplate;
+import au.com.billingbuddy.vo.objects.MerchantVO;
 import au.com.billingbuddy.vo.objects.TransactionVO;
 
 import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
@@ -58,6 +59,7 @@ public class FormReportAmountByDay extends MVCPortlet {
 //			transactionVO.setInitialDateReport(BBUtils.getCurrentDate(2,-1*(Integer.parseInt(ConfigurationSystem.getKey("days.PROC_SEARCH_AMOUNT_BY_DAY")))));
 			transactionVO.setInitialDateReport(BBUtils.getCurrentDate(2,-1*(150)));
 			transactionVO.setFinalDateReport(BBUtils.getCurrentDate(2,0));
+			transactionVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
 			
 			StreamSource xslStream = new StreamSource("/mnt/Informacion/NuevoBB/Liferay/tomcat-7.0.42/webapps/ReportAmountbyDay-portlet/WEB-INF/src/graphTemplate/graphTemplate.xsl");
 			ArrayList<TransactionVO> listAmountsByDay = procesorFacade.searchAmountByDay(transactionVO);
@@ -108,6 +110,7 @@ public class FormReportAmountByDay extends MVCPortlet {
 			}
 			
 			StreamSource xslStream = new StreamSource("/mnt/Informacion/NuevoBB/Liferay/tomcat-7.0.42/webapps/ReportAmountbyDay-portlet/WEB-INF/src/graphTemplate/graphTemplate.xsl");
+			transactionVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
 			ArrayList<TransactionVO> listAmountsByDay = procesorFacade.searchAmountByDay(transactionVO);
 			ReporteAmountByDay reporteAmountByDay = new ReporteAmountByDay(xslStream, GraphTemplate.getMap());
 			StringWriter report = reporteAmountByDay.CreateXml(listAmountsByDay);

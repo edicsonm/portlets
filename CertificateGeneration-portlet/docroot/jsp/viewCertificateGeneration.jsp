@@ -113,7 +113,9 @@
 		</div>
 		</div>
 		<a href="<%= goBackIndustryCertificate %>"><fmt:message key="label.goBack"/></a>
-		<a class="btn btn-primary" href="<%= downloadCertificate %>"><fmt:message key="label.downloadCertificate"/></a>
+		<c:if test="<%= RoleServiceUtil.hasUserRole(user.getUserId(), user.getCompanyId(), \"MerchantAdministrator\", true) %>">
+			<a class="btn btn-primary" href="<%= downloadCertificate %>"><fmt:message key="label.downloadCertificate"/></a>
+		</c:if>
 	</div>
 </fieldset>
 </aui:form>

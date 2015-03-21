@@ -49,6 +49,7 @@ public class FormReportTransactionsByDay extends MVCPortlet {
 //			transactionVO.setInitialDateReport(BBUtils.getCurrentDate(2,-1*(Integer.parseInt(ConfigurationSystem.getKey("days.PROC_SEARCH_AMOUNT_BY_DAY")))));
 			transactionVO.setInitialDateReport(BBUtils.getCurrentDate(2,-1*(150)));
 			transactionVO.setFinalDateReport(BBUtils.getCurrentDate(2,0));
+			transactionVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
 			
 			ArrayList<TransactionVO> listTransactionsByDay = reportFacade.searchTransactionsByDay(transactionVO);
 			session.setAttribute("listTransactionsByDay", listTransactionsByDay);
@@ -87,6 +88,8 @@ public class FormReportTransactionsByDay extends MVCPortlet {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
+			
+			transactionVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
 			ArrayList<TransactionVO> listTransactionsByDay = reportFacade.searchTransactionsByDay(transactionVO);
 			session.setAttribute("transactionVO", transactionVO);
 			

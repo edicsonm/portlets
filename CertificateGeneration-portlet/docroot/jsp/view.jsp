@@ -59,7 +59,7 @@
 <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURL" />
 <aui:form method="post">
 	<div class="table">
-			<liferay-ui:search-container emptyResultsMessage="label.empty" delta="2" iteratorURL="<%=renderURL%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
+			<liferay-ui:search-container emptyResultsMessage="label.empty" delta="4" iteratorURL="<%=renderURL%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
 				<liferay-ui:search-container-results>
 					<%
 						listCertificates = Methods.orderCertificates(listCertificates,orderByCol,orderByType);
@@ -85,31 +85,31 @@
 					<%}else{%> 
 							<liferay-ui:search-container-column-text name="label.status" value="<%=inactive%>" orderable="false" orderableProperty="status"/>
 					<%}%>
+					<c:if test="<%= RoleServiceUtil.hasUserRole(user.getUserId(), user.getCompanyId(), \"MerchantAdministrator\", true) %>">
+						<liferay-ui:search-container-column-text name="Accion">
+							<liferay-ui:icon-menu>
+								
+								<portlet:actionURL var="editURL" name="changeStatus">
+									<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
+									<portlet:param name="mvcPath" value="/jsp/view.jsp" />
+								</portlet:actionURL>
+								<%if(!certificateVO.getStatus().equalsIgnoreCase("1")) {%>
+										<liferay-ui:icon onClick="return confirm('Are you sure do you want to change this certificate status?')" image="edit" message="label.inactivate"  url="<%=editURL.toString()%>" />
+								<%}else{%> 
+										<liferay-ui:icon onClick="return confirm('Are you sure do you want to change this certificate status?')" image="edit" message="label.activate" url="<%=editURL.toString()%>" />
+								<%}%>
+								 
+							</liferay-ui:icon-menu>
+						</liferay-ui:search-container-column-text>
 					
-					<liferay-ui:search-container-column-text name="Accion">
-						<liferay-ui:icon-menu>
-							
-							<portlet:actionURL var="editURL" name="changeStatus">
-								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
-								<portlet:param name="mvcPath" value="/jsp/view.jsp" />
-							</portlet:actionURL>
-							<%if(!certificateVO.getStatus().equalsIgnoreCase("1")) {%>
-									<liferay-ui:icon onClick="return confirm('Are you sure do you want to change this certificate status?')" image="edit" message="label.inactivate"  url="<%=editURL.toString()%>" />
-							<%}else{%> 
-									<liferay-ui:icon onClick="return confirm('Are you sure do you want to change this certificate status?')" image="edit" message="label.activate" url="<%=editURL.toString()%>" />
-							<%}%>
-							<%-- <liferay-ui:icon image="edit" message="label.edit" url="<%=editURL.toString()%>" /> --%>
-							 
-						</liferay-ui:icon-menu>
-					</liferay-ui:search-container-column-text>
-					
+					</c:if>
 				</liferay-ui:search-container-row>
 				<liferay-ui:search-iterator />
 			</liferay-ui:search-container>
-		
+		<c:if test="<%= RoleServiceUtil.hasUserRole(user.getUserId(), user.getCompanyId(), \"MerchantAdministrator\", true) %>">
 			<span class="newMerchant" >
 				<a href="<%= listMerchantsAndCountries %>"><fmt:message key="label.newCertificateGeneration"/></a>
 			</span>
-		
+		</c:if>
 	</div>
 </aui:form>

@@ -53,8 +53,7 @@
 
 <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURL" />
 <aui:form method="post">
-	<div class="table">
-		<div class="row">
+		<div class="table">
 			<liferay-ui:search-container emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURL%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
 				<liferay-ui:search-container-results>
 					<%
@@ -84,33 +83,26 @@
 								<portlet:param name="mvcPath" value="/jsp/editMerchant.jsp" />
 							</portlet:actionURL>
 							<liferay-ui:icon image="edit" message="label.edit" url="<%=editURL.toString()%>" />
-							
-							<portlet:actionURL var="inactivateURLMerchant" name="inactivateMerchant">
-								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
-							</portlet:actionURL>
-							<% if(merchantVO.getStatus().equalsIgnoreCase("0")){%>
-								<liferay-ui:icon-deactivate  label="label.inactivate" url="<%=inactivateURLMerchant.toString()%>" />
-							<%}else{ %>
-								<liferay-ui:icon image="activate" label="label.inactivate" url="<%= inactivateURLMerchant.toString() %>" />
-							<%}%>
-							 
+							<c:if test="<%= RoleServiceUtil.hasUserRole(user.getUserId(), user.getCompanyId(), \"MerchantAdministrator\", true) %>">
+								<portlet:actionURL var="inactivateURLMerchant" name="inactivateMerchant">
+									<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
+								</portlet:actionURL>
+								<% if(merchantVO.getStatus().equalsIgnoreCase("0")){%>
+									<liferay-ui:icon-deactivate  label="label.inactivate" url="<%=inactivateURLMerchant.toString()%>" />
+								<%}else{ %>
+									<liferay-ui:icon image="activate" label="label.inactivate" url="<%= inactivateURLMerchant.toString() %>" />
+								<%}%>
+							</c:if>
 						</liferay-ui:icon-menu>
 					</liferay-ui:search-container-column-text>
 					
 				</liferay-ui:search-container-row>
 				<liferay-ui:search-iterator />
 			</liferay-ui:search-container>
-		</div>
-		
-		<div class="row">
-			<div class="column1-2">
+			<c:if test="<%= RoleServiceUtil.hasUserRole(user.getUserId(), user.getCompanyId(), \"MerchantAdministrator\", true) %>">
 				<span class="newMerchant" >
 					<a href="<%= newMerchant %>"><fmt:message key="label.newMerchant"/></a>
 				</span>
-			</div>
-			<div class="column2-2">
-			</div>
+			</c:if>
 		</div>
-		
-	</div>
 </aui:form>

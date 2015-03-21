@@ -55,7 +55,7 @@ public class FormCertificateGeneration extends MVCPortlet {
 		HttpSession session = request.getSession();
 		try {
 //			session.removeAttribute("certificateVO");
-			ArrayList<CertificateVO> listCertificates = securityFacade.listCertificates();
+			ArrayList<CertificateVO> listCertificates = securityFacade.listCertificates(new CertificateVO(String.valueOf(PortalUtil.getUserId(request))));
 			session.setAttribute("listCertificates", listCertificates);
 		} catch (SecurityFacadeException e) {
 			e.printStackTrace();
@@ -88,7 +88,7 @@ public class FormCertificateGeneration extends MVCPortlet {
 		try {
 			securityFacade.certificateGeneration(certificateVO);
 			if(certificateVO.getStatus().equalsIgnoreCase("success")) {
-				ArrayList<CertificateVO> listCertificates = securityFacade.listCertificates();
+				ArrayList<CertificateVO> listCertificates = securityFacade.listCertificates(new CertificateVO(String.valueOf(PortalUtil.getUserId(request))));
 				session.setAttribute("listCertificates", listCertificates);
 				SessionMessages.add(actionRequest, "certificateGenerationSuccessfully");
 				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
@@ -121,7 +121,7 @@ public class FormCertificateGeneration extends MVCPortlet {
 			HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 			HttpSession session = request.getSession();
 			
-			ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants();
+			ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants(new MerchantVO(String.valueOf(PortalUtil.getUserId(request))));
 			session.setAttribute("listMerchants", listMerchants);
 			
 			ArrayList<CountryVO> listCountries = procesorFacade.listCountries();
@@ -151,7 +151,7 @@ public class FormCertificateGeneration extends MVCPortlet {
 			session.setAttribute("certificateVO", certificateVO);
 			certificateVO = securityFacade.updateStatusCertificate(certificateVO);
 			if(certificateVO.getStatus().equalsIgnoreCase("success")) {
-				ArrayList<CertificateVO> listCertificates = securityFacade.listCertificates();
+				ArrayList<CertificateVO> listCertificates = securityFacade.listCertificates(new CertificateVO(String.valueOf(PortalUtil.getUserId(request))));
 				session.setAttribute("listCertificates", listCertificates);
 				SessionMessages.add(actionRequest, "certificateChangeSuccessfully");
 			} else {

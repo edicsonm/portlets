@@ -9,12 +9,12 @@ import au.com.billingbuddy.vo.objects.MerchantVO;
 
 public class Methods {
 	
-	public static void orderMerchant(String campo, ArrayList list) {
+	public static void orderMerchant(String campo, ArrayList<MerchantVO> list) {
 		BeanComparator comparator= new BeanComparator(campo);
 		Collections.sort(list, comparator);
 	}
 	
-	public static ArrayList orderMerchant(ArrayList list, String orderByCol, String orderByType ) {
+	public static ArrayList<MerchantVO> orderMerchant(ArrayList<MerchantVO> list, String orderByCol, String orderByType ) {
 		BeanComparator comparator= new BeanComparator(orderByCol);
 		if(list != null){
 			if(orderByType.equals("asc")){

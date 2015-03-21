@@ -25,6 +25,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
 
+<%@ page import="com.liferay.portal.service.RoleServiceUtil" %>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="java.util.Date"%>
 <%@ page import="java.util.Calendar"%>
@@ -34,7 +35,7 @@
 <%@ page import="com.liferay.portal.kernel.dao.search.SearchContainer"%>
 <%@ page import="com.liferay.portal.kernel.util.ListUtil" %>
 <%@ page import="com.liferay.portal.kernel.util.ParamUtil" %>
-<%@ page import="au.com.billigbuddy.porlet.utilities.Methods" %>
+<%@ page import="au.com.billingbuddy.porlet.utilities.Methods" %>
 <%@ page import="au.com.billingbuddy.common.objects.Utilities" %>
 <%@ page import="au.com.billingbuddy.common.objects.Currency" %>
 <%@ page import="java.util.ArrayList" %>

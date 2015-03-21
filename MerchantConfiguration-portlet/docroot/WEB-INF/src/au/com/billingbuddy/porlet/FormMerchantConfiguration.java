@@ -93,7 +93,7 @@ public class FormMerchantConfiguration extends MVCPortlet {
 		try {
 			HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 			HttpSession session = request.getSession();
-			ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants();
+			ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants(new MerchantVO(String.valueOf(PortalUtil.getUserId(request))));
 			session.setAttribute("listMerchants", listMerchants);
 		} catch (ProcesorFacadeException e) {
 			e.printStackTrace();
@@ -114,7 +114,7 @@ public class FormMerchantConfiguration extends MVCPortlet {
 			MerchantConfigurationVO merchantConfigurationVO = (MerchantConfigurationVO)resultsListMerchantConfigurations.get(Integer.parseInt(actionRequest.getParameter("indice")));
 			session.setAttribute("merchantConfigurationVO", merchantConfigurationVO);
 			
-			ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants();
+			ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants(new MerchantVO(String.valueOf(PortalUtil.getUserId(request))));
 			session.setAttribute("listMerchants", listMerchants);
 			
 		} catch (ProcesorFacadeException e) {
