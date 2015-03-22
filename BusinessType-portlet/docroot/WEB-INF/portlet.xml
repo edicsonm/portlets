@@ -27,7 +27,7 @@
 			<role-name>administrator</role-name>
 		</security-role-ref>
 		<security-role-ref>
-			<role-name>BillingBuddyAdministrator</role-name>
+			<role-name>power-user</role-name>
 		</security-role-ref>
 	</portlet>
 </portlet-app>

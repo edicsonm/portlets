@@ -33,7 +33,7 @@ public class FormMerchantConfiguration extends MVCPortlet {
 		HttpSession session = request.getSession();
 		try {
 			session.removeAttribute("merchantConfigurationVO");
-			ArrayList<MerchantConfigurationVO> listMerchantConfigurations = procesorFacade.listMerchantConfigurations();
+			ArrayList<MerchantConfigurationVO> listMerchantConfigurations = procesorFacade.listMerchantConfigurations(new MerchantConfigurationVO(String.valueOf(PortalUtil.getUserId(request))));
 			session.setAttribute("listMerchantConfigurations", listMerchantConfigurations);
 		} catch (ProcesorFacadeException e) {
 			e.printStackTrace();
@@ -61,17 +61,15 @@ public class FormMerchantConfiguration extends MVCPortlet {
 		try {
 			procesorFacade.saveMerchantConfiguration(merchantConfigurationVO);
 			if(merchantConfigurationVO.getStatus().equalsIgnoreCase("success")) {
-				ArrayList<MerchantConfigurationVO> listMerchantConfigurations = procesorFacade.listMerchantConfigurations();
+				ArrayList<MerchantConfigurationVO> listMerchantConfigurations = procesorFacade.listMerchantConfigurations(new MerchantConfigurationVO(String.valueOf(PortalUtil.getUserId(request))));
 				session.setAttribute("listMerchantConfigurations", listMerchantConfigurations);
 				SessionMessages.add(actionRequest, "merchantConfigurationSavedSuccessfully");
 				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
 			} else {
-				System.out.println("merchantConfigurationVO.getMessage(): " + merchantConfigurationVO.getMessage());
 				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 				SessionErrors.add(actionRequest, "error");
-				System.out.println("merchantConfigurationVO.getMessage(): " + merchantConfigurationVO.getMessage());
 				SessionErrors.add(actionRequest,merchantConfigurationVO.getMessage());
 				session.setAttribute("merchantConfigurationVO", merchantConfigurationVO);
 				actionResponse.setRenderParameter("jspPage", "/jsp/newMerchantConfiguration.jsp");
@@ -93,7 +91,7 @@ public class FormMerchantConfiguration extends MVCPortlet {
 		try {
 			HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 			HttpSession session = request.getSession();
-			ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants(new MerchantVO(String.valueOf(PortalUtil.getUserId(request))));
+			ArrayList<MerchantVO> listMerchants = procesorFacade.searchMerchantsToConfigure(new MerchantVO(String.valueOf(PortalUtil.getUserId(request))));
 			session.setAttribute("listMerchants", listMerchants);
 		} catch (ProcesorFacadeException e) {
 			e.printStackTrace();
@@ -139,17 +137,15 @@ public class FormMerchantConfiguration extends MVCPortlet {
 		try {
 			procesorFacade.updateMerchantConfiguration(merchantConfigurationVO);
 			if(merchantConfigurationVO.getStatus().equalsIgnoreCase("success")) {
-				ArrayList<MerchantConfigurationVO> listMerchantConfigurations = procesorFacade.listMerchantConfigurations();
+				ArrayList<MerchantConfigurationVO> listMerchantConfigurations = procesorFacade.listMerchantConfigurations(new MerchantConfigurationVO(String.valueOf(PortalUtil.getUserId(request))));
 				session.setAttribute("listMerchantConfigurations", listMerchantConfigurations);
 				SessionMessages.add(actionRequest, "merchantConfigurationUpdatedSuccessfully");
 				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
 			} else {
-				System.out.println("merchantConfigurationVO.getMessage(): " + merchantConfigurationVO.getMessage());
 				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 				SessionErrors.add(actionRequest, "error");
-				System.out.println("merchantConfigurationVO.getMessage(): " + merchantConfigurationVO.getMessage());
 				SessionErrors.add(actionRequest,merchantConfigurationVO.getMessage());
 				session.setAttribute("merchantConfigurationVO", merchantConfigurationVO);
 				actionResponse.setRenderParameter("jspPage", "/jsp/editMerchantConfiguration.jsp");

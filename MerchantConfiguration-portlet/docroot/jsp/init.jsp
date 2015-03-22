@@ -30,6 +30,8 @@
 <%@ page import="java.util.Calendar"%>
 <%@ page import="java.util.GregorianCalendar"%>
 <%@ page import="java.util.Locale"%>
+
+<%@ page import="com.liferay.portal.service.RoleServiceUtil" %>
 <%@ page import="com.liferay.portal.kernel.util.CalendarFactoryUtil" %>
 <%@ page import="com.liferay.portal.kernel.dao.search.SearchContainer"%>
 <%@ page import="com.liferay.portal.kernel.util.ListUtil" %>

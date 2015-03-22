@@ -135,7 +135,6 @@
 			<span class="legend"><fmt:message key="label.reportDescription"/> </span>
 		</legend>
 		<div class="">
-			
 			<div id="contenedor">
 				<div id="contenidos">
 					<div id="columna1">

@@ -29,7 +29,6 @@
 </portlet:renderURL>
 
 <aui:form method="post">
-
 	<fieldset class="fieldset">
 		<legend class="fieldset-legend">
 			<span class="legend"><fmt:message key="label.paymentDetails"/> </span>
@@ -46,6 +45,8 @@
 								<dd><c:out value="${Utils:stripeToCurrency(transactionVO.chargeVO.amount, transactionVO.chargeVO.currency)}"/></dd>
 							</dl>
 						</div>
+					</div>
+					<div id="contenidos">
 						<div id="columna2-3">
 							<dl class="property-list">
 								<dt><fmt:message key="label.currency"/></dt>

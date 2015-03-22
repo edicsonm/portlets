@@ -38,6 +38,7 @@ import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.JavaConstants;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
@@ -61,7 +62,12 @@ public class FormReportAmountByDay extends MVCPortlet {
 			transactionVO.setFinalDateReport(BBUtils.getCurrentDate(2,0));
 			transactionVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
 			
-			StreamSource xslStream = new StreamSource("/mnt/Informacion/NuevoBB/Liferay/tomcat-7.0.42/webapps/ReportAmountbyDay-portlet/WEB-INF/src/graphTemplate/graphTemplate.xsl");
+//			/mnt/Informacion/NuevoBB/Liferay
+//			System.out.println("Home: " + PropsUtil.get("liferay.home.tomcat"));
+			
+//			StreamSource xslStream = new StreamSource(PropsUtil.get("liferay.home.tomcat") + "/ReportAmountbyDay-portlet/WEB-INF/src/graphTemplate/graphTemplate.xsl");
+			StreamSource xslStream = new StreamSource(renderRequest.getPortletSession().getPortletContext().getRealPath("/WEB-INF/src/graphTemplate/graphTemplate.xsl"));
+			
 			ArrayList<TransactionVO> listAmountsByDay = procesorFacade.searchAmountByDay(transactionVO);
 			ReporteAmountByDay reporteAmountByDay = new ReporteAmountByDay(xslStream, GraphTemplate.getMap());
 			StringWriter report = reporteAmountByDay.CreateXml(listAmountsByDay);
@@ -109,7 +115,10 @@ public class FormReportAmountByDay extends MVCPortlet {
 				e.printStackTrace();
 			}
 			
-			StreamSource xslStream = new StreamSource("/mnt/Informacion/NuevoBB/Liferay/tomcat-7.0.42/webapps/ReportAmountbyDay-portlet/WEB-INF/src/graphTemplate/graphTemplate.xsl");
+//			StreamSource xslStream = new StreamSource("/mnt/Informacion/NuevoBB/Liferay/tomcat-7.0.42/webapps/ReportAmountbyDay-portlet/WEB-INF/src/graphTemplate/graphTemplate.xsl");
+			
+			StreamSource xslStream = new StreamSource(resourceRequest.getPortletSession().getPortletContext().getRealPath("/WEB-INF/src/graphTemplate/graphTemplate.xsl"));
+			
 			transactionVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
 			ArrayList<TransactionVO> listAmountsByDay = procesorFacade.searchAmountByDay(transactionVO);
 			ReporteAmountByDay reporteAmountByDay = new ReporteAmountByDay(xslStream, GraphTemplate.getMap());

@@ -20,7 +20,7 @@
 		<role-link>Administrator</role-link>
 	</role-mapper>
     <role-mapper>
-        <role-name>BillingBuddyAdministrator</role-name>
-        <role-link>BillingBuddyAdministrator</role-link>
-    </role-mapper>
+		<role-name>power-user</role-name>
+		<role-link>Power User</role-link>
+	</role-mapper>
 </liferay-portlet-app>

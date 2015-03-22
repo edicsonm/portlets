@@ -54,12 +54,11 @@
 <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURL" />
 <aui:form method="post">
 	<div class="table">
-		<div class="row">
 			<liferay-ui:search-container emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURL%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
 				<liferay-ui:search-container-results>
 					<%
 						listMerchantConfigurations = Methods.orderMerchantConfiguration(listMerchantConfigurations,orderByCol,orderByType);
-						results = ListUtil.subList(listMerchantConfigurations, searchContainer.getStart(), searchContainer.getEnd());
+						results = new ArrayList(ListUtil.subList(listMerchantConfigurations, searchContainer.getStart(), searchContainer.getEnd()));
 						total = listMerchantConfigurations.size();
 						pageContext.setAttribute("results", results);
 						pageContext.setAttribute("total", total);
@@ -73,40 +72,31 @@
 							<portlet:param name="jspPage" value="/jsp/viewMerchantConfiguration.jsp" />
 					</liferay-portlet:renderURL>
 					
-					<liferay-ui:search-container-column-text name="label.merchant" property="merchantId" value="merchantId" orderable="true" orderableProperty="merchantId" href="<%= rowURL %>"/>
-					<%-- <liferay-ui:search-container-column-text name="label.country" property="countryVO.name" value="countryVO.name" orderable="false" orderableProperty="countryVO.name"/>
-					<liferay-ui:search-container-column-text name="label.concept" property="concept" value="concept" orderable="false" orderableProperty="concept"/> --%>
-					<liferay-ui:search-container-column-text name="Accion">
-						<liferay-ui:icon-menu>
-							
-							<portlet:actionURL var="editURL" name="listMerchantsEditMerchant">
-								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
-								<portlet:param name="mvcPath" value="/jsp/editMerchantConfiguration.jsp" />
-							</portlet:actionURL>
-							<liferay-ui:icon image="edit" message="label.edit" url="<%=editURL.toString()%>" />
-							
-							<%-- <portlet:actionURL var="deleteURL" name="deleteMerchantConfiguration">
-								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
-							</portlet:actionURL>
-							<liferay-ui:icon-delete message="label.delete" url="<%=deleteURL.toString()%>" /> --%>
-							 
-						</liferay-ui:icon-menu>
-					</liferay-ui:search-container-column-text>
+					<liferay-ui:search-container-column-text name="label.merchant" property="merchantVO.name" orderable="true" orderableProperty="merchantId" href="<%= rowURL %>"/>
+					
+					<c:if test="<%= RoleServiceUtil.hasUserRole(user.getUserId(), user.getCompanyId(), \"MerchantAdministrator\", true) %>">
+						<liferay-ui:search-container-column-text name="Accion">
+							<liferay-ui:icon-menu>
+								
+								<portlet:actionURL var="editURL" name="listMerchantsEditMerchant">
+									<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
+									<portlet:param name="mvcPath" value="/jsp/editMerchantConfiguration.jsp" />
+								</portlet:actionURL>
+								<liferay-ui:icon image="edit" message="label.edit" url="<%=editURL.toString()%>" />
+								 
+							</liferay-ui:icon-menu>
+						</liferay-ui:search-container-column-text>
+					</c:if>
 					
 				</liferay-ui:search-container-row>
 				<liferay-ui:search-iterator />
 			</liferay-ui:search-container>
-		</div>
-		
-		<div class="row">
-			<div class="column1-2">
+			
+			<c:if test="<%= RoleServiceUtil.hasUserRole(user.getUserId(), user.getCompanyId(), \"MerchantAdministrator\", true) %>">
 				<span class="newMerchant" >
 					<a href="<%= listMerchantsMerchantConfiguration %>"><fmt:message key="label.newMerchantConfiguration"/></a>
 				</span>
-			</div>
-			<div class="column2-2">
-			</div>
-		</div>
+			</c:if>
 		
 	</div>
 </aui:form>
