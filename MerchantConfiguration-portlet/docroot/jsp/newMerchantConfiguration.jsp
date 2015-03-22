@@ -44,7 +44,7 @@
 				<div id="contenedor">
 					<div id="contenidos">
 						<div id="columna1-1">
-							<aui:select name="merchant" helpMessage="help.merchant"  label="label.merchant" id="merchant">
+							<aui:select name="merchant" helpMessage="help.merchant" required="true"  label="label.merchant" id="merchant">
 								<c:forEach var="merchantVO" items="${listMerchants}">
 									<aui:option value="${merchantVO.id}" label="${merchantVO.name}" selected="${merchantVO.id==merchantConfigurationVO.merchantId}"/>
 								</c:forEach>

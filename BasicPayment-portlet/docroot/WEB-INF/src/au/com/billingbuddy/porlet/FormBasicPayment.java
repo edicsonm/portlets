@@ -66,53 +66,55 @@ public class FormBasicPayment extends MVCPortlet {
 			String signSha1= (String)request.getParameter("signSha1");
 			String sha1Value= (String)request.getParameter("sha1Value");
 			
-			MerchantVO merchantVO = new MerchantVO();
-			merchantVO.setId(merchantID);
-			merchantVO = procesorFacade.validateMerchant(merchantVO);
-			if(merchantVO != null) {
-				session.setAttribute("merchantVO", merchantVO);
-				System.out.println("UrlDeny: " + merchantVO.getMerchantConfigurationVO().getUrlDeny());
-				System.out.println("UrlApproved: " + merchantVO.getMerchantConfigurationVO().getUrlApproved());
-				
-				/*Merchant exists
-				 * Validate restrictions by number of transactions
-				 * */ 
-				
-				if(merchantID != null && orderNumber != null && currency != null && transactionAmount != null && sha1Value != null){
-					/* Verify signature in message received*/
-					String sha1ValueCalculated = SecurityMethods.sha1Calculator(orderNumber+currency+merchantID+transactionAmount+"");
-					boolean answer = securityFacade.validateSignature(sha1ValueCalculated,signSha1);
-					if(answer) {
-						
-						TransactionVO transactionVO = new TransactionVO();
-						transactionVO.setMerchantId((String)request.getParameter("merchantID"));
-						transactionVO.setOrderNumber((String)request.getParameter("orderNumber"));
-						transactionVO.setOrderCurrency((String)request.getParameter("currency"));
-						transactionVO.setOrderAmount((String)request.getParameter("transactionAmount"));
-						
-						transactionVO.setIp(request.getRemoteAddr());
-						transactionVO.setIp("27.32.44.176");
-						
-						transactionVO.setSessionId(request.getRequestedSessionId());
-						transactionVO.setUserAgent(request.getHeader("User-Agent"));
-						transactionVO.setAcceptLanguage(request.getHeader("Accept-Language"));
-						
-						renderRequest.setAttribute("merchantID", (String)request.getParameter("merchantID"));
-						renderRequest.setAttribute("orderNumber", (String)request.getParameter("orderNumber"));
-						renderRequest.setAttribute("currency", (String)request.getParameter("currency"));
-						renderRequest.setAttribute("transactionAmount", (String)request.getParameter("transactionAmount"));
-						
-						session.setAttribute("transactionVO", transactionVO);
-						
-						super.doView(renderRequest, renderResponse);
+			if(!merchantID.isEmpty()){
+				MerchantVO merchantVO = new MerchantVO();
+				merchantVO.setId(merchantID);
+				merchantVO = procesorFacade.validateMerchant(merchantVO);
+				if(merchantVO != null) {
+					session.setAttribute("merchantVO", merchantVO);
+					System.out.println("UrlDeny: " + merchantVO.getMerchantConfigurationVO().getUrlDeny());
+					System.out.println("UrlApproved: " + merchantVO.getMerchantConfigurationVO().getUrlApproved());
+					
+					/*Merchant exists
+					 * Validate restrictions by number of transactions
+					 * */ 
+					
+					if(merchantID != null && orderNumber != null && currency != null && transactionAmount != null && sha1Value != null){
+						/* Verify signature in message received*/
+						String sha1ValueCalculated = SecurityMethods.sha1Calculator(orderNumber+currency+merchantID+transactionAmount+"");
+						boolean answer = securityFacade.validateSignature(sha1ValueCalculated,signSha1);
+						if(answer) {
+							
+							TransactionVO transactionVO = new TransactionVO();
+							transactionVO.setMerchantId((String)request.getParameter("merchantID"));
+							transactionVO.setOrderNumber((String)request.getParameter("orderNumber"));
+							transactionVO.setOrderCurrency((String)request.getParameter("currency"));
+							transactionVO.setOrderAmount((String)request.getParameter("transactionAmount"));
+							
+							transactionVO.setIp(request.getRemoteAddr());
+//							transactionVO.setIp("27.32.44.176");
+							
+							transactionVO.setSessionId(request.getRequestedSessionId());
+							transactionVO.setUserAgent(request.getHeader("User-Agent"));
+							transactionVO.setAcceptLanguage(request.getHeader("Accept-Language"));
+							
+							renderRequest.setAttribute("merchantID", (String)request.getParameter("merchantID"));
+							renderRequest.setAttribute("orderNumber", (String)request.getParameter("orderNumber"));
+							renderRequest.setAttribute("currency", (String)request.getParameter("currency"));
+							renderRequest.setAttribute("transactionAmount", (String)request.getParameter("transactionAmount"));
+							
+							session.setAttribute("transactionVO", transactionVO);
+							
+							super.doView(renderRequest, renderResponse);
+						}else{
+							include("/jsp/unauthorizedAccess.jsp", renderRequest, renderResponse);
+						}
 					}else{
 						include("/jsp/unauthorizedAccess.jsp", renderRequest, renderResponse);
 					}
 				}else{
 					include("/jsp/unauthorizedAccess.jsp", renderRequest, renderResponse);
 				}
-			}else{
-				include("/jsp/unauthorizedAccess.jsp", renderRequest, renderResponse);
 			}
 		} catch (ProcesorFacadeException ex){
 			PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
