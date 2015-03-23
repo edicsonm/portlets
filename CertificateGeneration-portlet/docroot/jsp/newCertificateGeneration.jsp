@@ -20,6 +20,7 @@
 <fmt:setBundle basename="Language"/>
 <liferay-ui:error key="SecurityMDTR.certificateGeneration.CertificateDAOException" message="error.SecurityMDTR.certificateGeneration.CertificateDAOException" />
 <liferay-ui:error key="SecurityMDTR.certificateGeneration.Exception" message="error.SecurityMDTR.certificateGeneration.Exception" />
+<liferay-ui:error key="SecurityMDTR.certificateGeneration.IOException" message="error.SecurityMDTR.certificateGeneration.IOException" />
 
 <% 
 	CertificateVO certificateVO = (CertificateVO)session.getAttribute("certificateVO");
@@ -42,31 +43,22 @@
 
 <script>
 function searchMerchantInformation(){
+	var data = $("#<portlet:namespace />merchant").find('option:selected').attr('value');
+	alert(data);
 	var url = '<%=searchMerchantInformation%>';
     $.ajax({
-    type : "GET",
+    type : "POST",
     url : url,
     cache:false,
     contentType: "application/x-www-form-urlencoded; charset=UTF-8",
     dataType: "json",
-    data: {idMerchant:$("#<portlet:namespace />merchant").find('option:selected').attr('value'), action:"chargeMerchantInformation"},
+    data: { action:"chargeMerchantInformationbla", otrovalor:"valor de prueba"},
     success : function(data){
     	
     	$("#<portlet:namespace />commonName").val(data.commonName);
     	$("#<portlet:namespace />organization").val(data.organization);
     	$("#<portlet:namespace />organizationUnit").val(data.organizationUnit);
     	
-    	
-    	/* alert("Termina: " + data.saludo); */
-    	/* jsonObject.put("commonName", merchantVO.getName());
-		jsonObject.put("organization", merchantVO.getName());
-		jsonObject.put("organizationUnit", "IT-Security"); */
-		
-		/* $("#_CertificateGeneration_WAR_CertificateGenerationportlet_commonName").val( data.commonName ); */
-		/* alert(data.commonName); */
-    	<%-- $("#certificate").html(data);
-    	$( "#certificate" ).load('<%=renderRequest.getContextPath()%>'+'/jsp/refunds.jsp');
-    	$( "#listRefunds" ).load("<%=ajaxUrl%>"); --%>
     },error : function(XMLHttpRequest, textStatus, errorThrown){
           alert("XMLHttpRequest..." + XMLHttpRequest);
           alert("textStatus..." + textStatus);
@@ -86,7 +78,8 @@ function searchMerchantInformation(){
 			<div class="details">
 				
 				<div class="control-group">
-					<aui:select name="merchant" onChange="searchMerchantInformation();" helpMessage="help.merchant" label="label.merchant" id="merchant">
+					<aui:select name="merchant" helpMessage="help.merchant" label="label.merchant" id="merchant">
+					<%-- <aui:select name="merchant" onChange="searchMerchantInformation();" helpMessage="help.merchant" label="label.merchant" id="merchant"> --%>
 						<c:forEach var="merchantVO" items="${listMerchants}">
 							<aui:option value="${merchantVO.id}" label="${merchantVO.name}" selected="${merchantVO.id==certificateVO.merchantId}"/>
 						</c:forEach>
@@ -106,7 +99,7 @@ function searchMerchantInformation(){
 				
 				
 				<div class="control-group">
-					<aui:input label="label.organizationUnit" helpMessage="help.organizationUnit" name="organizationUnit" value="${certificateVO.organizationUnit}" showRequiredLabel="false" type="password" required="true">
+					<aui:input label="label.organizationUnit" helpMessage="help.organizationUnit" name="organizationUnit" value="${certificateVO.organizationUnit}" showRequiredLabel="false" type="text" required="true">
 					</aui:input>
 				</div>
 				
@@ -141,7 +134,7 @@ function searchMerchantInformation(){
 					<div id="contenidos">
 						<div id="columna1-2">
 							<div class="control-group">
-								<aui:input label="label.passwordkey" helpMessage="help.passwordkey" name="passwordkey" value="${certificateVO.passwordkey}" showRequiredLabel="false" type="text" required="true">
+								<aui:input label="label.passwordkey" helpMessage="help.passwordkey" name="passwordkey" value="${certificateVO.passwordkey}" showRequiredLabel="false" type="password" required="true">
 								</aui:input>
 							</div>
 						</div>
@@ -203,6 +196,6 @@ function searchMerchantInformation(){
 		</div>
 	</div>
 </aui:form> --%>
-<script>
+<!-- <script>
 	searchMerchantInformation();
-</script>
+</script> -->

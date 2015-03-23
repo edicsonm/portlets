@@ -189,14 +189,20 @@ public class FormCertificateGeneration extends MVCPortlet {
 		CertificateVO certificateVO = new CertificateVO();
 		
 		String action = resourceRequest.getParameter("action");
+		System.out.println("action: " + action);
 		if(action.equalsIgnoreCase("chargeMerchantInformation")){
 			ArrayList<MerchantVO> listMerchants = (ArrayList<MerchantVO>)session.getAttribute("listMerchants");
-			String idMerchant = resourceRequest.getParameter("idMerchant");
+			String idMerchantCertificateGeneration = resourceRequest.getParameter("idMerchantCertificateGeneration");
+			System.out.println("idMerchant: " + idMerchantCertificateGeneration);
+			
+			String otrovalor = resourceRequest.getParameter("otrovalor");
+			System.out.println("otrovalor: " + otrovalor);
+			
 			response.setContentType("application/json");
 				
 			for (Iterator iterator = listMerchants.iterator(); iterator.hasNext();) {
 			MerchantVO merchantVO = (MerchantVO) iterator.next();
-				if(merchantVO.getId().equalsIgnoreCase(idMerchant)){
+				if(merchantVO.getId().equalsIgnoreCase(idMerchantCertificateGeneration)){
 					JSONObject jsonObject = new JSONObject();
 					jsonObject.put("commonName", merchantVO.getName());
 					jsonObject.put("organization", merchantVO.getName());

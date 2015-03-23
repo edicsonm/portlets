@@ -32,9 +32,11 @@
 <liferay-ui:error key="ProcessorMDTR.validateMerchant.MerchantRestrictionDAOException.RestrictionByTransactions" message="error.ProcessorMDTR.validateMerchant.MerchantRestrictionDAOException.RestrictionByTransactions" />
 <liferay-ui:error key="ProcessorMDTR.validateMerchant.MerchantRestrictionDAOException.RestrictionByAmount" message="error.ProcessorMDTR.validateMerchant.MerchantRestrictionDAOException.RestrictionByAmount" />
 <liferay-ui:error key="ProcessorMDTR.validateMerchant.MerchantRestrictionDAOException.MisconfigureMerchant" message="error.ProcessorMDTR.validateMerchant.MerchantRestrictionDAOException.MisconfigureMerchant" />
-<%
+<liferay-ui:error key="SecurityMDTR.validateSignature.NullPointerException" message="error.SecurityMDTR.validateSignature.NullPointerException" />
 
+<%
 	TransactionVO transactionVO = (TransactionVO)session.getAttribute("transactionVO");
+	MerchantVO merchantVO = (MerchantVO)session.getAttribute("merchantVO");	
 %>
 <aui:form action="" method="post">
 	<div class="tabla"> 
@@ -43,19 +45,20 @@
 </aui:form>
 
 <script type="text/javascript">
-	
 $("#msgid").attr("class", "information red");	
 $("#msgid").html("Sending payment information to the merchant. Please wait.");
+var URL = "<%=merchantVO.getMerchantConfigurationVO().getUrlDeny()%>";
+URL += "?jsoncallback=?";
+/* alert('URL: ' + URL); */
 $.ajax({
-	url: "http://192.168.0.10:8080/MerchantApp/answerError.jsp",
-	/* url: "http://merchant.billingbuddy.com/Merchant/answerProcessor.jsp", */
 	type: "GET",
-    dataType: "html",
-   /*  async: false, */
-     data: { status: "<%=transactionVO.getStatus()%>", message:"<%=transactionVO.getMessage()%>", data: "<%=transactionVO.getData()%>", orderNumber:<%=transactionVO.getOrderNumber()%>},
+	url: URL,
+	dataType: "jsonp",
+	contentType: "application/json",
+    data: { status: "<%=transactionVO.getStatus()%>", message:"<%=transactionVO.getMessage()%>", data: "<%=transactionVO.getData()%>", orderNumber:<%=transactionVO.getOrderNumber()%>},
     success: function (response) {
     	$("#msgid").attr("class", "information orange");
-    	$("#msgid").html("The merchant has received the response. You can close this window." + response);
+    	$("#msgid").html("The merchant has received the response. You can close this window.");
     },
     error: function(jqXHR, textStatus, errorThrown) {
     	$("#msgid").attr("class", "information red");	

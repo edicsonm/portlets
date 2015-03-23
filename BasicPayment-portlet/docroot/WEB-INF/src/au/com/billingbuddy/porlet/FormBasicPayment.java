@@ -21,6 +21,7 @@ import au.com.billingbuddy.business.objects.TransactionFacade;
 import au.com.billingbuddy.business.objects.SecurityFacade;
 import au.com.billingbuddy.common.objects.SecurityMethods;
 import au.com.billingbuddy.exceptions.objects.ProcesorFacadeException;
+import au.com.billingbuddy.exceptions.objects.SecurityFacadeException;
 import au.com.billingbuddy.exceptions.objects.TransactionFacadeException;
 import au.com.billingbuddy.vo.objects.CustomerVO;
 import au.com.billingbuddy.vo.objects.MerchantVO;
@@ -71,9 +72,13 @@ public class FormBasicPayment extends MVCPortlet {
 				merchantVO.setId(merchantID);
 				merchantVO = procesorFacade.validateMerchant(merchantVO);
 				if(merchantVO != null) {
+					
 					session.setAttribute("merchantVO", merchantVO);
-					System.out.println("UrlDeny: " + merchantVO.getMerchantConfigurationVO().getUrlDeny());
-					System.out.println("UrlApproved: " + merchantVO.getMerchantConfigurationVO().getUrlApproved());
+//					System.out.println("UrlDeny: " + merchantVO.getMerchantConfigurationVO().getUrlDeny());
+//					System.out.println("UrlApproved: " + merchantVO.getMerchantConfigurationVO().getUrlApproved());
+//					
+//					System.out.println("certificateVO.getPasswordBBKeyStore(): " + merchantVO.getCertificateVO().getPasswordBBKeyStore());
+//					System.out.println("certificateVO.getAliasBB(): " + merchantVO.getCertificateVO().getAliasBB());
 					
 					/*Merchant exists
 					 * Validate restrictions by number of transactions
@@ -82,7 +87,7 @@ public class FormBasicPayment extends MVCPortlet {
 					if(merchantID != null && orderNumber != null && currency != null && transactionAmount != null && sha1Value != null){
 						/* Verify signature in message received*/
 						String sha1ValueCalculated = SecurityMethods.sha1Calculator(orderNumber+currency+merchantID+transactionAmount+"");
-						boolean answer = securityFacade.validateSignature(sha1ValueCalculated,signSha1);
+						boolean answer = securityFacade.validateSignature(merchantVO.getCertificateVO(), sha1ValueCalculated,signSha1);
 						if(answer) {
 							
 							TransactionVO transactionVO = new TransactionVO();
@@ -107,16 +112,20 @@ public class FormBasicPayment extends MVCPortlet {
 							
 							super.doView(renderRequest, renderResponse);
 						}else{
+							System.out.println("sale por 1");
 							include("/jsp/unauthorizedAccess.jsp", renderRequest, renderResponse);
 						}
 					}else{
+						System.out.println("sale por 2");
 						include("/jsp/unauthorizedAccess.jsp", renderRequest, renderResponse);
 					}
 				}else{
+					System.out.println("El merchant no existe ....");
 					include("/jsp/unauthorizedAccess.jsp", renderRequest, renderResponse);
 				}
 			}
-		} catch (ProcesorFacadeException ex){
+		} catch (SecurityFacadeException ex){
+			System.out.println("Esta saliendo por SecurityFacadeException ..." + ex.getErrorCode());
 			PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 			SessionMessages.add(renderRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
@@ -130,7 +139,30 @@ public class FormBasicPayment extends MVCPortlet {
 			transactionVO.setData(ex.getErrorMenssage());
 			session.setAttribute("transactionVO", transactionVO);
 			include("/jsp/error.jsp", renderRequest, renderResponse);
+			
+		} catch (ProcesorFacadeException ex){
+			PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+			SessionMessages.add(renderRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+			SessionErrors.add(renderRequest,ex.getErrorCode());
+			
+			TransactionVO transactionVO = new TransactionVO();
+			transactionVO.setMerchantId((String)request.getParameter("merchantID"));
+			transactionVO.setOrderNumber((String)request.getParameter("orderNumber"));
+			transactionVO.setStatus("error");
+			transactionVO.setMessage(ex.getErrorCode());
+			transactionVO.setData(ex.getErrorMenssage());
+			session.setAttribute("transactionVO", transactionVO);
+			
+			if(ex.getErrorCode().equalsIgnoreCase("ProcessorMDTR.validateMerchant.MerchantRestrictionDAOException.MisconfigureMerchant")){
+				/*Enviar email al adm de merchant*/
+				include("/jsp/errorMisconfiguredMerchant.jsp", renderRequest, renderResponse);
+			}else{
+				include("/jsp/error.jsp", renderRequest, renderResponse);
+			}
 		} catch (Exception ex){
+			ex.printStackTrace();
+			System.out.println("sale por 4");
 			include("/jsp/unauthorizedAccess.jsp", renderRequest, renderResponse);
 		}
 	}

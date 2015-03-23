@@ -87,7 +87,6 @@
      
    function GetContent() {
        var url='<%=viewContentURL %>';
-       
        AUI().io.request(
            url,
            {
