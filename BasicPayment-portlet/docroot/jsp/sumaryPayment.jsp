@@ -14,6 +14,16 @@
  */
 %>
 <%@ include file="init.jsp" %>
+
+<%@ page import="javax.mail.internet.InternetAddress"%>
+<%@ page import="com.liferay.util.ContentUtil"%>
+<%@ page import="com.liferay.portal.kernel.util.StringUtil"%>
+
+<%@ page import="com.liferay.portal.kernel.mail.MailMessage"%>
+<%@ page import="com.liferay.mail.service.MailServiceUtil"%>
+<%@ page import="javax.mail.internet.AddressException"%>
+
+ 
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
 
 <fmt:setBundle basename="Language"/>
@@ -26,117 +36,143 @@
 %>
 <portlet:actionURL var="acceptPayment" name="acceptPayment"/>
 <aui:form action="<%= acceptPayment %>" method="post">
-	<div class="tabla">
+	<fieldset class="fieldset">
+		<legend class="fieldset-legend">
+			<span class="legend"><fmt:message key="label.purchaseInformation"/> </span>
+		</legend>
+		<div class="">
+			<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
+			<div class="details">
+				<p id="sub-legend" class="description"><fmt:message key="label.log"/></p>
+				<div id="contenedor">
+					<div id="contenidos">
+						<div id="columna1-1">
+							<div id="msgid"></div>
+						</div>
+					</div>
+				</div>
+				
+				<p id="sub-legend" class="description"><fmt:message key="label.paymentDetails"/></p>
+				<div id="contenedor">
+					<div id="contenidos">
+						<div id="columna1-1">
+							<dl class="property-list">
+								<fmt:message key="label.orderNumberSumary">
+							 		 <fmt:param value="${transactionVO.id}"/>
+				 				</fmt:message>
+							</dl>
+						</div>
+					</div>
+					<div id="contenidos">
+						<div id="columna1-1">
+							<dl class="property-list">
+								<fmt:message key="label.orderText">
+							 		 <fmt:param value="${transactionVO.cardVO.customerVO.email}"/>
+				 				</fmt:message>
+							</dl>
+						</div>
+					</div>					
+				</div>
+				
+				<p id="sub-legend" class="description"><fmt:message key="label.billingAddress"/></p>
+				<div id="contenedor">
+					<div id="contenidos">
+						<div id="columna1-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.country"/></dt>
+								<dd><c:out value="${transactionVO.billingAddressCountry}"/></dd>
+							</dl>
+						</div>
+						<div id="columna1-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.region"/></dt>
+								<dd><c:out value="${transactionVO.billingAddressRegion}"/></dd>
+							</dl>
+						</div>
+					</div>
+					<div id="contenidos">
+						<div id="columna1-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.city"/></dt>
+								<dd><c:out value="${transactionVO.billingAddressCity}"/></dd>
+							</dl>
+						</div>
+						<div id="columna1-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.postalCode"/></dt>
+								<dd><c:out value="${transactionVO.billingAddressPostal}"/></dd>
+							</dl>
+						</div>
+					</div>
+				</div>
+				<p id="sub-legend" class="description"><fmt:message key="label.paymentDetails"/></p>
+				<div id="contenedor">
+					<div id="contenidos">
+						<div id="columna1-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.name"/></dt>
+								<dd><c:out value="${transactionVO.cardVO.name}"/></dd>
+							</dl>
+						</div>
+						<div id="columna1-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.cardNumber"/></dt>
+								<dd><c:out value="<%=cardNumber%>"/></dd>
+							</dl>
+						</div>
+					</div>
+					
+					<div id="contenidos">
+						<div id="columna1-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.cardType"/></dt>
+								<dd><c:out value="${transactionVO.cardVO.brand}"/></dd>
+							</dl>
+						</div>
+						<div id="columna1-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.paymentMethod"/></dt>
+								<dd><c:out value="${transactionVO.cardVO.funding}"/></dd>
+							</dl>
+						</div>
+					</div>
+					
+					<div id="contenidos">
+						<div id="columna1-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.currency"/></dt>
+								<dd><c:out value="${transactionVO.chargeVO.currency}"/></dd>
+							</dl>
+						</div>
+						<div id="columna1-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.totalOrderAmount"/></dt>
+								<dd><c:out value="${transactionVO.chargeVO.amount}"/></dd>
+							</dl>
+						</div>
+					</div>
+				</div>
+				
+				<%-- <p id="sub-legend" class="description"><fmt:message key="label.log"/></p>
+				<div id="contenedor">
+					<div id="contenidos">
+						<div id="columna1-1" class="section">
+							<div id="msgid"></div>
+						</div>
+					</div>
+				</div> --%>
+				
+			</div>
+		</div>
+	</fieldset>
+
+	<!-- <div class="tabla">
 		<div class="tabla">
 			<div class="section">
-				<div class="row">
-					<div class="column1-1">
-						<label class="order-number ">
-							<fmt:message key="label.orderNumberSumary">
-						 		 <fmt:param value="${transactionVO.id}"/>
-			 				</fmt:message>
-			 			</label>
-					</div>
-				</div>
-				<div class="row">
-					<div class="column1-1">
-						<label class="order-information">
-							<fmt:message key="label.orderText">
-						 		 <fmt:param value="${transactionVO.cardVO.customerVO.email}"/>
-			 				</fmt:message>
-			 			</label>
-					</div>
-				</div>
-			</div>
-			<div class="section">
-				<div class="row">
-					<div class="column1-1">
-						<label class="sub-title"><fmt:message key="label.billingAddress"/></label>
-					</div>
-				</div>
-			
-				<div class="row">
-					<div class="column1-4">
-						<label class="aui-field-label"><fmt:message key="label.country"/></label>
-					</div>
-					<div class="column2-4">
-						<c:out value="${transactionVO.billingAddressCountry}"/>
-					</div>
-					<div class="column3-4">
-						<label class="aui-field-label"><fmt:message key="label.region"/></label>
-					</div>
-					<div class="column4-4">
-						<c:out value="${transactionVO.billingAddressRegion}"/>
-					</div>
-				</div>
-				<div class="row">
-					<div class="column1-4">
-						<label class="aui-field-label"><fmt:message key="label.city"/></label>
-					</div>
-					<div class="column2-4">
-						<c:out value="${transactionVO.billingAddressCity}"/>
-					</div>
-					<div class="column3-4">
-						<label class="aui-field-label"><fmt:message key="label.postalCode"/></label>
-					</div>
-					<div class="column4-4">
-						<c:out value="${transactionVO.billingAddressPostal}"/>
-					</div>
-				</div>
-			</div>
-			<div class="section">
-				<div class="row">
-					<div class="column1-1">
-						<label class="aui-field-label sub-title"><fmt:message key="label.paymentDetails"/></label>
-					</div>
-				</div>
-				<div class="row">
-					<div class="column1-4">
-						<label class="aui-field-label"><fmt:message key="label.name"/></label>
-					</div>
-					<div class="column2-4">
-						<c:out value="${transactionVO.cardVO.name}"/>
-					</div>
-					<div class="column3-4">
-						<label class="aui-field-label"><fmt:message key="label.cardNumber"/></label>
-					</div>
-					<div class="column4-4">
-						<c:out value="<%=cardNumber%>"/>
-					</div>
-				</div>
-				<div class="row">
-					<div class="column1-4">
-						<label class="aui-field-label"><fmt:message key="label.cardType"/></label>
-					</div>
-					<div class="column2-4">
-						<c:out value="${transactionVO.cardVO.brand}"/>
-					</div>
-					<div class="column3-4">
-						<label class="aui-field-label"><fmt:message key="label.paymentMethod"/></label>
-					</div>
-					<div class="column4-4">
-						<c:out value="${transactionVO.cardVO.funding}"/>
-					</div>
-				</div>
-			
-				<div class="row">
-					<div class="column1-4">
-						<label class="aui-field-label"><fmt:message key="label.currency"/></label>
-					</div>
-					<div class="column2-4">
-						<c:out value="${transactionVO.chargeVO.currency}"/>
-					</div>
-					<div class="column3-4">
-						<label class="aui-field-label"><fmt:message key="label.totalOrderAmount"/></label>
-					</div>
-					<div class="column4-4">
-						<c:out value="${transactionVO.chargeVO.amount}"/>
-					</div>
-				</div>
 			</div>
 		</div>
 		<div id="msgid"></div>
-	</div>
+	</div> -->
 </aui:form>
 <%
 	if(transactionVO != null)	{
@@ -152,13 +188,12 @@
 			dataType: "jsonp",
 			contentType: "application/json",
 			data: { approbationNumber: <%=transactionVO.getId()%>, orderNumber:<%=transactionVO.getOrderNumber()%>},
-			/*jsonpCallback: "metodo2",*/
-			success: function (response) {				
-				$("#msgid").attr("class", "information orange");
-	        	$("#msgid").html("The merchant has received the payment at "+response.date+". You can close this window." + response);
+			success: function (response) {
+				$("#msgid").attr("class", "alert alert-success");
+	        	$("#msgid").html("The merchant has received the payment at "+  new Date(response.date) +".</br>The merchant has registered your payment with the number "+response.confirmationNumber+", save this number for future claims.</br>You can close this window.");
 		    }, 
 		    error: function(jqXHR, textStatus, errorThrown) {
-	        	$("#msgid").attr("class", "information red");	
+	        	$("#msgid").attr("class", "alert alert-error");	
 	        	$("#msgid").html("An error occurred with number " + jqXHR.status);
 	        	alert("Error " + jqXHR.status + ":"+textStatus);
 	            alert("Error " + jqXHR.responseText );
@@ -167,107 +202,6 @@
 				alert( "Request failed " + textStatus +"-->"+jqXHR.status);
 			}
 		});
-		
-		
-		<%-- Esta es la version que estab funcionando-- $.ajax({
-	    	/* url: "http://192.168.0.10:8080/MerchantApp/answerProcessor.jsp", */
-	    	url: "<%=merchantVO.getMerchantConfigurationVO().getUrlApproved()%>",
-	    	/* url: "http://merchant.billingbuddy.com/Merchant/answerProcessor.jsp", */
-	    	type: "GET",
-	        dataType: "html",
-	       /*  async: false, */
-	        data: { approbationNumber: <%=transactionVO.getId()%>, orderNumber:<%=transactionVO.getOrderNumber()%>},
-	        success: function (response) {
-	        	$("#msgid").attr("class", "information orange");
-	        	$("#msgid").html("The merchant has received the payment. You can close this window." + response);
-	        },
-	        error: function(jqXHR, textStatus, errorThrown) {
-	        	$("#msgid").attr("class", "information red");	
-	        	$("#msgid").html("An error occurred with number " + jqXHR.status);
-	        	alert("Error " + jqXHR.status + ":"+textStatus);
-	            alert("Error " + jqXHR.responseText );
-	        },
-	        fail: function(jqXHR, textStatus ) {
-				alert( "Request failed " + textStatus +"-->"+jqXHR.status);
-			}
-	    });	 
-	 --%>
-		 <%-- $.ajax({
-		    type : 'POST',
-		    dataType: "html",
-		    url  : 'http://192.168.0.2:8080/Merchant/answerProcessor.jsp',
-		    async: false,
-		    data: { approbationNumber: <%=transactionVO.getId()%>, orderNumber:<%=transactionVO.getOrderNumber()%>},
-		    success: function(data) {
-		    	$("#msgid").html("Successful Execution" + data);
-		    },
-		    error: function(jqXHR,textStatus, errorThrown ) {
-		    	$("#msgid").html("An error occurred: " + jqXHR.responseText+ ":"+ jqXHR.responseXML+ ":"+textStatus+":"+errorThrown+":"+jqXHR.status+":"+jqXHR.statusCode);
-		    }
-		}); --%>
-		
-		<%-- var request = $.ajax({
-			url: "http://192.168.0.2:8080/Merchant/answerProcessor.jsp",
-			type: "POST",
-			data: { approbationNumber: <%=transactionVO.getId()%>, orderNumber:<%=transactionVO.getOrderNumber()%> },
-			dataType: "html"});
-		
-		request.done(function( msg ) {
-				$( "#msgid" ).html( "Request OK " );
-				alert( "Request OK: " + textStatus );
-			});
-		
-		request.fail(function( jqXHR, textStatus ) {
-				alert( "Request failed: " + textStatus +"-->"+jqXHR.status);
-			}); --%>
-			
-		<%-- var jqxhr = $.ajax({
-			url: "http://192.168.0.2:8080/Merchant/answerProcessor.jsp",
-			type: "POST",
-			data: { approbationNumber: <%=transactionVO.getId()%>, orderNumber:<%=transactionVO.getOrderNumber()%> },
-			dataType: "html"})
-		.done(function() {
-			alert( "success" );
-		})
-		.fail(function( jqXHR, textStatus ) {
-			alert( "error: " + textStatus +", " + jqXHR.responseText);
-		})
-		.always(function() {
-			alert( "complete" );
-		}); --%>
-		
-		
-		<%-- $.ajax({
-		    type : 'POST',
-		    dataType: "html",
-		    url  : 'http://192.168.0.2:8080/Merchant/answerProcessor.jsp',
-		    async: false,
-		    data: { approbationNumber: <%=transactionVO.getId()%>, orderNumber:<%=transactionVO.getOrderNumber()%>},
-		    success: function(data) {
-		    	$("#msgid").html("Successful Execution" + data);
-		    },
-		    error: function(jqXHR,textStatus, errorThrown ) {
-		    	alert( "error: " + textStatus +", " + jqXHR.responseText);
-		    }
-		    	/* $("#msgid").html("An error occurred: " + jqXHR.responseText+ ":"+ jqXHR.responseXML+ ":"+textStatus+":"+errorThrown+":"+jqXHR.getResponseHeader()+":"+jqXHR.statusCode()); */
-		    	/* $("#msgid").html("An error occurred: " + jqXHR.responseText+ ":"+ jqXHR.responseXML+ ":"+textStatus+":"+errorThrown+":"+jqXHR.status+":"+jqXHR.statusCode); */
-		    }); --%>
-		
-		    <%-- var jqxhr = $.ajax({
-		    		url  : "http://192.168.0.2:8080/Merchant/answerProcessor.jsp",
-		    		type: "POST",
-		    		data: { approbationNumber: <%=transactionVO.getId()%>, orderNumber:<%=transactionVO.getOrderNumber()%>}
-		    		})
-		    .done(function() {
-		    alert( "success" );
-		    })
-		    .fail(function() {
-		    alert( "error" );
-		    })
-		    .always(function() {
-		    alert( "complete" );
-		    }); --%>
-		    
 	</script>
 <%
 	}

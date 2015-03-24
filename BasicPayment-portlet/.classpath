@@ -19,5 +19,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/BillingBuddyPaymentPageServer"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/BBUtils"/>
 	<classpathentry kind="output" path="docroot/WEB-INF/classes"/>
 </classpath>

@@ -33,7 +33,8 @@
 <liferay-ui:error key="ProcessorMDTR.validateMerchant.MerchantRestrictionDAOException.RestrictionByAmount" message="error.ProcessorMDTR.validateMerchant.MerchantRestrictionDAOException.RestrictionByAmount" />
 <liferay-ui:error key="ProcessorMDTR.validateMerchant.MerchantRestrictionDAOException.MisconfigureMerchant" message="error.ProcessorMDTR.validateMerchant.MerchantRestrictionDAOException.MisconfigureMerchant" />
 <liferay-ui:error key="SecurityMDTR.validateSignature.NullPointerException" message="error.SecurityMDTR.validateSignature.NullPointerException" />
-
+<liferay-ui:error key="SecurityMDTR.validateSignature.FileNotFoundException" message="error.SecurityMDTR.validateSignature.FileNotFoundException" />
+<liferay-ui:error key="SecurityMDTR.validateSignature.DecoderException" message="error.SecurityMDTR.validateSignature.DecoderException" />
 <%
 	TransactionVO transactionVO = (TransactionVO)session.getAttribute("transactionVO");
 	MerchantVO merchantVO = (MerchantVO)session.getAttribute("merchantVO");	
@@ -49,7 +50,6 @@ $("#msgid").attr("class", "information red");
 $("#msgid").html("Sending payment information to the merchant. Please wait.");
 var URL = "<%=merchantVO.getMerchantConfigurationVO().getUrlDeny()%>";
 URL += "?jsoncallback=?";
-/* alert('URL: ' + URL); */
 $.ajax({
 	type: "GET",
 	url: URL,
