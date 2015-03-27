@@ -1,4 +1,4 @@
-package au.com.billigbuddy.porlet.utilities;
+package au.com.billingbuddy.porlet.utilities;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,12 +10,12 @@ import au.com.billingbuddy.vo.objects.CountryRestrictionVO;;
 public class Methods {
 	
 	public static void orderCountryRestriction(String campo, ArrayList<CountryRestrictionVO> list) {
-		BeanComparator<CountryRestrictionVO> comparator= new BeanComparator<CountryRestrictionVO>(campo);
+		BeanComparator comparator= new BeanComparator(campo);
 		Collections.sort(list, comparator);
 	}
 	
 	public static ArrayList<CountryRestrictionVO> orderCountryRestriction(ArrayList<CountryRestrictionVO> list, String orderByCol, String orderByType ) {
-		BeanComparator<CountryRestrictionVO> comparator= new BeanComparator<CountryRestrictionVO>(orderByCol);
+		BeanComparator comparator= new BeanComparator(orderByCol);
 		if(list != null){
 			if(orderByType.equals("asc")){
 				Collections.sort(list, comparator);

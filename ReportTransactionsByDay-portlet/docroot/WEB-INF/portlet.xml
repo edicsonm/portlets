@@ -19,9 +19,9 @@
 		</supports>
 		<resource-bundle>Language</resource-bundle>
 		<portlet-info>
-			<title>Report Transactions By Day</title>
-			<short-title>Report Transactions By Day</short-title>
-			<keywords>Report Transactions By Day</keywords>
+			<title>Daily Transactions</title>
+			<short-title>Daily Transactions</short-title>
+			<keywords>Daily Transactions</keywords>
 		</portlet-info>
 		<security-role-ref>
 			<role-name>administrator</role-name>

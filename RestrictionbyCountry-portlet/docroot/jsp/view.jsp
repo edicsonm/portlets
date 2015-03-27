@@ -60,13 +60,17 @@
 <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLCountryRestriction" />
 
 <aui:form method="post">
-	<div class="table">
-		<div class="row">
+<fieldset class="fieldset">
+	<legend class="fieldset-legend">
+		<span class="legend"><fmt:message key="label.reportDescription"/> </span>
+	</legend>
+	<div class="">
+		<div id="contenedor">
 			<liferay-ui:search-container emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURLCountryRestriction%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
 				<liferay-ui:search-container-results>
 					<%
 						listCountryRestrictions = Methods.orderCountryRestriction(listCountryRestrictions,orderByCol,orderByType);
-						results = ListUtil.subList(listCountryRestrictions, searchContainer.getStart(), searchContainer.getEnd());
+						results = new ArrayList(ListUtil.subList(listCountryRestrictions, searchContainer.getStart(), searchContainer.getEnd()));
 						total = listCountryRestrictions.size();
 						pageContext.setAttribute("results", results);
 						pageContext.setAttribute("total", total);
@@ -109,17 +113,10 @@
 				</liferay-ui:search-container-row>
 				<liferay-ui:search-iterator />
 			</liferay-ui:search-container>
+			<span class="newElement" >
+				<a href="<%= listCountriesCountryRestriction %>"><fmt:message key="label.newCountryRestriction"/></a>
+			</span>
 		</div>
-		
-		<div class="row">
-			<div class="column1-2">
-				<span class="newSubscription" >
-					<a href="<%= listCountriesCountryRestriction %>"><fmt:message key="label.newCountryRestriction"/></a>
-				</span>
-			</div>
-			<div class="column2-2">
-			</div>
-		</div>
-		
 	</div>
+</fieldset>
 </aui:form>

@@ -25,6 +25,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
 
+<%@ page import="com.liferay.portal.kernel.language.LanguageUtil" %>
+
 <%@ page import="com.liferay.portal.service.RoleServiceUtil" %>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="java.util.Date"%>

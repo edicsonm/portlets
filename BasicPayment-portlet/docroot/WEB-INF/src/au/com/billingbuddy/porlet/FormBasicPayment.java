@@ -96,7 +96,7 @@ public class FormBasicPayment extends MVCPortlet {
 								transactionVO.setOrderAmount((String)request.getParameter("transactionAmount"));
 								
 								transactionVO.setIp(request.getRemoteAddr());
-								transactionVO.setIp("27.32.44.176");
+//								transactionVO.setIp("27.32.44.176");
 								
 								transactionVO.setSessionId(request.getRequestedSessionId());
 								transactionVO.setUserAgent(request.getHeader("User-Agent"));

@@ -2,7 +2,9 @@ package au.com.billingbuddy.porlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -24,6 +26,7 @@ import au.com.billingbuddy.vo.objects.IndustryVO;
 import au.com.billingbuddy.vo.objects.MerchantVO;
 
 import com.liferay.mail.service.MailServiceUtil;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.mail.MailMessage;
 import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
 import com.liferay.portal.kernel.servlet.PortalSessionThreadLocal;
@@ -53,7 +56,7 @@ public class FormMerchant extends MVCPortlet {
 //			User user = themeDisplay.getRealUser();
 			
 			
-			ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants(new MerchantVO(String.valueOf(PortalUtil.getUserId(request))));
+			ArrayList<MerchantVO> listMerchants = procesorFacade.listAllMerchants(new MerchantVO(String.valueOf(PortalUtil.getUserId(request))));
 			session.setAttribute("listMerchants", listMerchants);
 			
 			/**/
@@ -201,7 +204,7 @@ public class FormMerchant extends MVCPortlet {
 			procesorFacade.saveMerchant(merchantVO);
 			if(merchantVO.getStatus().equalsIgnoreCase("success")) {
 				
-				ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants(new MerchantVO(String.valueOf(PortalUtil.getUserId(request))));
+				ArrayList<MerchantVO> listMerchants = procesorFacade.listAllMerchants(new MerchantVO(String.valueOf(PortalUtil.getUserId(request))));
 				session.setAttribute("listMerchants", listMerchants);
 				SessionMessages.add(actionRequest, "merchantSavedSuccessfully");
 				
@@ -321,7 +324,7 @@ public class FormMerchant extends MVCPortlet {
 			procesorFacade.updateMerchant(merchantVO);
 			if(merchantVO.getStatus().equalsIgnoreCase("success")) {
 				
-				ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants(new MerchantVO(String.valueOf(PortalUtil.getUserId(request))));
+				ArrayList<MerchantVO> listMerchants = procesorFacade.listAllMerchants(new MerchantVO(String.valueOf(PortalUtil.getUserId(request))));
 				session.setAttribute("listMerchants", listMerchants);
 				SessionMessages.add(actionRequest, "merchantUpdatedSuccessfully");
 				
@@ -404,7 +407,7 @@ public class FormMerchant extends MVCPortlet {
 		try {
 			procesorFacade.updateMerchant(merchantVO);
 			if(merchantVO.getStatus().equalsIgnoreCase("success")) {
-				ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants(new MerchantVO(String.valueOf(PortalUtil.getUserId(request))));
+				ArrayList<MerchantVO> listMerchants = procesorFacade.listAllMerchants(new MerchantVO(String.valueOf(PortalUtil.getUserId(request))));
 				session.setAttribute("listMerchants", listMerchants);
 				SessionMessages.add(actionRequest, "merchantUpdatedSuccessfully");
 				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
@@ -430,18 +433,30 @@ public class FormMerchant extends MVCPortlet {
 		}
 	}
 	
-	public void deleteMerchant(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+	public void updateStatusMerchant(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 		HttpSession session = request.getSession();
 		
 		ArrayList<MerchantVO> resultsListMerchants = (ArrayList<MerchantVO>)session.getAttribute("results");
 		MerchantVO merchantVO = (MerchantVO)resultsListMerchants.get(Integer.parseInt(actionRequest.getParameter("indice")));
+		boolean activate = false;
 		try {
-			procesorFacade.deleteMerchant(merchantVO);
+			if(merchantVO.getStatus().equalsIgnoreCase("1")) {
+				merchantVO.setStatus("0");
+				activate = true;
+			}else{ 
+				merchantVO.setStatus("1");
+			}
+			procesorFacade.changeStatusMerchant(merchantVO);
 			if(merchantVO.getStatus().equalsIgnoreCase("success")) {
-				ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants(new MerchantVO(String.valueOf(PortalUtil.getUserId(request))));
+				ArrayList<MerchantVO> listMerchants = procesorFacade.listAllMerchants(new MerchantVO(String.valueOf(PortalUtil.getUserId(request))));
 				session.setAttribute("listMerchants", listMerchants);
-				SessionMessages.add(actionRequest, "merchantDeletedSuccessfully");
+				if(activate) {
+					SessionMessages.add(actionRequest, "updateStatusMerchant.Activate");
+				}else{ 
+					SessionMessages.add(actionRequest, "updateStatusMerchant.Inactivate");
+				}
+				
 			}else{
 				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;

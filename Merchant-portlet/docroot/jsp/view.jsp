@@ -15,13 +15,19 @@
 %>
 <%@ include file="init.jsp" %>
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
+<%@ page import="com.liferay.portal.kernel.language.LanguageUtil" %>
 
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
 <liferay-ui:success key="merchantSavedSuccessfully" message="label.merchantSavedSuccessfully" />
 <liferay-ui:success key="merchantUpdatedSuccessfully" message="label.merchantUpdatedSuccessfully" />
-<liferay-ui:success key="merchantDeletedSuccessfully" message="label.merchantDeletedSuccessfully" />
+<liferay-ui:success key="updateStatusMerchant.Inactivate" message="label.updateStatusMerchant.Inactivate"/>
+<liferay-ui:success key="updateStatusMerchant.Activate" message="label.updateStatusMerchant.Activate"/>
+
+
+<liferay-ui:success key="ProcessorMDTR.deleteMerchant.MerchantDAOException" message="label.ProcessorMDTR.changeStatusMerchant.MerchantDAOException" />
+
 <% 
 	String orderByColAnterior = (String)session.getAttribute("orderByCol");
 	String orderByTypeAnterior = (String)session.getAttribute("orderByType");
@@ -47,6 +53,8 @@
 
 	ArrayList<MerchantVO> listMerchants = (ArrayList<MerchantVO>)session.getAttribute("listMerchants");
 	if(listMerchants == null) listMerchants = new ArrayList<MerchantVO>();
+	String active = "Active";
+	String inactive = "Inactive";
 %>
 
 <portlet:actionURL var="newMerchant" name="newMerchant"/>
@@ -74,7 +82,11 @@
 					
 					<liferay-ui:search-container-column-text name="label.merchant" property="name" value="name" orderable="true" orderableProperty="name" href="<%= rowURL %>"/>
 					<liferay-ui:search-container-column-text name="label.countryBusinessInformation" value="${merchantVO.countryVOBusiness.name}" orderable="false" orderableProperty="countryVOBusiness.name"/>
-					<%-- <liferay-ui:search-container-column-text name="label.concept" property="concept" value="concept" orderable="false" orderableProperty="concept"/> --%>
+					<%if(!merchantVO.getStatus().equalsIgnoreCase("1")) {%>
+							<liferay-ui:search-container-column-text name="label.status" value="<%=active%>" orderable="false" orderableProperty="status"/>
+					<%}else{%> 
+							<liferay-ui:search-container-column-text name="label.status" value="<%=inactive%>" orderable="false" orderableProperty="status"/>
+					<%}%>
 					<liferay-ui:search-container-column-text name="Accion">
 						<liferay-ui:icon-menu>
 							
@@ -83,16 +95,25 @@
 								<portlet:param name="mvcPath" value="/jsp/editMerchant.jsp" />
 							</portlet:actionURL>
 							<liferay-ui:icon image="edit" message="label.edit" url="<%=editURL.toString()%>" />
+							
 							<c:if test="<%= RoleServiceUtil.hasUserRole(user.getUserId(), user.getCompanyId(), \"MerchantAdministrator\", true) %>">
-								<portlet:actionURL var="inactivateURLMerchant" name="inactivateMerchant">
+								<portlet:actionURL var="inactivateURLMerchant" name="updateStatusMerchant">
 									<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
 								</portlet:actionURL>
-								<% if(merchantVO.getStatus().equalsIgnoreCase("0")){%>
+								<%if(!merchantVO.getStatus().equalsIgnoreCase("1")) {%>
+										<liferay-ui:icon onClick="return confirm('Are you sure do you want to change this certificate status?')" image="edit" message="label.inactivate"  url="<%=inactivateURLMerchant.toString()%>" />
+								<%}else{%> 
+										<liferay-ui:icon onClick="return confirm('Are you sure do you want to change this certificate status?')" image="edit" message="label.activate" url="<%=inactivateURLMerchant.toString()%>" />
+								<%}%>
+								
+								<%-- <% if(merchantVO.getStatus().equalsIgnoreCase("0")){%>
 									<liferay-ui:icon-deactivate  label="label.inactivate" url="<%=inactivateURLMerchant.toString()%>" />
 								<%}else{ %>
 									<liferay-ui:icon image="activate" label="label.inactivate" url="<%= inactivateURLMerchant.toString() %>" />
-								<%}%>
+								<%}%> --%>
+								
 							</c:if>
+							
 						</liferay-ui:icon-menu>
 					</liferay-ui:search-container-column-text>
 					

@@ -162,15 +162,6 @@
 					</div>
 				</div>
 			</div>
-		<!-- </div> -->
-		 <%-- <aui:button name="load" onClick='<%=renderResponse.getNamespace() + "GetContent('param1', 'param2');" %>' /> --%>
-		<%-- <aui:button name="load" value="Ejecutar" onClick="GetContent()" />
-		<div id="<portlet:namespace/>contentview"></div> --%>
-		
-	<!-- </fieldset> -->
- 
-	<!-- <div class="table">
-		<div class="row"> -->	
 			<liferay-ui:search-container emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURL%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
 				<liferay-ui:search-container-results>
 					<%
@@ -190,8 +181,13 @@
 							<portlet:param name="tranId" value="<%=String.valueOf(transactionVO.getId())%>"/>
 					</liferay-portlet:renderURL>
 					
+					<c:if test="<%= RoleServiceUtil.hasUserRole(user.getUserId(), user.getCompanyId(), \"BillingBuddyAdministrator\", true) %>">
+						<liferay-ui:search-container-column-text property="merchantVO.name" name="label.merchant" orderable="false" orderableProperty="merchantVO.name"/>
+					</c:if>
+					
 					<liferay-ui:search-container-column-text name="label.amount" value="${Utils:stripeToCurrency(transactionVO.chargeVO.amount, transactionVO.chargeVO.currency)}" orderable="false" orderableProperty="chargeVO.amount" href="<%= rowURL %>"/>
 					<liferay-ui:search-container-column-text name="label.date" value="${Utils:formatDate(3,transactionVO.creationTime,3)}" orderable="false" orderableProperty="creationTime"/>
+					<liferay-ui:search-container-column-text name="label.tdcNumber" value="${Utils:printCardNumber(transactionVO.cardVO.number)}" orderable="false"/>
 					<liferay-ui:search-container-column-text name="label.brand" value="${Utils:printString(transactionVO.cardVO.brand)}" orderable="false" orderableProperty="cardVO.brand"/>
 					<liferay-ui:search-container-column-text name="label.currency" value="${Utils:toUpperCase(transactionVO.chargeVO.currency)}" orderable="false" orderableProperty="chargeVO.currency"/>
 					
@@ -201,8 +197,6 @@
 				</liferay-ui:search-container-row>
 				<liferay-ui:search-iterator />
 			</liferay-ui:search-container>
-		<!-- </div>
-	</div> -->
 		</div>
 	</fieldset>
 </aui:form>

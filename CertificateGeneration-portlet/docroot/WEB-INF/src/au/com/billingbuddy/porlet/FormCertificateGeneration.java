@@ -218,7 +218,7 @@ public class FormCertificateGeneration extends MVCPortlet {
 				certificateVO = securityFacade.downloadCertificate(certificateVO);
 				
 				response.setContentType("application/html");
-				response.setHeader("Content-Disposition", "attachment; filename=\"Merchant.jks\"");
+				response.setHeader("Content-Disposition", "attachment; filename=\"Merchant"+certificateVO.getMerchantId()+".jks\"");
 				
 				BufferedInputStream input = null;
 				BufferedOutputStream output = null;
