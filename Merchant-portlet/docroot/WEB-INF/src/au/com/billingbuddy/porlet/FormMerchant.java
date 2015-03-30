@@ -84,67 +84,6 @@ public class FormMerchant extends MVCPortlet {
 		super.doView(renderRequest, renderResponse);
 	}
 	
-//	public void saveMerchant2(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
-//		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
-//		HttpSession session = request.getSession();
-//		
-//		MerchantVO merchantVO = new MerchantVO();
-//		merchantVO.setName(actionRequest.getParameter("name"));
-//		merchantVO.setCountryNumericMerchant(actionRequest.getParameter("countryBusinessInformation"));
-//		merchantVO.setTradingName(actionRequest.getParameter("tradingName"));
-//		merchantVO.setLegalPhysicalAddress(actionRequest.getParameter("legalPhysicalAddress"));
-//		merchantVO.setStatementAddress(actionRequest.getParameter("statementAddress"));
-//		merchantVO.setTaxFileNumber(actionRequest.getParameter("taxFileNumber"));
-//		merchantVO.setCityBusinessInformation(actionRequest.getParameter("cityBusinessInformation"));
-//		merchantVO.setPostCodeBusinessInformation(actionRequest.getParameter("postCodeBusinessInformation"));
-//		merchantVO.setCountryNumericMerchant(actionRequest.getParameter("countryBusinessInformation"));
-//		merchantVO.setBusinessTypeId(actionRequest.getParameter("businessType"));
-//		merchantVO.setIndustryId(actionRequest.getParameter("industry"));
-//		merchantVO.setIssuedBusinessID(actionRequest.getParameter("issuedBusinessID"));
-//		merchantVO.setIssuedPersonalID(actionRequest.getParameter("issuedPersonalID"));
-//		merchantVO.setTypeAccountApplication(actionRequest.getParameter("typeAccountApplication"));
-//		merchantVO.setEstimatedAnnualSales(actionRequest.getParameter("estimatedAnnualSales"));
-//		
-//		merchantVO.setFirstName(actionRequest.getParameter("firstName"));
-//		merchantVO.setLastName(actionRequest.getParameter("lastName"));
-//		merchantVO.setPhoneNumber(actionRequest.getParameter("phoneNumber"));
-//		merchantVO.setFaxNumber(actionRequest.getParameter("faxNumber"));
-//		merchantVO.setEmailAddress(actionRequest.getParameter("emailAddress"));
-//		merchantVO.setAlternateEmailAddress(actionRequest.getParameter("alternateEmailAddress"));
-//		merchantVO.setCityPersonalInformation(actionRequest.getParameter("cityPersonalInformation"));
-//		merchantVO.setPostCodePersonalInformation(actionRequest.getParameter("postCodePersonalInformation"));
-//		merchantVO.setCountryNumericPersonalInformation(actionRequest.getParameter("countryPersonalInformation"));
-//
-//		session.setAttribute("merchantVO", merchantVO);
-//		try {
-//			procesorFacade.saveMerchant(merchantVO);
-//			if(merchantVO.getStatus().equalsIgnoreCase("success")) {
-//				ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants();
-//				session.setAttribute("listMerchants", listMerchants);
-//				SessionMessages.add(actionRequest, "merchantSavedSuccessfully");
-//				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
-//			} else {
-//				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
-//				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
-//				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
-//				SessionErrors.add(actionRequest, "error");
-//				SessionErrors.add(actionRequest,merchantVO.getMessage());
-//				session.setAttribute("merchantVO", merchantVO);
-//				actionResponse.setRenderParameter("jspPage", "/jsp/newMerchant.jsp");
-//			}
-//		} catch (ProcesorFacadeException e) {
-//			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
-//			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
-//			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
-//			SessionErrors.add(actionRequest,e.getErrorCode());
-//			System.out.println("e.getMessage(): " + e.getMessage());
-//			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
-//			System.out.println("e.getErrorCode(): " + e.getErrorCode());
-//			session.setAttribute("merchantVO", merchantVO);
-//			actionResponse.setRenderParameter("jspPage", "/jsp/newMerchant.jsp");
-//		}
-//	}
-	
 	public void keepInformation(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 		HttpSession session = request.getSession();
@@ -456,7 +395,6 @@ public class FormMerchant extends MVCPortlet {
 				}else{ 
 					SessionMessages.add(actionRequest, "updateStatusMerchant.Inactivate");
 				}
-				
 			}else{
 				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;

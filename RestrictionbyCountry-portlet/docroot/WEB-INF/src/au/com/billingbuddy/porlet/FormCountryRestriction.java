@@ -181,28 +181,35 @@ public class FormCountryRestriction extends MVCPortlet {
 		}
 	}
 	
-	public void deleteCountryRestriction(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+	public void updateStatusCountryRestriction(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 		HttpSession session = request.getSession();
 		
 		ArrayList<CountryRestrictionVO> resultsListSubscriptions = (ArrayList<CountryRestrictionVO>)session.getAttribute("results");
 		CountryRestrictionVO countryRestrictionVO = (CountryRestrictionVO)resultsListSubscriptions.get(Integer.parseInt(actionRequest.getParameter("indice")));
-//		String indice = actionRequest.getParameter("indice");
-//		ArrayList<SubscriptionVO> resultsListCharge = (ArrayList<SubscriptionVO>)session.getAttribute("results");
-//		SubscriptionVO subscriptionVO = (SubscriptionVO)resultsListCharge.get(Integer.parseInt(indice));
+		boolean activate = false;
 		try {
-			procesorFacade.deleteCountryRestriction(countryRestrictionVO);
+			
+			if(countryRestrictionVO.getStatus().equalsIgnoreCase("1")) {
+				countryRestrictionVO.setStatus("0");
+				activate = true;
+			}else{ 
+				countryRestrictionVO.setStatus("1");
+			}
+			procesorFacade.changeStatusCountryRestriction(countryRestrictionVO);
 			if(countryRestrictionVO.getStatus().equalsIgnoreCase("success")) {
 				ArrayList<CountryRestrictionVO> listCountryRestrictions = procesorFacade.listCountryRestrictions(new CountryRestrictionVO());
 				session.setAttribute("listCountryRestrictions", listCountryRestrictions);
-				SessionMessages.add(actionRequest, "countryRestrictionDeletedSuccessfully");
+				if(activate) {
+					SessionMessages.add(actionRequest, "updateStatusCountryRestriction.Activate");
+				}else{ 
+					SessionMessages.add(actionRequest, "updateStatusCountryRestriction.Inactivate");
+				}
 			}else{
-				System.out.println("countryRestrictionVO.getMessage(): " + countryRestrictionVO.getMessage());
 				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 				SessionErrors.add(actionRequest, "error");
-				System.out.println("countryRestrictionVO.getMessage(): " + countryRestrictionVO.getMessage());
 				SessionErrors.add(actionRequest,countryRestrictionVO.getMessage());
 				session.setAttribute("countryRestrictionVO", countryRestrictionVO);
 			}

@@ -35,56 +35,45 @@
 </portlet:renderURL>
 
 <aui:form  action="<%= submitFormEditCountryRestriction %>" method="post">
-	<div class="table">
-		<div class="section">
-			<div class="row">
-				<div class="row">
-					<div class="column1-1">
-						<label class="aui-field-label sub-title"><fmt:message key="label.informationCountryRestriction"/></label>
+	<fieldset class="fieldset">
+		<legend class="fieldset-legend">
+			<span class="legend"><fmt:message key="label.informationCountryRestriction"/> </span>
+		</legend>
+		<div class="">
+			<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
+			<div class="details">
+				<div id="contenedor">
+					<div id="contenidos">
+						<div id="columna1-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.country"/></dt>
+								<dd><c:out value="${countryRestrictionVO.countryVO.name}"/></dd>
+							</dl>
+						</div>
+						<div id="columna2-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.concept"/></dt>
+								<dd><c:out value="${countryRestrictionVO.concept}"/></dd>
+							</dl>
+						</div>
+					</div>
+					<div id="contenidos">
+						<div id="columna1-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.value"/></dt>
+								<dd><c:out value="${countryRestrictionVO.value}"/></dd>
+							</dl>
+						</div>
+						<div id="columna2-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.timeUnit"/></dt>
+								<dd><c:out value="${countryRestrictionVO.timeUnit}"/></dd>
+							</dl>
+						</div>
 					</div>
 				</div>
 			</div>
-			
-			<div class="row">
-				<div class="column1-4">
-					<label class="aui-field-label"><fmt:message key="label.country"/></label>
-				</div>
-				<div class="column2-4">
-					<c:out value="${countryRestrictionVO.countryVO.name}"/>
-				</div>
-				<div class="column3-4">
-					<label class="aui-field-label"><fmt:message key="label.concept"/></label>
-				</div>
-				<div class="column4-4">
-					<c:out value="${countryRestrictionVO.concept}"/>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-4">
-					<label class="aui-field-label"><fmt:message key="label.value"/></label>
-				</div>
-				<div class="column2-4">
-					<c:out value="${countryRestrictionVO.value}"/>
-				</div>
-				<div class="column3-4">
-					<label class="aui-field-label"><fmt:message key="label.timeUnit"/></label>
-				</div>
-				<div class="column4-4">
-					<c:out value="${countryRestrictionVO.timeUnit}"/>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-2">
-						<span class="goBack" >
-							<a href="<%= goBackEditCountryRestriction %>"><fmt:message key="label.goBack"/></a>
-						</span>
-					</div>
-				<div class="column2-2">
-					<aui:button type="submit" name="save" value="label.save" />
-				</div>
-			</div>
+			<a href="<%= goBackEditCountryRestriction %>"><fmt:message key="label.goBack"/></a>
 		</div>
-	</div>
+	</fieldset>
 </aui:form>

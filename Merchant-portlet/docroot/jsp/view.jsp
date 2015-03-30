@@ -101,17 +101,10 @@
 									<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
 								</portlet:actionURL>
 								<%if(!merchantVO.getStatus().equalsIgnoreCase("1")) {%>
-										<liferay-ui:icon onClick="return confirm('Are you sure do you want to change this certificate status?')" image="edit" message="label.inactivate"  url="<%=inactivateURLMerchant.toString()%>" />
+										<liferay-ui:icon onClick="return confirm('Are you sure do you want to change this Merchant status?')" image="edit" message="label.inactivate"  url="<%=inactivateURLMerchant.toString()%>" />
 								<%}else{%> 
-										<liferay-ui:icon onClick="return confirm('Are you sure do you want to change this certificate status?')" image="edit" message="label.activate" url="<%=inactivateURLMerchant.toString()%>" />
+										<liferay-ui:icon onClick="return confirm('Are you sure do you want to change this Merchant status?')" image="edit" message="label.activate" url="<%=inactivateURLMerchant.toString()%>" />
 								<%}%>
-								
-								<%-- <% if(merchantVO.getStatus().equalsIgnoreCase("0")){%>
-									<liferay-ui:icon-deactivate  label="label.inactivate" url="<%=inactivateURLMerchant.toString()%>" />
-								<%}else{ %>
-									<liferay-ui:icon image="activate" label="label.inactivate" url="<%= inactivateURLMerchant.toString() %>" />
-								<%}%> --%>
-								
 							</c:if>
 							
 						</liferay-ui:icon-menu>

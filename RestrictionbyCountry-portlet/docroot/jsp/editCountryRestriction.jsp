@@ -34,61 +34,42 @@
 </portlet:renderURL>
 
 <aui:form  action="<%= submitFormEditCountryRestriction %>" method="post">
-	<div class="table">
-		<div class="section">
-			<div class="row">
-				<div class="row">
-					<div class="column1-1">
-						<label class="aui-field-label sub-title"><fmt:message key="label.informationCountryRestriction"/></label>
-					</div>
-				</div>
+	<fieldset class="fieldset">
+		<legend class="fieldset-legend">
+			<span class="legend"><fmt:message key="label.informationCountryRestriction"/></span>
+		</legend>
+		<div class="">
+			<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
+			<div class="control-group">
+				<aui:select name="country" helpMessage="help.country"  label="label.country" id="country">
+					<c:forEach var="countryVO" items="${listCountries}">
+						<aui:option value="${countryVO.numeric}" label="${countryVO.name}" selected="${countryVO.numeric==countryRestrictionVO.countryNumeric}"/>
+					</c:forEach>
+				</aui:select>
 			</div>
 			
-			<div class="row">
-				<div class="column1-1">
-					<aui:select name="country" helpMessage="help.country"  label="label.country" id="country">
-						<c:forEach var="countryVO" items="${listCountries}">
-							<aui:option value="${countryVO.numeric}" label="${countryVO.name}" selected="${countryVO.numeric==countryRestrictionVO.countryNumeric}"/>
-						</c:forEach>
-					</aui:select>
-				</div>
+			<div class="control-group">
+				<aui:select name="concept" helpMessage="help.concept" label="label.concept" id="concept">
+					<aui:option value="Amount" label="label.amount" selected="${countryRestrictionVO.concept=='Amount'}"/>
+					<aui:option value="Transactions" label="label.transactions" selected="${countryRestrictionVO.concept=='Transactions'}"/>
+				</aui:select>
 			</div>
 			
-			<div class="row">
-				<div class="column1-1">
-					<aui:select name="concept" helpMessage="help.concept" label="label.concept" id="concept">
-						<aui:option value="Amount" label="label.amount" selected="${countryRestrictionVO.concept=='Amount'}"/>
-						<aui:option value="Transactions" label="label.transactions" selected="${countryRestrictionVO.concept=='Transactions'}"/>
-					</aui:select>
-				</div>
+			<div class="control-group">
+				<aui:input label="label.value" helpMessage="help.value" showRequiredLabel="false" type="text" required="true" name="value" value="${countryRestrictionVO.value}">
+					<aui:validator name="digits"/>
+				</aui:input>
 			</div>
 			
-			<div class="row">
-				<div class="column1-1">
-					<aui:input label="label.value" helpMessage="help.value" showRequiredLabel="false" type="text" required="true" name="value" value="${countryRestrictionVO.value}">
-						<aui:validator name="digits"/>
-					</aui:input>
-				</div>
+			<div class="control-group">
+				<aui:input label="label.timeUnit" helpMessage="help.timeUnit" showRequiredLabel="false" type="text" required="true" name="timeUnit" value="${countryRestrictionVO.timeUnit}">
+					<aui:validator name="digits"/>
+				</aui:input>
 			</div>
 			
-			<div class="row">
-				<div class="column1-1">
-					<aui:input label="label.timeUnit" helpMessage="help.timeUnit" showRequiredLabel="false" type="text" required="true" name="timeUnit" value="${countryRestrictionVO.timeUnit}">
-						<aui:validator name="digits"/>
-					</aui:input>
-				</div>
-			</div>
+			<a href="<%= goBack %>"><fmt:message key="label.goBack"/></a>
+			<aui:button type="submit" name="save" value="label.save" />
 			
-			<div class="row">
-				<div class="column1-2">
-						<span class="goBack" >
-							<a href="<%= goBack %>"><fmt:message key="label.goBack"/></a>
-						</span>
-					</div>
-				<div class="column2-2">
-					<aui:button type="submit" name="save" value="label.save" />
-				</div>
-			</div>
 		</div>
-	</div>
+	</fieldset>
 </aui:form>

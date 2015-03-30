@@ -314,12 +314,6 @@ public class FormBasicPayment extends MVCPortlet {
 				try {
 					InternetAddress fromAddress = new InternetAddress("noreply@billingbuddy.com"); // from address
 					InternetAddress toAddress = new InternetAddress(transactionVO.getCardVO().getCustomerVO().getEmail());  // to address
-					
-					System.out.println("transactionVO.getOrderNumber(): " + transactionVO.getOrderNumber());
-//					transactionVO.setOrderNumber((String)request.getParameter("orderNumber"));
-//					transactionVO.setOrderCurrency((String)request.getParameter("currency"));
-//					transactionVO.setOrderAmount((String)request.getParameter("transactionAmount"));
-					
 					String body = ContentUtil.get("/templates/paymentProcessed.tmpl", true);  
 					String subject = "subject";
 					body = StringUtil.replace(body, new String []{"[$NAME$]","[$AMOUNT$]","[$DATE$]","[$CARDNUMBER$]","[$NUMBER$]"}, 

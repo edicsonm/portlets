@@ -23,6 +23,9 @@
 <%@ page import="javax.portlet.PortletPreferences" %>
 <%@ page import="javax.portlet.PortletURL"%>
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
+
+<%@taglib uri="http://www.billingbuddy.com/.com/bbtlds" prefix="Utils" %>
+
 <aui:script use="aui">
 	enableField = function(){
 		A.one("#<portlet:namespace/>refundAmount").set('disabled', false);
@@ -38,11 +41,11 @@
 <fmt:setBundle basename="Language"/>
 <liferay-ui:success key="refundSuccessful" message="label.success" />
 
-
 <liferay-ui:error key="ProcessorMDTR.processRefound.InvalidRequestException" message="error.ProcessorMDTR.processRefound.InvalidRequestException" />
 <liferay-ui:error key="ProcessorMDTR.processRefound.InvalidRequestException.1" message="error.ProcessorMDTR.processRefound.InvalidRequestException.1" />
 <liferay-ui:error key="ProcessorMDTR.processRefound.InvalidRequestException.2" message="error.ProcessorMDTR.processRefound.InvalidRequestException.2" />
 <liferay-ui:error key="ProcessorMDTR.processRefound.InvalidRequestException.3" message="error.ProcessorMDTR.processRefound.InvalidRequestException.3" />
+<liferay-ui:error key="ProcessorMDTR.processRefound.InvalidRequestException.4" message="error.ProcessorMDTR.processRefound.InvalidRequestException.4" />
 <liferay-ui:error key="ProcessorMDTR.processRefound.RefundDAOException" message="error.ProcessorMDTR.processRefound.RefundDAOException" />
 
 <portlet:defineObjects />
@@ -136,147 +139,132 @@
 </script>
 
 <aui:form action="<%= submitForm %>" method="post">
-	<div class="tabla">
-			<div class="section">
-				<div class="row">
-					<div class="column1-1">
-						<label class="sub-title"><fmt:message key="label.title.refound"/></label>
+<fieldset class="fieldset">
+	<legend class="fieldset-legend">
+		<span class="legend"><fmt:message key="label.refound"/> </span>
+	</legend>
+	<div class="">
+		<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
+		<div class="details">
+			<p id="sub-legend" class="description"><fmt:message key="label.paymentDetails"/></p>
+			<div id="contenedor">
+				<div id="contenidos">
+					<div id="columna1-2">
+						<dl class="property-list">
+							<dt><fmt:message key="label.transactionNumber"/></dt>
+							<dd><c:out value="${chargeVO.transactionId}"/></dd>
+						</dl>
+					</div>
+					<div id="columna2-2">
+						<dl class="property-list">
+							<dt><fmt:message key="label.dateOrderPlaced"/></dt>
+							<dd><c:out value="${Utils:formatDate(3,chargeVO.creationTime,3)}"/></dd>
+						</dl>
 					</div>
 				</div>
-				<div class="row">
-					<div class="column1-4">
-						<label class="aui-field-label"><fmt:message key="label.transactionNumber"/></label>
+				<div id="contenidos">
+					<div id="columna1-2">
+						<dl class="property-list">
+							<dt><fmt:message key="label.currency"/></dt>
+							<dd><c:out value="${Utils:toUpperCase(chargeVO.currency)}"/></dd>
+						</dl>
 					</div>
-					<div class="column2-4">
-						<c:out value="${chargeVO.transactionId}"/>
-					</div>
-					<div class="column3-4">
-						<label class="aui-field-label"><fmt:message key="label.dateOrderPlaced"/></label>
-					</div>
-					<div class="column4-4">
-						<c:out value="<%=Utilities.formatDate(chargeVO.getCreationTime()) %>"/>
+					<div id="columna2-2">
+						<dl class="property-list">
+							<dt><fmt:message key="label.transactionAmount"/></dt>
+							<dd><c:out value="${Utils:stripeToCurrency(chargeVO.amount, chargeVO.currency)}"/></dd>
+						</dl>
 					</div>
 				</div>
-				<div class="row">
-					<div class="column1-4">
-						<label class="aui-field-label"><fmt:message key="label.currency"/></label>
+			</div>
+			
+			<p id="sub-legend" class="description"><fmt:message key="label.cardDetails"/></p>
+			<div id="contenedor">
+				<div id="contenidos">
+					<div id="columna1-2">
+						<dl class="property-list">
+							<dt><fmt:message key="label.cardType"/></dt>
+							<dd><c:out value="${chargeVO.cardVO.brand}"/></dd>
+						</dl>
 					</div>
-					<div class="column2-4">
-						<c:out value="${fn:toUpperCase(chargeVO.currency)}"/>
+					<div id="columna2-2">
+						<dl class="property-list">
+							<dt><fmt:message key="label.paymentMethod"/></dt>
+							<dd><c:out value="${fn:toUpperCase(fn:substring(chargeVO.cardVO.funding, 0, 1))}${fn:toLowerCase(fn:substring(chargeVO.cardVO.funding, 1,fn:length(chargeVO.cardVO.funding)))}"/></dd>
+						</dl>
+					</div>
+				</div>
+			</div>
+			
+			<p id="sub-legend" class="description"><fmt:message key="label.refoundDetails"/></p>
+			<div id="contenedor">
+				<div id="contenidos">
+					<div id="columna1-3">
+						<div class="control-group">
+							<aui:input label="label.reason" type="textarea" showRequiredLabel="false" required="true" name="reason" value="${chargeVO.refundVO.reason}"/>
+						</div>
+					</div>
+					<div id="columna2-3">
+						<dl class="property-list">
+							<dt><fmt:message key="label.currency"/></dt>
+							<dd><c:out value="${Utils:toUpperCase(chargeVO.currency)}"/></dd>
+						</dl>
+					</div>
+					<div id="columna3-3">
+						<div class="control-group">
+							<aui:input label="label.refundAmount" showRequiredLabel="false" required="true" id="refundAmount" name="refundAmount" disabled="false" value="<%=Utilities.stripeToCurrency(String.valueOf(Integer.parseInt(chargeVO.getAmount()) - Integer.parseInt(chargeVO.getAmountRefunded())),chargeVO.getCurrency().toUpperCase()) %>">
+								<%-- <aui:validator name="number" /> --%>
+							</aui:input>
+						</div>
 					</div>
 					
-					<div class="column3-4">
-						<label class="aui-field-label"><fmt:message key="label.transactionAmount"/></label>
-					</div>
-					<div class="column4-4">
-						<c:out value="<%=Utilities.stripeToCurrency(chargeVO.getAmount(),chargeVO.getCurrency().toUpperCase()) %>"/>
-					</div>
-					
 				</div>
-				<div class="row">
-					<div class="column1-4">
-						<label class="aui-field-label"><fmt:message key="label.cardType"/></label>
+				<div id="contenidos">
+					<div id="columna1-2">
+						<dl class="property-list">
+							<dt><fmt:message key="label.currency"/></dt>
+							<dd><c:out value="${Utils:toUpperCase(chargeVO.currency)}"/></dd>
+						</dl>
 					</div>
-					<div class="column2-4">
-						<c:out default="N/E" value="${chargeVO.cardVO.brand}"/>
-					</div>
-					<div class="column3-4">
-						<label class="aui-field-label"><fmt:message key="label.paymentMethod"/></label>
-					</div>
-					<div class="column4-4">
-						<c:out default="N/E" value="${fn:toUpperCase(fn:substring(chargeVO.cardVO.funding, 0, 1))}${fn:toLowerCase(fn:substring(chargeVO.cardVO.funding, 1,fn:length(chargeVO.cardVO.funding)))}"/>
+					<div id="columna2-2">
+						<dl class="property-list">
+							<dt><fmt:message key="label.refunded"/></dt>
+							<dd><c:out value="${Utils:stripeToCurrency(chargeVO.amountRefunded, chargeVO.currency)}"/></dd>
+						</dl>
 					</div>
 				</div>
 			</div>
-			<div class="section">
-				<div class="row">
-					<div class="column1-1">
-						<label class="sub-title"><fmt:message key="label.title.refoundDetails"/></label>
-					</div>
-				</div>
-				<div class="row">
-					<%-- <div class="column1-4">
-						<label class="aui-field-label"><fmt:message key="label.reason"/></label>
-					</div> --%>
-					<div class="column1-2">
-						<aui:input label="label.reason" type="textarea" showRequiredLabel="false" required="true" name="reason" value="${chargeVO.refundVO.reason}"/>
-					</div>
-					<%-- <div class="column2-2">
-						<label class="aui-field-label"><fmt:message key="label.refundAmount"/></label>
-					</div> --%>
-					<div class="column2-2">
-						<aui:input label="label.refundAmount" showRequiredLabel="false" required="true" id="refundAmount" name="refundAmount" disabled="false" value="<%=Utilities.stripeToCurrency(String.valueOf(Integer.parseInt(chargeVO.getAmount()) - Integer.parseInt(chargeVO.getAmountRefunded())),chargeVO.getCurrency().toUpperCase()) %>">
-							<aui:validator name="number" />
-						</aui:input>
-						<%-- <span class="enableField"><a href="#" onclick="javascript:enableField()"><fmt:message key="label.enableField"/></a></span> --%>
-					</div>
-				</div>
-				<div class="row">
-					<div class="column1-4">
-						<label class="aui-field-label"><fmt:message key="label.refunded"/></label>
-					</div>
-					<div class="column2-4">
-						<%-- <c:out default="N/E" value="${chargeVO.refundVO.amount}"/> --%>
-						<c:out default="N/E" value="<%=Utilities.stripeToCurrency(chargeVO.getAmountRefunded(),chargeVO.getCurrency().toUpperCase()) %>"/>
-					</div>
-					<div class="column3-4">
-					</div>
-					<div class="column4-4">
-					</div>
-				</div>
-				
-				<div class="row">
-					<div class="column1-1">
-						<label class="sub-title"><fmt:message key="label.title.refoundHistory"/></label>
-					</div>
-				</div>
-				<div class="row">
-						<liferay-ui:search-container delta="<%= listRefunds.size() %>" emptyResultsMessage="label.noRegistros">
-						<%-- <liferay-ui:search-container emptyResultsMessage="label.noRegistros" iteratorURL="<%=renderURLRefunds%>" orderByCol="<%=orderByColRefunds%>" orderByType="<%=orderByTypeRefunds%>"> --%>
-						   <liferay-ui:search-container-results  >
-						      <%
-						      results= ListUtil.subList(listRefunds, searchContainer.getStart(), searchContainer.getEnd());
-						      total= listRefunds.size();
-						      pageContext.setAttribute("results", results);
-						      pageContext.setAttribute("total", total);	
-						      
-						      /* listRefunds = Methods.orderRefunds(listRefunds,orderByColRefunds,orderByTypeRefunds);
-								results = ListUtil.subList(listRefunds, searchContainer.getStart(), searchContainer.getEnd());
-								total = listRefunds.size();
-								pageContext.setAttribute("results", results);
-								pageContext.setAttribute("total", total); */
-						       %>
-							</liferay-ui:search-container-results>
-							<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.RefundVO" rowVar="posi" indexVar="indiceTable" keyProperty="id" modelVar="refundVO">
-							<liferay-ui:search-container-column-text name="Refund" property="id" value="id" orderable="false" orderableProperty="id"/>
-							<liferay-ui:search-container-column-text name="Currency" property="currency" orderable="false" orderableProperty="currency" />
-							<liferay-ui:search-container-column-text name="Amount" value="<%=Utilities.stripeToCurrency(refundVO.getAmount(),refundVO.getCurrency().toUpperCase()) %>" orderable="false" orderableProperty="amount" />
-							<liferay-ui:search-container-column-text name="Charge Date" value="<%=Utilities.formatDate(refundVO.getCreationTime())%>"  orderable="false" orderableProperty="creationTime" />
-							<liferay-ui:search-container-column-text name="Reason" property="reason" orderable="false" orderableProperty="reason" />
-						   </liferay-ui:search-container-row>
-						   <liferay-ui:search-iterator paginate="false" />
-						</liferay-ui:search-container>					
-				</div>	
-				<div class="row">
-					<div class="column1-2">
-						<span class="goBack" >
-							<a href="<%= goBack %>"><fmt:message key="label.goBack"/></a>
-						</span>
-					</div>
-					<div class="column2-2">
-						<%-- <aui:button type="button" name="listRefunds" onClick="listRefunds();" value="label.listRefunds" /> --%>
-						<aui:button type="submit" name="processRefund" value="label.processRefund" />
-						<%-- <a href="#" onclick="javascript:submitForm()"><fmt:message key="label.processRefund"/></a> --%>
-					</div>
-				</div>
-			</div>
-		<%-- <div class="fila">
-			<div class="columnaIzquierda">
-				<label class="aui-field-label"><fmt:message key="label.transactionNumber"/></label>
-			</div>
-			<div class="columnaDerecha">
-				<c:out value="${id}"/>
-			</div>
-		</div> --%>
+			
+			<p id="sub-legend" class="description"><fmt:message key="label.refoundHistory"/></p>
+			<liferay-ui:search-container emptyResultsMessage="label.empty" delta="<%= listRefunds.size() %>">
+			
+			<%-- <liferay-ui:search-container delta="<%= listRefunds.size() %>" emptyResultsMessage="label.empty"> --%>
+			   <liferay-ui:search-container-results>
+			      <%
+			      results= ListUtil.subList(listRefunds, searchContainer.getStart(), searchContainer.getEnd());
+			      total= listRefunds.size();
+			      pageContext.setAttribute("results", results);
+			      pageContext.setAttribute("total", total);	
+			      
+			      /* listRefunds = Methods.orderRefunds(listRefunds,orderByColRefunds,orderByTypeRefunds);
+					results = ListUtil.subList(listRefunds, searchContainer.getStart(), searchContainer.getEnd());
+					total = listRefunds.size();
+					pageContext.setAttribute("results", results);
+					pageContext.setAttribute("total", total); */
+			       %>
+				</liferay-ui:search-container-results>
+				<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.RefundVO" rowVar="posi" indexVar="indiceTable" keyProperty="id" modelVar="refundVO">
+				<%-- <liferay-ui:search-container-column-text name="Refund" property="id" value="id" orderable="false" orderableProperty="id"/> --%>
+				<liferay-ui:search-container-column-text name="label.currency" value="${Utils:toUpperCase(refundVO.currency)}" orderable="false" orderableProperty="currency" />
+				<liferay-ui:search-container-column-text name="label.refundAmount" value="<%=Utilities.stripeToCurrency(refundVO.getAmount(),refundVO.getCurrency().toUpperCase()) %>" orderable="false" orderableProperty="amount" />
+				<liferay-ui:search-container-column-text name="label.dateRefund" value="<%=Utilities.formatDate(refundVO.getCreationTime())%>"  orderable="false" orderableProperty="creationTime" />
+				<liferay-ui:search-container-column-text name="Reason" property="reason" orderable="false" orderableProperty="reason" />
+			   </liferay-ui:search-container-row>
+			   <liferay-ui:search-iterator paginate="false" />
+			</liferay-ui:search-container>
+			<a href="<%= goBack %>"><fmt:message key="label.goBack"/></a>
+			<aui:button type="submit" name="processRefund" value="label.processRefund" />
+		</div>
 	</div>
+</fieldset>
 </aui:form>

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletConfig;
@@ -18,22 +20,27 @@ import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONObject;
 
+import au.com.billigbuddy.utils.BBUtils;
 import au.com.billingbuddy.business.objects.ProcesorFacade;
 import au.com.billingbuddy.business.objects.TransactionFacade;
+import au.com.billingbuddy.common.objects.Utilities;
 import au.com.billingbuddy.exceptions.objects.ProcesorFacadeException;
 import au.com.billingbuddy.vo.objects.ChargeVO;
 import au.com.billingbuddy.vo.objects.RefundVO;
 import au.com.billingbuddy.vo.objects.TransactionVO;
 
+import com.liferay.mail.service.MailServiceUtil;
+import com.liferay.portal.kernel.mail.MailMessage;
 import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.Http.Response;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.util.PortalUtil;
+import com.liferay.util.ContentUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
-import com.liferay.util.json.JSONFactoryUtil;
 
 public class FormRefund extends MVCPortlet {
 	private ProcesorFacade procesorFacade = ProcesorFacade.getInstance();
@@ -47,23 +54,9 @@ public class FormRefund extends MVCPortlet {
 			HttpSession session = request.getSession();
 			ArrayList<ChargeVO> listCharge;
 		
-			listCharge = procesorFacade.listCharge(new ChargeVO());
-		
+			listCharge = procesorFacade.listCharge(new ChargeVO(String.valueOf(PortalUtil.getUserId(request))));
 			session.setAttribute("listCharge", listCharge);
 			
-	//		String page = (String)session.getAttribute("page");
-	//		System.out.println("page: " + page);
-	//		session.removeAttribute("page");
-	//		if(page == null || page.equalsIgnoreCase("view.jsp")){
-	//			ArrayList<ChargeVO> listCharge = transactionFacade.listCharge(new ChargeVO());
-	//			session.setAttribute("listCharge", listCharge);
-	//			include("/jsp/view.jsp", renderRequest, renderResponse);
-	//		} else {
-	//			PortletPreferences prefs = renderRequest.getPreferences();
-	//			prefs.setValue("greeting", "indiceindiceindice");
-	//	        prefs.store();
-	//			include("/jsp/refund.jsp", renderRequest, renderResponse);
-	//		}
 		} catch (ProcesorFacadeException e) {
 			e.printStackTrace();
 			PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
@@ -73,12 +66,12 @@ public class FormRefund extends MVCPortlet {
 			System.out.println("e.getMessage(): " + e.getMessage());
 			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
 			System.out.println("e.getErrorCode(): " + e.getErrorCode());
-//			renderRequest.setRenderParameter("jspPage", "/jsp/view.jsp");
 		}
 		super.doView(renderRequest, renderResponse);
 	}
 	
 	public void showDetails(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+		
 		System.out.println("Ejecuta showDetails");
 //		System.out.println("Ejecuta showDetails ...");
 //		String id = actionRequest.getParameter("id");
@@ -89,26 +82,32 @@ public class FormRefund extends MVCPortlet {
 //		HttpSession session = request.getSession();
 //		actionResponse.setRenderParameter("jspPage", jspPage);
 //		super.processAction(actionRequest, actionResponse);
+		
 	}
 	
 	public void listRefund(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+		
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 		HttpSession session = request.getSession();
 		
 		String indice = actionRequest.getParameter("indice");
 		ArrayList<ChargeVO> resultsListCharge = (ArrayList<ChargeVO>)session.getAttribute("results");
 		ChargeVO chargeVO = (ChargeVO)resultsListCharge.get(Integer.parseInt(indice));
-		session.setAttribute("chargeVO", chargeVO);
 		
 		RefundVO refundVO = new RefundVO();
+		
 		refundVO.setId(chargeVO.getId());
 		ArrayList<RefundVO> listRefunds = null;
 		try {
+			chargeVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
+			chargeVO = procesorFacade.listChargeDetail(chargeVO);
+			session.setAttribute("chargeVO", chargeVO);
+			
 			listRefunds = procesorFacade.listRefunds(refundVO);
 			session.setAttribute("listRefunds", listRefunds);
+			
 		} catch (ProcesorFacadeException e) {
 			e.printStackTrace();
-			
 			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
@@ -129,6 +128,7 @@ public class FormRefund extends MVCPortlet {
 		chargeVO.getRefundVO().setReason(actionRequest.getParameter("reason"));
 		chargeVO.getRefundVO().setAmount(actionRequest.getParameter("refundAmount"));
 		chargeVO.getRefundVO().setTransactionId(chargeVO.getTransactionId());
+		chargeVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
 		try {
 			procesorFacade.processRefund(chargeVO);
 			if(chargeVO.getStatus().equalsIgnoreCase("success")) {
@@ -136,16 +136,40 @@ public class FormRefund extends MVCPortlet {
 				refundVO.setId(chargeVO.getId());
 				ArrayList<RefundVO> listRefunds = null;
 				try {
+					try {
+						InternetAddress fromAddress = new InternetAddress("noreply@billingbuddy.com"); // from address
+						InternetAddress toAddress = new InternetAddress(chargeVO.getCardVO().getCustomerVO().getEmail());  // to address
+						
+						String body = ContentUtil.get("/templates/RefundProcessed.tmpl", true);  
+						String subject = "subject";
+						body = StringUtil.replace(body, new String []{"[$NAME$]","[$AMOUNT$]"}, new String []{chargeVO.getCardVO().getName(), BBUtils.stripeToCurrency(chargeVO.getRefundVO().getAmount(),chargeVO.getCurrency().toUpperCase())}); // replacing the body with our content.
+						MailMessage mailMessage = new MailMessage();
+						mailMessage.setTo(toAddress);
+						mailMessage.setFrom(fromAddress);
+						mailMessage.setSubject(subject);
+						mailMessage.setBody(body);
+						mailMessage.setHTMLFormat(true);
+						MailServiceUtil.sendEmail(mailMessage); // Sending message
+						
+					} catch (AddressException e1) {
+						e1.printStackTrace();
+					}
+					
+					chargeVO = procesorFacade.listChargeDetail(chargeVO);
+					session.setAttribute("chargeVO", chargeVO);
+					
 					listRefunds = procesorFacade.listRefunds(refundVO);
 					session.setAttribute("listRefunds", listRefunds);
+					
+					
+					
+					
 				} catch (ProcesorFacadeException e) {
 					e.printStackTrace();
 				}
 				
-//				SessionMessages.add(actionRequest, "paymentSuccessful", new Object[] { transactionVO.getId() });
 				SessionMessages.add(actionRequest, "refundSuccessful");
 				session.setAttribute("transactionId", chargeVO.getId());
-//				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
 				actionResponse.setRenderParameter("jspPage", "/jsp/refund.jsp");
 			}else{
 				System.out.println("basicPaymentResponseModel.getMessage(): " + chargeVO.getMessage());
@@ -171,7 +195,6 @@ public class FormRefund extends MVCPortlet {
 			System.out.println("e.getErrorCode(): " + e.getErrorCode());
 			
 			session.setAttribute("chargeVO", chargeVO);
-//			actionResponse.setRenderParameter("indice", (String)session.getAttribute("indice"));
 			actionResponse.setRenderParameter("jspPage", "/jsp/refund.jsp");
 		}
 	}
@@ -272,43 +295,30 @@ public class FormRefund extends MVCPortlet {
 	@Override
 	public void processAction(ActionRequest actionRequest,
 			ActionResponse actionResponse) throws IOException, PortletException {
-		// TODO Auto-generated method stub
 		super.processAction(actionRequest, actionResponse);
 	}
 
-	public void renderqwqwe(RenderRequest request, RenderResponse response) throws PortletException, IOException {
-		System.out.println("Ejecuta render");
-		HttpServletRequest httpServletRequest = PortalUtil.getHttpServletRequest(request);
-		HttpSession session = httpServletRequest.getSession();
-//		if(httpServletRequest.getParameter("indice") != null){
-//			PortletPreferences prefs = request.getPreferences();
-//			prefs.setValue("indice", httpServletRequest.getParameter("indice"));
-//	        prefs.store();
+//	public void renderqwqwe(RenderRequest request, RenderResponse response) throws PortletException, IOException {
+//		System.out.println("Ejecuta render");
+//		HttpServletRequest httpServletRequest = PortalUtil.getHttpServletRequest(request);
+//		HttpSession session = httpServletRequest.getSession();
+//		String orderNumber = httpServletRequest.getParameter("orderNumber");
+//		if(orderNumber != null){
+//			RefundVO refundVO = new RefundVO();
+//			refundVO.setId(orderNumber!= null ? orderNumber :  (String)session.getAttribute("orderNumber"));
+//			ArrayList<RefundVO> listRefunds;
+//			try {
+//				listRefunds = procesorFacade.listRefunds(refundVO);
+//				session.setAttribute("listRefunds", listRefunds);
+//			} catch (ProcesorFacadeException e) {
+//				e.printStackTrace();
+//			}
+//		}else{
+//			
 //		}
-//		System.out.println("1 - " + httpServletRequest.getParameter("orderNumber"));
-//		System.out.println("2 - " + httpServletRequest.getAttribute("orderNumber"));
-//		
-//		System.out.println("3 - " + request.getParameter("orderNumber"));
-//		System.out.println("4 - " + request.getAttribute("orderNumber"));
-		
-		String orderNumber = httpServletRequest.getParameter("orderNumber");
-		if(orderNumber != null){
-			RefundVO refundVO = new RefundVO();
-			refundVO.setId(orderNumber!= null ? orderNumber :  (String)session.getAttribute("orderNumber"));
-			System.out.println("refundVO.getId(): " + refundVO.getId());
-			ArrayList<RefundVO> listRefunds;
-			try {
-				listRefunds = procesorFacade.listRefunds(refundVO);
-				session.setAttribute("listRefunds", listRefunds);
-			} catch (ProcesorFacadeException e) {
-				e.printStackTrace();
-			}
-		}else{
-			
-		}
-			
-		super.render(request, response);
-	}
+//			
+//		super.render(request, response);
+//	}
 	
 }
 
