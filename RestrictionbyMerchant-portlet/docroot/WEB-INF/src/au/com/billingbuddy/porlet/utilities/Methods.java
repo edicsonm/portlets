@@ -1,4 +1,4 @@
-package au.com.billigbuddy.porlet.utilities;
+package au.com.billingbuddy.porlet.utilities;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,12 +10,12 @@ import au.com.billingbuddy.vo.objects.MerchantRestrictionVO;
 public class Methods {
 	
 	public static void orderMerchantRestriction(String campo, ArrayList<MerchantRestrictionVO> list) {
-		BeanComparator<MerchantRestrictionVO> comparator= new BeanComparator<MerchantRestrictionVO>(campo);
+		BeanComparator comparator= new BeanComparator(campo);
 		Collections.sort(list, comparator);
 	}
 	
 	public static ArrayList<MerchantRestrictionVO> orderMerchantRestriction(ArrayList<MerchantRestrictionVO> list, String orderByCol, String orderByType ) {
-		BeanComparator<MerchantRestrictionVO> comparator= new BeanComparator<MerchantRestrictionVO>(orderByCol);
+		BeanComparator comparator= new BeanComparator(orderByCol);
 		if(list != null){
 			if(orderByType.equals("asc")){
 				Collections.sort(list, comparator);

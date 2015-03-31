@@ -54,10 +54,6 @@
 	String inactive = "Inactive";
 %>
 
-<%-- <portlet:renderURL var="newSubscription">
-	<portlet:param name="jspPage" value="/jsp/newSubscription.jsp" />
-</portlet:renderURL> --%>
-
 <portlet:actionURL var="listCountriesCountryRestriction" name="listCountriesCountryRestriction"/>
 <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLCountryRestriction" />
 
@@ -105,11 +101,6 @@
 							</portlet:actionURL>
 							<liferay-ui:icon image="edit" message="label.edit" url="<%=editURLCountryRestriction.toString()%>" />
 							
-							<%-- <portlet:actionURL var="deleteURLCountryRestriction" name="deleteCountryRestriction">
-								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
-							</portlet:actionURL>
-							<liferay-ui:icon-delete message="label.delete" url="<%=deleteURLCountryRestriction.toString()%>" /> --%>
-							
 							<portlet:actionURL var="inactivateURLCountryRestriction" name="updateStatusCountryRestriction">
 								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
 							</portlet:actionURL>
@@ -118,7 +109,6 @@
 							<%}else{%> 
 									<liferay-ui:icon onClick="return confirm('Are you sure do you want to change this Country Restriction status?')" image="edit" message="label.activate" url="<%=inactivateURLCountryRestriction.toString()%>" />
 							<%}%> 
-							
 						</liferay-ui:icon-menu>
 					</liferay-ui:search-container-column-text>
 					

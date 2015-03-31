@@ -21,44 +21,11 @@
 <%@ page import="com.liferay.portal.kernel.util.WebKeys" %>
 <%@taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
 
-<style>
-	circle {
-		stroke: #ffffff;
-		fill  : #008cdd;
-	}
-
-	path.pathGraphic {
-		opacity: 1; 
-		fill-opacity: 1;
-		stroke:#4cabe2;
-		stroke-width:0;
-		stroke-opacity:1;
-		fill-opacity:1;
-	}
-	
-	path.pathReferences {
-		stroke-opacity: 0.10;
-		fill: none;
-		stroke: #4cabe2;
-		stroke-width:2;
-	}
-		
-	text.labelPoint{
-		text-anchor: end; 
-		font: 8px Arial;
-		fill: #008cdd;
-	}
-
-</style>
-
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
 <% 
 	TransactionVO transactionVOCharges = (TransactionVO)session.getAttribute("transactionVOCharges");
-	Calendar cal = CalendarFactoryUtil.getCalendar(GregorianCalendar.getInstance().getTimeZone());	
-	Calendar fromCalendar = Utilities.getCalendar(transactionVOCharges.getInitialDateReport(),2);
-	Calendar toCalendar = Utilities.getCalendar(transactionVOCharges.getFinalDateReport(),2);
 %>
 <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURL" />
 
@@ -72,8 +39,8 @@
 	    cache:false,
 	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 	    dataType: "html",
-	    data: {fromDateCharges: $("#<portlet:namespace />fromDateCharges").val(),
-	    	toDateCharges: $("#<portlet:namespace />toDateCharges").val()},
+	    data: {<portlet:namespace/>fromDateCharges: $("#<portlet:namespace />fromDateCharges").val(),
+	    	<portlet:namespace/>toDateCharges: $("#<portlet:namespace />toDateCharges").val()},
 	    success : function(data){
 	    	$("#reportCharges").html(data);	    	
 	    },error : function(XMLHttpRequest, textStatus, errorThrown){
@@ -85,6 +52,35 @@
 	};
 </script>
 <aui:script>
+    
+  YUI().use('aui-datepicker', function(Y) {
+	    new Y.DatePicker(
+	    	{
+	        trigger: '#<portlet:namespace />fromDateCharges',
+	        popover: {
+	          zIndex: 1
+	        }
+	      });
+	  }
+	);
+  
+  YUI().use(
+		  'aui-datepicker',
+		  function(Y) {
+		    new Y.DatePicker(
+		      {
+		        trigger: '#<portlet:namespace />toDateCharges',
+		        popover: {
+		          zIndex: 1
+		        }
+		      });
+		  }
+		);
+
+</aui:script>
+
+
+<%-- <aui:script>
     
     AUI().use('aui-datepicker', function(A) {
        var fromDate = new A.DatePicker({
@@ -98,40 +94,43 @@
         }).render('##<portlet:namespace />toDateChargesPicker');
      });
 
-</aui:script>
+</aui:script> --%>
 <aui:form method="post">
-	<div class="table">
-		<div class="section">
-			<div class="row">
-				<div class="column1-3-Report">
-					<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace />fromDateChargesPicker">
-						<aui:input onkeypress="return false;" label="label.from" helpMessage="help.from" showRequiredLabel="false" size="10" type="text" required="true" name="fromDateCharges">
-							 <aui:validator name="date" />
-						</aui:input>
+	<fieldset class="fieldset">
+		<legend class="fieldset-legend">
+			<span class="legend"><fmt:message key="label.reportDescription"/> </span>
+		</legend>
+		<div class="">
+			<div id="contenedor">
+				<div id="contenidos">
+					<div id="columna1">
+						<div class="control-group">
+							<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace />fromDateChargesPicker">
+								<aui:input onkeypress="return false;" value="<%= transactionVOCharges.getInitialDateReport()%>"  label="label.from" helpMessage="help.from" showRequiredLabel="false" size="10" type="text" required="true" name="fromDateCharges">
+									 <aui:validator name="date" />
+								</aui:input>
+							</div>
+						</div>
+					</div>
+					<div id="columna2">
+						<div class="control-group">
+							<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace  />toDateChargesPicker">
+								<aui:input onkeypress="return false;" value="<%= transactionVOCharges.getFinalDateReport()%>" label="label.to" helpMessage="help.to" showRequiredLabel="false" size="10" type="text" required="true" name="toDateCharges">
+									 <aui:validator name="date" />
+								</aui:input>
+							</div>
+						</div>
+					</div>
+					<div id="columna3">
+						<div class="control-group">
+							<aui:button type="button" name="listRefunds" onClick="createGraphicCharges();" value="label.search" />
+						</div>
 					</div>
 				</div>
-				<div class="column2-3-Report">
-					<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace  />toDateChargesPicker">
-						<aui:input onkeypress="return false;" label="label.to" helpMessage="help.to" showRequiredLabel="false" size="10" type="text" required="true" name="toDateCharges">
-							 <aui:validator name="date" />
-						</aui:input>
-					</div>
-				</div>
-				<div class="column3-3-Report">
-					<aui:button type="button" name="listRefunds" onClick="createGraphicCharges();" value="label.search" />
-				</div>
+			</div>
+			<div id="reportCharges">
+				<%out.print(session.getAttribute("reportCharges"));%>
 			</div>
 		</div>
-		<%-- <div class="row">
-			<div class="column1-1">
-				<aui:button type="submit" name="search" value="label.search" />
-				<aui:button type="button" name="listRefunds" onClick="createGraphic();" value="label.search" />
-			</div>
-		</div> --%>
-		<div class="row">
-			<div id="reportCharges">
-			<%out.print(session.getAttribute("reportCharges"));%>
-			</div>
-		</div>	
-	</div>
+	</fieldset>
 </aui:form>

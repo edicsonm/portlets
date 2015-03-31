@@ -1,4 +1,4 @@
-package au.com.billigbuddy.porlet.utilities;
+package au.com.billingbuddy.porlet.utilities;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,12 +10,12 @@ import au.com.billingbuddy.vo.objects.CreditCardRestrictionVO;
 public class Methods {
 	
 	public static void orderCreditCardRestriction(String campo, ArrayList<CreditCardRestrictionVO> list) {
-		BeanComparator<CreditCardRestrictionVO> comparator= new BeanComparator<CreditCardRestrictionVO>(campo);
+		BeanComparator comparator= new BeanComparator(campo);
 		Collections.sort(list, comparator);
 	}
 	
 	public static ArrayList<CreditCardRestrictionVO> orderCreditCardRestriction(ArrayList<CreditCardRestrictionVO> list, String orderByCol, String orderByType ) {
-		BeanComparator<CreditCardRestrictionVO> comparator= new BeanComparator<CreditCardRestrictionVO>(orderByCol);
+		BeanComparator comparator= new BeanComparator(orderByCol);
 		if(list != null){
 			if(orderByType.equals("asc")){
 				Collections.sort(list, comparator);

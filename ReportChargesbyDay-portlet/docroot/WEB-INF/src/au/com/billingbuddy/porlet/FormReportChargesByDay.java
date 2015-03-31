@@ -15,12 +15,15 @@ import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.xml.transform.stream.StreamSource;
 
-import org.json.simple.JSONObject;
-
-import au.com.billingbuddy.business.objects.ReportFacade;
+import au.com.billigbuddy.utils.BBUtils;
+import au.com.billingbuddy.business.objects.ProcesorFacade;
 import au.com.billingbuddy.common.objects.Utilities;
-import au.com.billingbuddy.exceptions.objects.ReportFacadeException;
+import au.com.billingbuddy.exceptions.objects.ProcesorFacadeException;
+import au.com.billingbuddy.exceptions.objects.ReporteChargesByDayException;
+import au.com.billingbuddy.porlet.reports.ReporteChargesByDay;
+import au.com.billingbuddy.porlet.utilities.GraphTemplate;
 import au.com.billingbuddy.vo.objects.TransactionVO;
 
 import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
@@ -32,7 +35,7 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
 
 public class FormReportChargesByDay extends MVCPortlet {
 	
-	private ReportFacade reportFacade = ReportFacade.getInstance();
+	private ProcesorFacade procesorFacade = ProcesorFacade.getInstance();
 	
 	@Override
 	public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
@@ -41,10 +44,23 @@ public class FormReportChargesByDay extends MVCPortlet {
 		try {
 			session.removeAttribute("transactionVOCharges");
 			TransactionVO transactionVO = new TransactionVO();
-			StringWriter report = reportFacade.searchChargesByDay(transactionVO);
+			
+			transactionVO.setInitialDateReport(BBUtils.getCurrentDate(2,-1*(150)));
+			transactionVO.setFinalDateReport(BBUtils.getCurrentDate(2,0));
+			transactionVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
+			
+			StreamSource xslStream = new StreamSource(renderRequest.getPortletSession().getPortletContext().getRealPath("/WEB-INF/src/graphTemplate/graphTemplate.xsl"));
+			
+			ArrayList<TransactionVO> listAmountsByDay = procesorFacade.searchChargesByDay(transactionVO);
+			ReporteChargesByDay reporteChargesByDay = new ReporteChargesByDay(xslStream, GraphTemplate.getMap());
+			StringWriter report = reporteChargesByDay.CreateXml(listAmountsByDay);
+			
+			transactionVO.setInitialDateReport(BBUtils.getCurrentDate(6,-1*(150)));
+			transactionVO.setFinalDateReport(BBUtils.getCurrentDate(6,0));
+			
 			session.setAttribute("reportCharges", report.toString());
 			session.setAttribute("transactionVOCharges", transactionVO);
-		} catch (ReportFacadeException e) {
+		} catch (ProcesorFacadeException | ReporteChargesByDayException e) {
 			e.printStackTrace();
 			PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
@@ -78,14 +94,32 @@ public class FormReportChargesByDay extends MVCPortlet {
 				e.printStackTrace();
 			}
 			
-			StringWriter report = reportFacade.searchChargesByDay(transactionVO);
+			StreamSource xslStream = new StreamSource(resourceRequest.getPortletSession().getPortletContext().getRealPath("/WEB-INF/src/graphTemplate/graphTemplate.xsl"));
+			
+			transactionVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
+			ArrayList<TransactionVO> listChargesByDay = procesorFacade.searchChargesByDay(transactionVO);
+			ReporteChargesByDay reporteChargesByDay = new ReporteChargesByDay(xslStream, GraphTemplate.getMap());
+			StringWriter report = reporteChargesByDay.CreateXml(listChargesByDay);
+//			
+//			try {
+//				date = Utilities.getDateFormat(6).parse(resourceRequest.getParameter("fromDateCharges"));
+//				transactionVO.setInitialDateReport(Utilities.getDateFormat(2).format(date));
+//				date = Utilities.getDateFormat(6).parse(resourceRequest.getParameter("toDateCharges"));
+//				transactionVO.setFinalDateReport(Utilities.getDateFormat(2).format(date));
+//			} catch (NumberFormatException e) {
+//				e.printStackTrace();
+//			} catch (ParseException e) {
+//				e.printStackTrace();
+//			}
+			
+//			StringWriter report = reportFacade.searchChargesByDay(transactionVO);
 			resourceResponse.setContentType("text/html");
 			PrintWriter writer = resourceResponse.getWriter();
 			writer.print(report.toString());
 	        writer.flush();
 	        writer.close();
 			session.setAttribute("transactionVOCharges", transactionVO);
-		} catch (ReportFacadeException e) {
+        } catch (ProcesorFacadeException | ReporteChargesByDayException e) {
 			e.printStackTrace();
 //			PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 //			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;

@@ -18,5 +18,7 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/BillingBuddyServer"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/BBUtils"/>
 	<classpathentry kind="output" path="docroot/WEB-INF/classes"/>
 </classpath>

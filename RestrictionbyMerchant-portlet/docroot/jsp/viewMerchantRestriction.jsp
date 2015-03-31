@@ -25,62 +25,50 @@
 	request.setAttribute("merchantRestrictionVO", merchantRestrictionVO);
 %>
 
-<portlet:actionURL name="editMerchantRestriction" var="submitForm">
-	<portlet:param name="jspPage" value="/jsp/view.jsp" />
-</portlet:actionURL>
-
-<portlet:renderURL var="goBack">
+<portlet:renderURL var="goBackViewMerchantRestriction">
 	<portlet:param name="jspPage" value="/jsp/view.jsp" />
 </portlet:renderURL>
 
-<aui:form  action="<%= submitForm %>" method="post">
-	<div class="table">
-		<div class="section">
-			<div class="row">
-				<div class="row">
-					<div class="column1-1">
-						<label class="aui-field-label sub-title"><fmt:message key="label.informationMerchantRestriction"/></label>
+<aui:form  method="post">
+	<fieldset class="fieldset">
+		<legend class="fieldset-legend">
+			<span class="legend"><fmt:message key="label.informationMerchantRestriction"/> </span>
+		</legend>
+		<div class="">
+			<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
+			<div class="details">
+				<div id="contenedor">
+					<div id="contenidos">
+						<div id="columna1-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.merchant"/></dt>
+								<dd><c:out value="${merchantRestrictionVO.merchantVO.name}"/></dd>
+							</dl>
+						</div>
+						<div id="columna2-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.concept"/></dt>
+								<dd><c:out value="${merchantRestrictionVO.concept}"/></dd>
+							</dl>
+						</div>
+					</div>
+					<div id="contenidos">
+						<div id="columna1-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.value"/></dt>
+								<dd><c:out value="${merchantRestrictionVO.value}"/></dd>
+							</dl>
+						</div>
+						<div id="columna2-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.timeUnit"/></dt>
+								<dd><c:out value="${merchantRestrictionVO.timeUnit}"/></dd>
+							</dl>
+						</div>
 					</div>
 				</div>
 			</div>
-			
-			<div class="row">
-				<div class="column1-4">
-					<label class="aui-field-label"><fmt:message key="label.merchant"/></label>
-				</div>
-				<div class="column2-4">
-					<c:out value="${merchantRestrictionVO.merchantVO.name}"/>
-				</div>
-				<div class="column3-4">
-					<label class="aui-field-label"><fmt:message key="label.concept"/></label>
-				</div>
-				<div class="column4-4">
-					<c:out value="${merchantRestrictionVO.concept}"/>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-4">
-					<label class="aui-field-label"><fmt:message key="label.value"/></label>
-				</div>
-				<div class="column2-4">
-					<c:out value="${merchantRestrictionVO.value}"/>
-				</div>
-				<div class="column3-4">
-					<label class="aui-field-label"><fmt:message key="label.timeUnit"/></label>
-				</div>
-				<div class="column4-4">
-					<c:out value="${merchantRestrictionVO.timeUnit}"/>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-2">
-					<span class="goBack" >
-						<a href="<%= goBack %>"><fmt:message key="label.goBack"/></a>
-					</span>
-				</div>
-			</div>
+			<a href="<%= goBackViewMerchantRestriction %>"><fmt:message key="label.goBack"/></a>
 		</div>
-	</div>
+	</fieldset>
 </aui:form>

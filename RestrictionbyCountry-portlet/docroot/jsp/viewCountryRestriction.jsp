@@ -25,16 +25,11 @@
 	CountryRestrictionVO countryRestrictionVO = (CountryRestrictionVO)resultsListSubscriptions.get(Integer.parseInt(ParamUtil.getString(request, "indice")));
 	request.setAttribute("countryRestrictionVO", countryRestrictionVO);
 %>
-
-<portlet:actionURL name="editCountryRestriction" var="submitFormEditCountryRestriction">
-	<portlet:param name="mvcPath" value="/jsp/view.jsp" />
-</portlet:actionURL>
-
-<portlet:renderURL var="goBackEditCountryRestriction">
+<portlet:renderURL var="goBackViewCountryRestriction">
 	<portlet:param name="mvcPath" value="/jsp/view.jsp" />
 </portlet:renderURL>
 
-<aui:form  action="<%= submitFormEditCountryRestriction %>" method="post">
+<aui:form method="post">
 	<fieldset class="fieldset">
 		<legend class="fieldset-legend">
 			<span class="legend"><fmt:message key="label.informationCountryRestriction"/> </span>
@@ -73,7 +68,7 @@
 					</div>
 				</div>
 			</div>
-			<a href="<%= goBackEditCountryRestriction %>"><fmt:message key="label.goBack"/></a>
+			<a href="<%= goBackViewCountryRestriction %>"><fmt:message key="label.goBack"/></a>
 		</div>
 	</fieldset>
 </aui:form>

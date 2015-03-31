@@ -69,7 +69,7 @@
 				<liferay-ui:search-container-results>
 					<%
 						listCreditCardRestrictions = Methods.orderCreditCardRestriction(listCreditCardRestrictions,orderByCol,orderByType);
-						results = ListUtil.subList(listCreditCardRestrictions, searchContainer.getStart(), searchContainer.getEnd());
+						results = new ArrayList<CreditCardRestrictionVO>(ListUtil.subList(listCreditCardRestrictions, searchContainer.getStart(), searchContainer.getEnd()));
 						total = listCreditCardRestrictions.size();
 						pageContext.setAttribute("results", results);
 						pageContext.setAttribute("total", total);

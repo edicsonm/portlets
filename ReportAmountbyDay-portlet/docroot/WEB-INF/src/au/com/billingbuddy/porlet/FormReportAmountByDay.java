@@ -46,7 +46,6 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
 
 public class FormReportAmountByDay extends MVCPortlet {
 	
-	private ReportFacade reportFacade = ReportFacade.getInstance();
 	private ProcesorFacade procesorFacade = ProcesorFacade.getInstance();
 	
 	@Override

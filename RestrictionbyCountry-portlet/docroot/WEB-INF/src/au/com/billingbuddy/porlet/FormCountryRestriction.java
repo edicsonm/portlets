@@ -59,12 +59,6 @@ public class FormCountryRestriction extends MVCPortlet {
 		countryRestrictionVO.setValue(actionRequest.getParameter("value"));
 		countryRestrictionVO.setConcept(actionRequest.getParameter("concept"));
 		countryRestrictionVO.setTimeUnit(actionRequest.getParameter("timeUnit"));
-		
-//		if(Utilities.isNullOrEmpty(actionRequest.getParameter("taxPercent"))){
-//			subscriptionVO.setTaxPercent("0");
-//		} else {
-//			subscriptionVO.setTaxPercent(actionRequest.getParameter("taxPercent"));
-//		}
 		session.setAttribute("countryRestrictionVO", countryRestrictionVO);
 		try {
 			procesorFacade.saveCountryRestriction(countryRestrictionVO);
@@ -72,6 +66,7 @@ public class FormCountryRestriction extends MVCPortlet {
 				ArrayList<CountryRestrictionVO> listCountryRestrictions = procesorFacade.listCountryRestrictions(new CountryRestrictionVO());
 				session.setAttribute("listCountryRestrictions", listCountryRestrictions);
 				SessionMessages.add(actionRequest, "countryRestrictionSavedSuccessfully");
+				session.removeAttribute("countryRestrictionVO");
 				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
 			} else {
 				System.out.println("basicPaymentResponseModel.getMessage(): " + countryRestrictionVO.getMessage());
@@ -142,13 +137,6 @@ public class FormCountryRestriction extends MVCPortlet {
 		countryRestrictionVO.setValue(actionRequest.getParameter("value"));
 		countryRestrictionVO.setConcept(actionRequest.getParameter("concept"));
 		countryRestrictionVO.setTimeUnit(actionRequest.getParameter("timeUnit"));
-		
-//		if(Utilities.isNullOrEmpty(actionRequest.getParameter("taxPercent"))){
-//			subscriptionVO.setTaxPercent("0");
-//		} else {
-//			subscriptionVO.setTaxPercent(actionRequest.getParameter("taxPercent"));
-//		}
-		
 		session.setAttribute("countryRestrictionVO", countryRestrictionVO);
 		try {
 			procesorFacade.updateCountryRestriction(countryRestrictionVO);
@@ -156,6 +144,7 @@ public class FormCountryRestriction extends MVCPortlet {
 				ArrayList<CountryRestrictionVO> listCountryRestrictions = procesorFacade.listCountryRestrictions(new CountryRestrictionVO());
 				session.setAttribute("listCountryRestrictions", listCountryRestrictions);
 				SessionMessages.add(actionRequest, "countryRestrictionUpdatedSuccessfully");
+				session.removeAttribute("countryRestrictionVO");
 				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
 			} else {
 				System.out.println("countryRestrictionVO.getMessage(): " + countryRestrictionVO.getMessage());
@@ -184,12 +173,10 @@ public class FormCountryRestriction extends MVCPortlet {
 	public void updateStatusCountryRestriction(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 		HttpSession session = request.getSession();
-		
 		ArrayList<CountryRestrictionVO> resultsListSubscriptions = (ArrayList<CountryRestrictionVO>)session.getAttribute("results");
 		CountryRestrictionVO countryRestrictionVO = (CountryRestrictionVO)resultsListSubscriptions.get(Integer.parseInt(actionRequest.getParameter("indice")));
 		boolean activate = false;
 		try {
-			
 			if(countryRestrictionVO.getStatus().equalsIgnoreCase("1")) {
 				countryRestrictionVO.setStatus("0");
 				activate = true;
@@ -200,6 +187,7 @@ public class FormCountryRestriction extends MVCPortlet {
 			if(countryRestrictionVO.getStatus().equalsIgnoreCase("success")) {
 				ArrayList<CountryRestrictionVO> listCountryRestrictions = procesorFacade.listCountryRestrictions(new CountryRestrictionVO());
 				session.setAttribute("listCountryRestrictions", listCountryRestrictions);
+				session.removeAttribute("countryRestrictionVO");
 				if(activate) {
 					SessionMessages.add(actionRequest, "updateStatusCountryRestriction.Activate");
 				}else{ 

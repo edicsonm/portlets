@@ -18,8 +18,8 @@
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
-<liferay-ui:error key="ProcessorMDTR.updateMerchantRestriction.MerchantRestrictionDAOException" message="error.ProcessorMDTR.updateMerchantRestriction.MerchantRestrictionDAOException" />
-<liferay-ui:error key="ProcessorMDTR.updateMerchantRestriction.MerchantRestrictionDAOException.UNIQUE_Merc_ID_Mere_Concept" message="error.ProcessorMDTR.updateMerchantRestriction.MerchantRestrictionDAOException.UNIQUE_Merc_ID_Mere_Concept" />
+<liferay-ui:error key="ProcessorMDTR.updateMerchantRestriction.MerchantRestrictionDAOException" message="error.ProcessorMDTR.updateMerchantRestriction.MerchantRestrictionDAOException"/>
+<liferay-ui:error key="ProcessorMDTR.updateMerchantRestriction.MerchantRestrictionDAOException.UNIQUE_Merc_ID_Mere_Concept" message="error.ProcessorMDTR.updateMerchantRestriction.MerchantRestrictionDAOException.UNIQUE_Merc_ID_Mere_Concept"/>
 <% 
 	MerchantRestrictionVO merchantRestrictionVO = (MerchantRestrictionVO)session.getAttribute("merchantRestrictionVO");
 	request.setAttribute("merchantRestrictionVO", merchantRestrictionVO);
@@ -30,66 +30,45 @@
 	<portlet:param name="jspPage" value="/jsp/view.jsp" />
 </portlet:actionURL>
 
-<portlet:renderURL var="goBack">
+<portlet:renderURL var="goBackMerchantRestriction">
 	<portlet:param name="jspPage" value="/jsp/view.jsp" />
 </portlet:renderURL>
 
 <aui:form  action="<%= submitForm %>" method="post">
-	<div class="table">
-		<div class="section">
-			<div class="row">
-				<div class="row">
-					<div class="column1-1">
-						<label class="aui-field-label sub-title"><fmt:message key="label.informationMerchantRestriction"/></label>
-					</div>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-1">
-					<aui:select name="merchant" helpMessage="help.merchant"  label="label.merchant" id="merchant">
-						<c:forEach var="merchantVO" items="${listMerchants}">
-							<aui:option value="${merchantVO.id}" label="${merchantVO.name}" selected="${merchantVO.id==merchantRestrictionVO.merchantId}"/>
-						</c:forEach>
-					</aui:select>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-1">
-					<aui:select name="concept" helpMessage="help.concept" label="label.concept" id="concept">
-						<aui:option value="Amount" label="label.amount" selected="${merchantRestrictionVO.concept=='Amount'}"/>
-						<aui:option value="Transactions" label="label.transactions" selected="${merchantRestrictionVO.concept=='Transactions'}"/>
-					</aui:select>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-1">
-					<aui:input label="label.value" helpMessage="help.value" showRequiredLabel="false" type="text" required="true" name="value" value="${merchantRestrictionVO.value}">
-						<aui:validator name="digits"/>
-					</aui:input>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-1">
-					<aui:input label="label.timeUnit" helpMessage="help.timeUnit" showRequiredLabel="false" type="text" required="true" name="timeUnit" value="${merchantRestrictionVO.timeUnit}">
-						<aui:validator name="digits"/>
-					</aui:input>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-2">
-						<span class="goBack" >
-							<a href="<%= goBack %>"><fmt:message key="label.goBack"/></a>
-						</span>
-					</div>
-				<div class="column2-2">
-					<aui:button type="submit" name="save" value="label.save" />
-				</div>
-			</div>
+<fieldset class="fieldset">
+	<legend class="fieldset-legend">
+		<span class="legend"><fmt:message key="label.informationMerchantRestriction"/></span>
+	</legend>
+	<div class="">
+		<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
+		<div class="control-group">
+			<aui:select name="merchant" helpMessage="help.merchant"  label="label.merchant" id="merchant">
+				<c:forEach var="merchantVO" items="${listMerchants}">
+					<aui:option value="${merchantVO.id}" label="${merchantVO.name}" selected="${merchantVO.id==merchantRestrictionVO.merchantId}"/>
+				</c:forEach>
+			</aui:select>
 		</div>
+		
+		<div class="control-group">
+			<aui:select name="concept" helpMessage="help.concept" label="label.concept" id="concept">
+				<aui:option value="Amount" label="label.amount" selected="${merchantRestrictionVO.concept=='Amount'}"/>
+				<aui:option value="Transactions" label="label.transactions" selected="${merchantRestrictionVO.concept=='Transactions'}"/>
+			</aui:select>
+		</div>
+		
+		<div class="control-group">
+			<aui:input label="label.value" helpMessage="help.value" showRequiredLabel="false" type="text" required="true" name="value" value="${merchantRestrictionVO.value}">
+				<aui:validator name="digits"/>
+			</aui:input>
+		</div>
+		
+		<div class="control-group">
+			<aui:input label="label.timeUnit" helpMessage="help.timeUnit" showRequiredLabel="false" type="text" required="true" name="timeUnit" value="${merchantRestrictionVO.timeUnit}">
+				<aui:validator name="digits"/>
+			</aui:input>
+		</div>
+		<a href="<%= goBackMerchantRestriction %>"><fmt:message key="label.goBack"/></a>
+		<aui:button type="submit" name="save" value="label.save" />
 	</div>
+</fieldset>
 </aui:form>

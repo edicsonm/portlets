@@ -20,44 +20,12 @@
 <%@ page import="com.liferay.portal.theme.ThemeDisplay" %>
 <%@ page import="com.liferay.portal.kernel.util.WebKeys" %>
 <%@taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
-<style>
-	circle {
-		stroke: #ffffff;
-		fill  : #008cdd;
-	}
-
-	path.pathGraphic {
-		opacity: 1; 
-		fill-opacity: 1;
-		stroke:#4cabe2;
-		stroke-width:0;
-		stroke-opacity:1;
-		fill-opacity:1;
-	}
-	
-	path.pathReferences {
-		stroke-opacity: 0.10;
-		fill: none;
-		stroke: #4cabe2;
-		stroke-width:2;
-	}
-		
-	text.labelPoint{
-		text-anchor: end; 
-		font: 8px Arial;
-		fill: #008cdd;
-	}
-
-</style>
 
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
 <% 
 	TransactionVO transactionVORejected = (TransactionVO)session.getAttribute("transactionVORejected");
-	Calendar cal = CalendarFactoryUtil.getCalendar(GregorianCalendar.getInstance().getTimeZone());	
-	Calendar fromCalendar = Utilities.getCalendar(transactionVORejected.getInitialDateReport(),2);
-	Calendar toCalendar = Utilities.getCalendar(transactionVORejected.getFinalDateReport(),2);
 %>
 <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURL" />
 
@@ -71,8 +39,8 @@
 	    cache:false,
 	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 	    dataType: "html",
-	    data: {fromDateRejectec: $("#<portlet:namespace />fromDateRejectec").val(),
-	    	toDateRejectec: $("#<portlet:namespace />toDateRejectec").val()},
+	    data: {<portlet:namespace/>fromDateRejectec: $("#<portlet:namespace />fromDateRejectec").val(),
+	    	<portlet:namespace/>toDateRejectec: $("#<portlet:namespace />toDateRejectec").val()},
 	    success : function(data){
 	    	$("#reportRejected").html(data);	    	
 	    },error : function(XMLHttpRequest, textStatus, errorThrown){
@@ -85,47 +53,86 @@
 </script>
 <aui:script>
     
-    AUI().use('aui-datepicker', function(A) {
-       var fromDate = new A.DatePicker({
-         trigger: '#<portlet:namespace />fromDateRejectec',
-       }).render('##<portlet:namespace />fromDateRejectecPicker');
-    });
-    
-    AUI().use('aui-datepicker', function(A) {
-        var toDate = new A.DatePicker({
-          trigger: '#<portlet:namespace />toDateRejectec',
-        }).render('##<portlet:namespace />toDateRejectecPicker');
-     });
+  YUI().use('aui-datepicker', function(Y) {
+	    new Y.DatePicker(
+	    	{
+	        trigger: '#<portlet:namespace />fromDateRejectec',
+	        popover: {
+	          zIndex: 1
+	        }
+	      });
+	  }
+	);
+  
+  YUI().use(
+		  'aui-datepicker',
+		  function(Y) {
+		    new Y.DatePicker(
+		      {
+		        trigger: '#<portlet:namespace />toDateRejectec',
+		        popover: {
+		          zIndex: 1
+		        }
+		      });
+		  }
+		);
 
 </aui:script>
 
+
+<%-- <aui:script>
+    
+    aui().use('aui-datepicker', function(a) {
+       var fromdate = new a.datepicker({
+         trigger: '#<portlet:namespace />fromdaterejectec',
+       }).render('##<portlet:namespace />fromdaterejectecpicker');
+    });
+    
+    aui().use('aui-datepicker', function(a) {
+        var todate = new a.datepicker({
+          trigger: '#<portlet:namespace />todaterejectec',
+        }).render('##<portlet:namespace />todaterejectecpicker');
+     });
+
+</aui:script> --%>
+
 <aui:form method="post">
-	<div class="table">
-		<div class="section">
-			<div class="row">
-				<div class="column1-3-Report">
-					<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace />fromDateRejectecPicker">
-						<aui:input onkeypress="return false;" label="label.from" helpMessage="help.from" showRequiredLabel="false" size="10" type="text" required="true" name="fromDateRejectec">
-							 <aui:validator name="date" />
-						</aui:input>
+
+<fieldset class="fieldset">
+		<legend class="fieldset-legend">
+			<span class="legend"><fmt:message key="label.reportDescription"/> </span>
+		</legend>
+		<div class="">
+			<div id="contenedor">
+				<div id="contenidos">
+					<div id="columna1">
+						<div class="control-group">
+							<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace />fromDateRejectecPicker">
+								<aui:input onkeypress="return false;" value="<%= transactionVORejected.getInitialDateReport()%>"  label="label.from" helpMessage="help.from" showRequiredLabel="false" size="10" type="text" required="true" name="fromDateRejectec">
+									 <aui:validator name="date" />
+								</aui:input>
+							</div>
+						</div>
+					</div>
+					<div id="columna2">
+						<div class="control-group">
+							<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace  />toDateRejectecPicker">
+								<aui:input onkeypress="return false;" value="<%= transactionVORejected.getFinalDateReport()%>" label="label.to" helpMessage="help.to" showRequiredLabel="false" size="10" type="text" required="true" name="toDateRejectec">
+									 <aui:validator name="date" />
+								</aui:input>
+							</div>
+						</div>
+					</div>
+					<div id="columna3">
+						<div class="control-group">
+							<aui:button type="button" name="listRefunds" onClick="createGraphicRejected();" value="label.search" />
+						</div>
 					</div>
 				</div>
-				<div class="column2-3-Report">
-					<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace  />toDateRejectecPicker">
-						<aui:input onkeypress="return false;" label="label.to" helpMessage="help.to" showRequiredLabel="false" size="10" type="text" required="true" name="toDateRejectec">
-							 <aui:validator name="date" />
-						</aui:input>
-					</div>
-				</div>
-				<div class="column3-3-Report">
-					<aui:button type="button" name="listRefunds" onClick="createGraphicRejected();" value="label.search" />
-				</div>
+			</div>
+			<div id="reportRejected">
+				<%out.print(session.getAttribute("reportRejected"));%>
 			</div>
 		</div>
-		<div class="row">
-			<div id="reportRejected">
-			<%out.print(session.getAttribute("reportRejected"));%>
-			</div>
-		</div>	
-	</div>
+	</fieldset>
 </aui:form>

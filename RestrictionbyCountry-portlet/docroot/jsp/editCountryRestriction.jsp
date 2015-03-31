@@ -18,18 +18,18 @@
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
-<liferay-ui:error key="ProcessorMDTR.saveCountryRestriction.CountryRestrictionDAOException" message="error.ProcessorMDTR.saveCountryRestriction.CountryRestrictionDAOException" />
+<liferay-ui:error key="ProcessorMDTR.updateCountryRestriction.CountryRestrictionDAOException" message="error.ProcessorMDTR.updateCountryRestriction.CountryRestrictionDAOException" />
+<liferay-ui:error key="ProcessorMDTR.updateCountryRestriction.CountryRestrictionDAOException.UNIQUE_CounNumeric_Mere_Concept" message="error.ProcessorMDTR.updateCountryRestriction.CountryRestrictionDAOException.UNIQUE_CounNumeric_Mere_Concept"/>
 <% 
 	CountryRestrictionVO countryRestrictionVO = (CountryRestrictionVO)session.getAttribute("countryRestrictionVO");
 	request.setAttribute("countryRestrictionVO", countryRestrictionVO);
 	ArrayList<CountryVO> listCountries = (ArrayList<CountryVO>)session.getAttribute("listCountries");
 %>
-
 <portlet:actionURL name="editCountryRestriction" var="submitFormEditCountryRestriction">
 	<portlet:param name="mvcPath" value="/jsp/view.jsp" />
 </portlet:actionURL>
 
-<portlet:renderURL var="goBack">
+<portlet:renderURL var="goBackCountryRestriction">
 	<portlet:param name="mvcPath" value="/jsp/view.jsp" />
 </portlet:renderURL>
 
@@ -67,7 +67,7 @@
 				</aui:input>
 			</div>
 			
-			<a href="<%= goBack %>"><fmt:message key="label.goBack"/></a>
+			<a href="<%= goBackCountryRestriction %>"><fmt:message key="label.goBack"/></a>
 			<aui:button type="submit" name="save" value="label.save" />
 			
 		</div>

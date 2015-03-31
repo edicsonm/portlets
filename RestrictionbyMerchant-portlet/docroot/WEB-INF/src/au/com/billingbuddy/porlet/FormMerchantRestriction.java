@@ -58,11 +58,6 @@ public class FormMerchantRestriction extends MVCPortlet {
 		merchantRestrictionVO.setConcept(actionRequest.getParameter("concept"));
 		merchantRestrictionVO.setTimeUnit(actionRequest.getParameter("timeUnit"));
 		
-//		if(Utilities.isNullOrEmpty(actionRequest.getParameter("taxPercent"))){
-//			subscriptionVO.setTaxPercent("0");
-//		} else {
-//			subscriptionVO.setTaxPercent(actionRequest.getParameter("taxPercent"));
-//		}
 		session.setAttribute("merchantRestrictionVO", merchantRestrictionVO);
 		try {
 			procesorFacade.saveMerchantRestriction(merchantRestrictionVO);
@@ -71,13 +66,12 @@ public class FormMerchantRestriction extends MVCPortlet {
 				session.setAttribute("listMerchantRestrictions", listMerchantRestrictions);
 				SessionMessages.add(actionRequest, "merchantRestrictionSavedSuccessfully");
 				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
+				session.removeAttribute("merchantRestrictionVO");
 			} else {
-				System.out.println("merchantRestrictionVO.getMessage(): " + merchantRestrictionVO.getMessage());
 				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 				SessionErrors.add(actionRequest, "error");
-				System.out.println("countryRestrictionVO.getMessage(): " + merchantRestrictionVO.getMessage());
 				SessionErrors.add(actionRequest,merchantRestrictionVO.getMessage());
 				session.setAttribute("merchantRestrictionVO", merchantRestrictionVO);
 				actionResponse.setRenderParameter("jspPage", "/jsp/newMerchantRestriction.jsp");
@@ -90,16 +84,16 @@ public class FormMerchantRestriction extends MVCPortlet {
 			System.out.println("e.getMessage(): " + e.getMessage());
 			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
 			System.out.println("e.getErrorCode(): " + e.getErrorCode());
-			session.setAttribute("countryRestrictionVO", merchantRestrictionVO);
+			session.setAttribute("merchantRestrictionVO", merchantRestrictionVO);
 			actionResponse.setRenderParameter("jspPage", "/jsp/newMerchantRestriction.jsp");
 		}
 	}
 	
-	public void listMerchants(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+	public void listMerchantMerchantRestriction(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
 		try {
 			HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 			HttpSession session = request.getSession();
-			ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants();
+			ArrayList<MerchantVO> listMerchants = procesorFacade.listAllMerchants(new MerchantVO(String.valueOf(PortalUtil.getUserId(request))));
 			session.setAttribute("listMerchants", listMerchants);
 		} catch (ProcesorFacadeException e) {
 			e.printStackTrace();
@@ -120,7 +114,7 @@ public class FormMerchantRestriction extends MVCPortlet {
 			MerchantRestrictionVO merchantRestrictionVO = (MerchantRestrictionVO)resultsListMerchantRestriction.get(Integer.parseInt(actionRequest.getParameter("indice")));
 			session.setAttribute("merchantRestrictionVO", merchantRestrictionVO);
 			
-			ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants();
+			ArrayList<MerchantVO> listMerchants = procesorFacade.listAllMerchants(new MerchantVO(String.valueOf(PortalUtil.getUserId(request))));
 			session.setAttribute("listMerchants", listMerchants);
 			
 		} catch (ProcesorFacadeException e) {
@@ -180,28 +174,36 @@ public class FormMerchantRestriction extends MVCPortlet {
 		}
 	}
 	
-	public void deleteCountryRestriction(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+	public void updateStatusMerchantRestriction(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+		
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 		HttpSession session = request.getSession();
-		
 		ArrayList<MerchantRestrictionVO> resultsListSubscriptions = (ArrayList<MerchantRestrictionVO>)session.getAttribute("results");
 		MerchantRestrictionVO merchantRestrictionVO = (MerchantRestrictionVO)resultsListSubscriptions.get(Integer.parseInt(actionRequest.getParameter("indice")));
-//		String indice = actionRequest.getParameter("indice");
-//		ArrayList<SubscriptionVO> resultsListCharge = (ArrayList<SubscriptionVO>)session.getAttribute("results");
-//		SubscriptionVO subscriptionVO = (SubscriptionVO)resultsListCharge.get(Integer.parseInt(indice));
+		boolean activate = false;
 		try {
-			procesorFacade.deleteMerchantRestriction(merchantRestrictionVO);
+			if(merchantRestrictionVO.getStatus().equalsIgnoreCase("1")) {
+				merchantRestrictionVO.setStatus("0");
+				activate = true;
+			}else{ 
+				merchantRestrictionVO.setStatus("1");
+			}
+			
+			procesorFacade.changeStatusMerchantRestriction(merchantRestrictionVO);
 			if(merchantRestrictionVO.getStatus().equalsIgnoreCase("success")) {
 				ArrayList<MerchantRestrictionVO> listMerchantRestrictions = procesorFacade.listMerchantRestrictions(new MerchantRestrictionVO());
 				session.setAttribute("listMerchantRestrictions", listMerchantRestrictions);
-				SessionMessages.add(actionRequest, "merchantRestrictionDeletedSuccessfully");
+				if(activate) {
+					SessionMessages.add(actionRequest, "updateStatusMerchantRestriction.Activate");
+				}else{ 
+					SessionMessages.add(actionRequest, "updateStatusMerchantRestriction.Inactivate");
+				}
+				session.removeAttribute("merchantRestrictionVO");
 			}else{
-				System.out.println("merchantRestrictionVO.getMessage(): " + merchantRestrictionVO.getMessage());
 				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 				SessionErrors.add(actionRequest, "error");
-				System.out.println("merchantRestrictionVO.getMessage(): " + merchantRestrictionVO.getMessage());
 				SessionErrors.add(actionRequest,merchantRestrictionVO.getMessage());
 				session.setAttribute("merchantRestrictionVO", merchantRestrictionVO);
 			}

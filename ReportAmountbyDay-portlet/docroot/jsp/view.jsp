@@ -29,7 +29,7 @@
 <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURL" />
 
 <portlet:resourceURL var="createGraphicAmount"/>
-<portlet:resourceURL var="prueba"/>
+<%-- <portlet:resourceURL var="prueba"/> --%>
 <script>
 	function createGraphicAmount() {
 		/* alert("fromday: " + $("#<portlet:namespace />fromday").find('option:selected').attr('value'));
@@ -90,7 +90,6 @@
 			<span class="legend"><fmt:message key="label.reportDescription"/> </span>
 		</legend>
 		<div class="">
-			
 			<div id="contenedor">
 				<div id="contenidos">
 					<div id="columna1">
@@ -118,7 +117,6 @@
 					</div>
 				</div>
 			</div>
-			
 			<div id="reportAmount">
 				<%out.print(session.getAttribute("reportAmount"));%>
 			</div>

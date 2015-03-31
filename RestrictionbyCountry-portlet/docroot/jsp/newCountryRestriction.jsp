@@ -19,11 +19,11 @@
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
 <liferay-ui:error key="ProcessorMDTR.saveCountryRestriction.CountryRestrictionDAOException" message="error.ProcessorMDTR.saveCountryRestriction.CountryRestrictionDAOException" />
+<liferay-ui:error key="ProcessorMDTR.saveCountryRestriction.CountryRestrictionDAOException.UNIQUE_CounNumeric_Mere_Concept" message="error.ProcessorMDTR.saveCountryRestriction.CountryRestrictionDAOException.UNIQUE_CounNumeric_Mere_Concept"/>
 <% 
 CountryRestrictionVO countryRestrictionVO = (CountryRestrictionVO)session.getAttribute("countryRestrictionVO");
 ArrayList<CountryVO> listCountries = (ArrayList<CountryVO>)session.getAttribute("listCountries");
 %>
-
 <portlet:actionURL name="saveCountryRestriction" var="submitForm">
 	<portlet:param name="mvcPath" value="/jsp/view.jsp" />
 </portlet:actionURL>

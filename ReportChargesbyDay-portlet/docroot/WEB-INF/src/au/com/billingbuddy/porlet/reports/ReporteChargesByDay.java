@@ -22,29 +22,21 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import au.com.billigbuddy.utils.BBUtils;
-import au.com.billingbuddy.common.objects.ConfigurationApplication;
 import au.com.billingbuddy.common.objects.ConfigurationSystem;
 import au.com.billingbuddy.common.objects.Utilities;
 import au.com.billingbuddy.exceptions.objects.ReporteAmountByDayException;
+import au.com.billingbuddy.exceptions.objects.ReporteChargesByDayException;
 import au.com.billingbuddy.vo.objects.TransactionVO;
 
-public class ReporteAmountByDay {
-	
-//	private static int dimensionXScreen = Integer.parseInt(ConfigurationSystem.getInstance().getKey("report.dimensionXScreen"));
-//	private static int dimensionYScreen = Integer.parseInt(ConfigurationSystem.getInstance().getKey("report.dimensionYScreen"));
-//	private static int adjustmentDimensionYScreen = Integer.parseInt(ConfigurationSystem.getInstance().getKey("report.adjustmentDimensionYScreen"));
-	
+public class ReporteChargesByDay {
+
 	private int dimensionXScreen;
 	private int dimensionYScreen;
 	private int adjustmentDimensionYScreen;
 	
-//	private double initialXPositionGrahic = Integer.parseInt(ConfigurationSystem.getInstance().getKey("report.initialXPositionGrahic"));
-//	private double initialYPositionGrahic = Integer.parseInt(ConfigurationSystem.getInstance().getKey("report.initialYPositionGrahic"));
-	
 	private double initialXPositionGrahic;
 	private double initialYPositionGrahic;
 	
-//	private double longYGrahic = Integer.parseInt(ConfigurationSystem.getInstance().getKey("report.longYGrahic"));
 	private double longYGrahic;
 	
 	private double escalaX;
@@ -53,24 +45,11 @@ public class ReporteAmountByDay {
 	private double mayorX;
 	private double minorX;
 	
-	private static ReporteAmountByDay instance = null;
-	
-//	private double rightMargenReferenceLine = Integer.parseInt(ConfigurationSystem.getInstance().getKey("report.rightMargenReferenceLine"));
-//	private double leftMargenReferenceLine = Integer.parseInt(ConfigurationSystem.getInstance().getKey("report.leftMargenReferenceLine"));
-//	
-//	private double rightMargenGrahic = Integer.parseInt(ConfigurationSystem.getInstance().getKey("report.rightMargenGrahic"));
-//	private double leftMargenGrahic = Integer.parseInt(ConfigurationSystem.getInstance().getKey("report.leftMargenGrahic"));
-	
 	private double rightMargenReferenceLine;
 	private double leftMargenReferenceLine;
 	
 	private double rightMargenGrahic;
 	private double leftMargenGrahic;
-	
-//	private double scaleYFactor = initialYPositionGrahic + longYGrahic;
-//	private double scaleXFactor = dimensionXScreen - (leftMargenGrahic + rightMargenGrahic);
-//	
-//	private double longXGrahic = dimensionXScreen-(leftMargenGrahic + rightMargenGrahic);
 	
 	
 	private double scaleYFactor;
@@ -80,14 +59,41 @@ public class ReporteAmountByDay {
 	private Map<String, String> mapConfiguration;
 	private StreamSource xslStream;
 	
-//	public static synchronized ReporteAmountByDay getInstance(Map<String, String> mapConfiguration) {
+	
+//	private static int dimensionXScreen = Integer.parseInt(ConfigurationSystem.getInstance().getKey("report.dimensionXScreen"));
+//	private static int dimensionYScreen = Integer.parseInt(ConfigurationSystem.getInstance().getKey("report.dimensionYScreen"));
+//	private static int adjustmentDimensionYScreen = Integer.parseInt(ConfigurationSystem.getInstance().getKey("report.adjustmentDimensionYScreen"));
+//	
+//	private double initialXPositionGrahic = Integer.parseInt(ConfigurationSystem.getInstance().getKey("report.initialXPositionGrahic"));
+//	private double initialYPositionGrahic = Integer.parseInt(ConfigurationSystem.getInstance().getKey("report.initialYPositionGrahic"));
+//	
+//	private double longYGrahic = Integer.parseInt(ConfigurationSystem.getInstance().getKey("report.longYGrahic"));
+//	
+//	private double escalaX;
+//	private double mayorY;
+//	private double minorY;
+//	private double mayorX;
+//	
+//	private static ReporteChargesByDay instance = null;
+//	
+//	private double rightMargenReferenceLine = Integer.parseInt(ConfigurationSystem.getInstance().getKey("report.rightMargenReferenceLine"));
+//	private double leftMargenReferenceLine = Integer.parseInt(ConfigurationSystem.getInstance().getKey("report.leftMargenReferenceLine"));
+//	
+//	private double rightMargenGrahic = Integer.parseInt(ConfigurationSystem.getInstance().getKey("report.rightMargenGrahic"));
+//	private double leftMargenGrahic = Integer.parseInt(ConfigurationSystem.getInstance().getKey("report.leftMargenGrahic"));
+//	private double scaleYFactor = initialYPositionGrahic + longYGrahic;
+//	private double scaleXFactor = dimensionXScreen - (leftMargenGrahic + rightMargenGrahic);
+//	
+//	private double longXGrahic = dimensionXScreen-(leftMargenGrahic + rightMargenGrahic);
+	
+//	public static synchronized ReporteChargesByDay getInstance() {
 //		if (instance == null) {
-//			instance = new ReporteAmountByDay(mapConfiguration);
+//			instance = new ReporteChargesByDay();
 //		}
 //		return instance;
 //	}
 	
-	public ReporteAmountByDay(StreamSource xslStream, Map<String, String> mapConfiguration) {
+	public ReporteChargesByDay(StreamSource xslStream, Map<String, String> mapConfiguration) throws ReporteChargesByDayException {
 		this.xslStream = xslStream;
 		this.mapConfiguration = mapConfiguration;
 		
@@ -113,15 +119,14 @@ public class ReporteAmountByDay {
 		
 	}
 	
-	public StringWriter CreateXml(ArrayList<TransactionVO> listaReport) throws ReporteAmountByDayException {
+	public StringWriter CreateXml(ArrayList<TransactionVO> listaReport) throws ReporteChargesByDayException {
 		DOMSource domSource = null;
 		try {
-			
 			if(listaReport.size() > 0){
-				TransactionVO transactionVOMAX = Collections.max(listaReport,new SortListByAmountDesc());
-				TransactionVO transactionVOMIN = Collections.max(listaReport,new SortListByAmountAsc());
-				mayorY = Integer.parseInt(transactionVOMAX.getAmountDateReport());
-				minorY = Integer.parseInt(transactionVOMIN.getAmountDateReport());
+				TransactionVO transactionVOMAX = Collections.max(listaReport,new SortListByChargesDesc());
+				TransactionVO transactionVOMIN = Collections.max(listaReport,new SortListByChargesDesc());
+				mayorY = Integer.parseInt(transactionVOMAX.getTotalDateReport());
+				minorY = Integer.parseInt(transactionVOMIN.getTotalDateReport());
 				
 				if (mayorY == minorY) minorY = 0;
 				mayorX = listaReport.size() + 1;
@@ -143,13 +148,11 @@ public class ReporteAmountByDay {
 				document.appendChild(rootElement);
 				
 				double positionX = leftMargenGrahic + escalaX;
-//				System.out.println("positionX: " + positionX);
 				double positionY = 0;
 				String path = "";
 				Collections.sort(listaReport,new SortListByDate());
 				for (TransactionVO transactionVO : listaReport) {
-					positionY = scaleYFactor - scaleValue(longYGrahic, Double.parseDouble(transactionVO.getAmountDateReport()));
-//					System.out.println("("+transactionVO.getDateReport()+" , "+transactionVO.getAmountDateReport()+") - ("+positionX+" , "+ positionY +")");
+					positionY = scaleYFactor - scaleValue(longYGrahic, Double.parseDouble(transactionVO.getTotalDateReport()));
 					path += "L"+positionX +","+ positionY + " ";
 					
 					Element point = document.createElement("point");
@@ -169,14 +172,12 @@ public class ReporteAmountByDay {
 					point.appendChild(pointy);
 					
 					Element label = document.createElement("label");
-//					label.appendChild(document.createTextNode("("+transactionVO.getDateReport()+" ,"+transactionVO.getAmountDateReport()+")"));
-					label.appendChild(document.createTextNode("("+transactionVO.getDateReport()+" ,"+String.valueOf(BBUtils.stripeToCurrency(String.valueOf(transactionVO.getAmountDateReport()),"AUD")) + " AUD"+")"));
+					label.appendChild(document.createTextNode("("+transactionVO.getDateReport()+" ,"+transactionVO.getTotalDateReport()+")"));
+//					label.appendChild(document.createTextNode("("+transactionVO.getDateReport()+" ,"+String.valueOf(BBUtils.stripeToCurrency(String.valueOf(transactionVO.getTotalDateReport()),"AUD")) + " AUD"+")"));
 					point.appendChild(label);
-					
 					
 					Element date = document.createElement("date");
 					date.appendChild(document.createTextNode(Utilities.formatDate(transactionVO.getDateReport(), 2, 4)));
-//					date.appendChild(document.createTextNode(transactionVO.getDateReport()));
 					point.appendChild(date);
 					
 					positionX += escalaX;
@@ -224,8 +225,7 @@ public class ReporteAmountByDay {
 				rootElement.appendChild(positionLabelHighestReference);
 				
 				value = document.createElement("X");
-//				value.appendChild(document.createTextNode(String.valueOf(dimensionXScreen - rightMargenReferenceLine - 10)));
-				value.appendChild(document.createTextNode(String.valueOf(dimensionXScreen - rightMargenReferenceLine)));
+				value.appendChild(document.createTextNode(String.valueOf(dimensionXScreen - rightMargenReferenceLine - 10)));
 				positionLabelHighestReference.appendChild(value);
 				
 				value = document.createElement("Y");
@@ -233,7 +233,8 @@ public class ReporteAmountByDay {
 				positionLabelHighestReference.appendChild(value);
 				
 				value = document.createElement("value");
-				value.appendChild(document.createTextNode(String.valueOf(BBUtils.stripeToCurrency(String.valueOf(mayorY),"AUD")) + " AUD"));
+				value.appendChild(document.createTextNode(String.valueOf(mayorY) + "TRX"));
+//				value.appendChild(document.createTextNode(String.valueOf(BBUtils.stripeToCurrency(String.valueOf(mayorY),"AUD")) + " AUD"));
 				positionLabelHighestReference.appendChild(value);
 				
 				/* Finish HighestReference */
@@ -255,8 +256,7 @@ public class ReporteAmountByDay {
 				rootElement.appendChild(positionLabelMiddleReference);
 				
 				value = document.createElement("X");
-//				value.appendChild(document.createTextNode(String.valueOf(dimensionXScreen - rightMargenReferenceLine - 10)));
-				value.appendChild(document.createTextNode(String.valueOf(dimensionXScreen - rightMargenReferenceLine)));
+				value.appendChild(document.createTextNode(String.valueOf(dimensionXScreen - rightMargenReferenceLine - 10)));
 				positionLabelMiddleReference.appendChild(value);
 				
 				value = document.createElement("Y");
@@ -264,8 +264,8 @@ public class ReporteAmountByDay {
 				positionLabelMiddleReference.appendChild(value);
 				
 				value = document.createElement("value");
-//				value.appendChild(document.createTextNode(String.valueOf((mayorY - minorY)/2)));
-				value.appendChild(document.createTextNode(String.valueOf(BBUtils.stripeToCurrency(String.valueOf((mayorY - minorY)/2),"AUD")) + " AUD"));
+				value.appendChild(document.createTextNode(String.valueOf((mayorY - minorY)/2) + "TRX"));
+//				value.appendChild(document.createTextNode(String.valueOf(BBUtils.stripeToCurrency(String.valueOf((mayorY - minorY)/2),"AUD")) + " AUD"));
 				positionLabelMiddleReference.appendChild(value);
 				
 				/* Finish MiddleReference */
@@ -288,8 +288,7 @@ public class ReporteAmountByDay {
 				rootElement.appendChild(positionLabelLessReference);
 				
 				value = document.createElement("X");
-//				value.appendChild(document.createTextNode(String.valueOf(dimensionXScreen - rightMargenReferenceLine - 10)));
-				value.appendChild(document.createTextNode(String.valueOf(dimensionXScreen - rightMargenReferenceLine)));
+				value.appendChild(document.createTextNode(String.valueOf(dimensionXScreen - rightMargenReferenceLine - 10)));
 				positionLabelLessReference.appendChild(value);
 				
 				value = document.createElement("Y");
@@ -297,38 +296,16 @@ public class ReporteAmountByDay {
 				positionLabelLessReference.appendChild(value);
 				
 				value = document.createElement("value");
-//				value.appendChild(document.createTextNode(String.valueOf(minorY)));
-				value.appendChild(document.createTextNode(String.valueOf(BBUtils.stripeToCurrency(String.valueOf(minorY),"AUD")) + " AUD"));
+				value.appendChild(document.createTextNode(String.valueOf(minorY) + "TRX"));
+//				value.appendChild(document.createTextNode(String.valueOf(BBUtils.stripeToCurrency(String.valueOf(minorY),"AUD")) + " AUD"));
 				positionLabelLessReference.appendChild(value);
 				
 				/* Finish LessReference */
 				
-				
-				/*Init Label Creation*/
-				
-				Element positionLabelDate = document.createElement("positionLabelDate");
-				rootElement.appendChild(positionLabelDate);
-				
-				value = document.createElement("X");
-				value.appendChild(document.createTextNode(String.valueOf(dimensionXScreen/2)));
-				positionLabelDate.appendChild(value);
-				
-				value = document.createElement("Y");
-				value.appendChild(document.createTextNode(String.valueOf(scaleYFactor)));
-				positionLabelDate.appendChild(value);
-				
-				value = document.createElement("value");
-				value.appendChild(document.createTextNode(""));
-				positionLabelDate.appendChild(value);
-				
-				/*Finish Label Creation*/
-				
 //				positionY = scaleYFactor - scaleValue(longYGrahic, minorY) + 20;
 				positionY = scaleYFactor + 10;
-				
 				Element scaleXReference = document.createElement("scaleXReference");
 				rootElement.appendChild(scaleXReference);
-				
 				value = document.createElement("value");
 				value.appendChild(document.createTextNode(String.valueOf(positionY)));
 				scaleXReference.appendChild(value);
@@ -348,20 +325,19 @@ public class ReporteAmountByDay {
 			}
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
-			ReporteAmountByDayException reporteAmountByDayException = new ReporteAmountByDayException(e);
-			throw reporteAmountByDayException;
+			ReporteChargesByDayException reporteChargesByDayException = new ReporteChargesByDayException(e);
+			throw reporteChargesByDayException;
 		} catch (TransformerException e) {
 			e.printStackTrace();
-			ReporteAmountByDayException reporteAmountByDayException = new ReporteAmountByDayException(e);
-			throw reporteAmountByDayException;
+			ReporteChargesByDayException reporteChargesByDayException = new ReporteChargesByDayException(e);
+			throw reporteChargesByDayException;
 		}
 	}
 	
 	public StringWriter printDocument(DOMSource source) throws TransformerConfigurationException, TransformerException {
 //		String inputXSL = "file:///run/media/Edicson/SVG%20Example/ejemploGrafica/grafica.xsl";
-//		StreamSource xslStream = new StreamSource(inputXSL);
 		TransformerFactory factory = TransformerFactory.newInstance();
-//		StreamSource xslStream = new StreamSource(ConfigurationSystem.getKey("urlConfigurationGraphics"));
+//		StreamSource xslStream = new StreamSource(inputXSL);
 		Transformer transformer = factory.newTransformer(xslStream);
 		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -400,23 +376,15 @@ public class ReporteAmountByDay {
 		return (value * dimensionScreen)/mayorY;
 	}
 	
-	public String transformScale(int dimensionYScreen, double valueToTransfor){
-		return String.valueOf(dimensionYScreen - valueToTransfor + adjustmentDimensionYScreen);
-	}
-	
-//	public static void main(String[] args) {
-//		new ReporteAmountByDay();
-//	}
-
-	class SortListByAmountDesc implements Comparator<TransactionVO>{
+	class SortListByChargesDesc implements Comparator<TransactionVO>{
 		public int compare(TransactionVO transactionVOA, TransactionVO transactionVOB) {
-			return Integer.parseInt(transactionVOA.getAmountDateReport()) < Integer.parseInt(transactionVOB.getAmountDateReport()) ? -1 : Integer.parseInt(transactionVOA.getAmountDateReport()) == Integer.parseInt(transactionVOB.getAmountDateReport()) ? 0 : 1;
+			return Integer.parseInt(transactionVOA.getTotalDateReport()) < Integer.parseInt(transactionVOB.getTotalDateReport()) ? -1 : Integer.parseInt(transactionVOA.getTotalDateReport()) == Integer.parseInt(transactionVOB.getTotalDateReport()) ? 0 : 1;
 		}
 	}
 	
-	class SortListByAmountAsc implements Comparator<TransactionVO>{
+	class SortListByChargesAsc implements Comparator<TransactionVO>{
 		public int compare(TransactionVO transactionVOA, TransactionVO transactionVOB) {
-			return Integer.parseInt(transactionVOA.getAmountDateReport()) > Integer.parseInt(transactionVOB.getAmountDateReport()) ? -1 : Integer.parseInt(transactionVOA.getAmountDateReport()) == Integer.parseInt(transactionVOB.getAmountDateReport()) ? 0 : 1;
+			return Integer.parseInt(transactionVOA.getTotalDateReport()) > Integer.parseInt(transactionVOB.getTotalDateReport()) ? -1 : Integer.parseInt(transactionVOA.getTotalDateReport()) == Integer.parseInt(transactionVOB.getTotalDateReport()) ? 0 : 1;
 		}
 	}
 	
