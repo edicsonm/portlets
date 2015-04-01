@@ -2,8 +2,8 @@
 
 <portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd" version="2.0">
 	<portlet>
-		<portlet-name>Suscription</portlet-name>
-		<display-name>Suscription</display-name>
+		<portlet-name>Susbcription</portlet-name>
+		<display-name>Subscription</display-name>
 		<portlet-class>au.com.billingbuddy.porlet.FormSubscription</portlet-class>
 		<init-param>
 			<name>view-template</name>
@@ -19,9 +19,9 @@
 		</supports>
 		<resource-bundle>Language</resource-bundle>
 		<portlet-info>
-			<title>Suscription</title>
-			<short-title>Suscription</short-title>
-			<keywords>Suscription</keywords>
+			<title>Susbcription</title>
+			<short-title>Susbcription</short-title>
+			<keywords>Susbcription</keywords>
 		</portlet-info>
 		<security-role-ref>
 			<role-name>administrator</role-name>

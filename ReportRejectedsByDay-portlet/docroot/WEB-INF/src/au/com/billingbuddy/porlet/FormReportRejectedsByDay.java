@@ -84,10 +84,8 @@ public class FormReportRejectedsByDay extends MVCPortlet {
         try {
 			session.removeAttribute("transactionVORejected");
 			session.removeAttribute("reportRejected");
-			
 			TransactionVO transactionVO = new TransactionVO();
 			Date date;
-			
 			try {
 				date = Utilities.getDateFormat(6).parse(resourceRequest.getParameter("fromDateRejectec"));
 				transactionVO.setInitialDateReport(Utilities.getDateFormat(2).format(date));
@@ -98,33 +96,11 @@ public class FormReportRejectedsByDay extends MVCPortlet {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			
-//			try {
-//				
-//				date = Utilities.getDateFormat(6).parse(resourceRequest.getParameter("fromDateRejectec"));
-//				transactionVO.setInitialDateReport(Utilities.getDateFormat(2).format(date));
-//				date = Utilities.getDateFormat(6).parse(resourceRequest.getParameter("toDateRejectec"));
-//				transactionVO.setFinalDateReport(Utilities.getDateFormat(2).format(date));
-//				
-////				System.out.println("transactionVO.getInitialDateReport(): " + transactionVO.getInitialDateReport());
-////				System.out.println("transactionVO.getFinalDateReport(): " + transactionVO.getFinalDateReport());
-//				
-////				date = Utilities.getDateFormat(5).parse(resourceRequest.getParameter("fromDay") + "-"+(Integer.parseInt(resourceRequest.getParameter("fromMonth")) + 1)+"-"+resourceRequest.getParameter("fromYear"));
-////				transactionVO.setInitialDateReport(Utilities.getDateFormat(2).format(date));
-////				date = Utilities.getDateFormat(5).parse(resourceRequest.getParameter("toDay") + "-"+(Integer.parseInt(resourceRequest.getParameter("toMonth")) + 1)+"-"+resourceRequest.getParameter("toYear"));
-////				transactionVO.setFinalDateReport(Utilities.getDateFormat(2).format(date));
-//			} catch (NumberFormatException e) {
-//				e.printStackTrace();
-//			} catch (ParseException e) {
-//				e.printStackTrace();
-//			}
-			
 			StreamSource xslStream = new StreamSource(resourceRequest.getPortletSession().getPortletContext().getRealPath("/WEB-INF/src/graphTemplate/graphTemplate.xsl"));
+			transactionVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
 			ArrayList<TransactionVO> listRejectedsByDay = procesorFacade.searchRejectedByDay(transactionVO);
 			ReporteRejectedByDay reporteChargesByDay = new ReporteRejectedByDay(xslStream, GraphTemplate.getMap());
 			StringWriter report = reporteChargesByDay.CreateXml(listRejectedsByDay);
-			
-//			StringWriter report = reportFacade.searchRejectedByDay(transactionVO);
 			resourceResponse.setContentType("text/html");
 			PrintWriter writer = resourceResponse.getWriter();
 			writer.print(report.toString());
@@ -133,10 +109,10 @@ public class FormReportRejectedsByDay extends MVCPortlet {
 			session.setAttribute("transactionVORejected", transactionVO);
 		} catch (ProcesorFacadeException | ReporteRejectedByDayException e ) {
 			e.printStackTrace();
-//			PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
-//			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
-//			SessionMessages.add(renderRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
-//			SessionErrors.add(renderRequest,e.getErrorCode());
+			PortletConfig portletConfig = (PortletConfig)resourceRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+			SessionMessages.add(resourceRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+			SessionErrors.add(resourceRequest,e.getErrorCode());
 			System.out.println("e.getMessage(): " + e.getMessage());
 			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
 			System.out.println("e.getErrorCode(): " + e.getErrorCode());

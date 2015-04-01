@@ -3,6 +3,6 @@
 
 <display>
 	<category name="BillingBuddy">
-		<portlet id="Subscription" />
+		<portlet id="Susbcription" />
 	</category>
 </display>

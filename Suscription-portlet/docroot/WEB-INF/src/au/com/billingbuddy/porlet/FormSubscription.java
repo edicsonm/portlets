@@ -15,6 +15,7 @@ import javax.portlet.RenderResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import au.com.billigbuddy.utils.BBUtils;
 import au.com.billingbuddy.business.objects.ProcesorFacade;
 import au.com.billingbuddy.common.objects.Utilities;
 import au.com.billingbuddy.exceptions.objects.ProcesorFacadeException;
@@ -34,10 +35,22 @@ public class FormSubscription extends MVCPortlet {
 	
 	@Override
 	public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
-		System.out.println("Excecute doView");
 		try {
 			HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
 			HttpSession session = request.getSession();
+			
+			
+			SubscriptionVO subscriptionVO = new SubscriptionVO();
+			subscriptionVO.setStart(BBUtils.getCurrentDate(6,0));
+			subscriptionVO.setEndedAt(BBUtils.getCurrentDate(6,0));
+			subscriptionVO.setCanceledAt(BBUtils.getCurrentDate(6,0));
+			subscriptionVO.setCurrentPeriodStart(BBUtils.getCurrentDate(6,0));
+			subscriptionVO.setCurrentPeriodEnd(BBUtils.getCurrentDate(6,0));
+			subscriptionVO.setTrialStart(BBUtils.getCurrentDate(6,0));
+			subscriptionVO.setTrialEnd(BBUtils.getCurrentDate(6,0));
+			
+			session.setAttribute("subscriptionVO", subscriptionVO);
+			
 			ArrayList<SubscriptionVO> listSubscriptions = procesorFacade.listSubscriptions(new SubscriptionVO());
 			session.setAttribute("listSubscriptions", listSubscriptions);
 		} catch (ProcesorFacadeException e) {
@@ -64,65 +77,29 @@ public class FormSubscription extends MVCPortlet {
 		subscriptionVO.setStatus(actionRequest.getParameter("status"));
 		subscriptionVO.setApplicationFeePercent(actionRequest.getParameter("applicationFeePercent"));
 		subscriptionVO.setStart(actionRequest.getParameter("start"));
-		
 		Date date;
 		try {
-			date = Utilities.getSimpleDateFormat().parse(actionRequest.getParameter("startDay") + "-"+(Integer.parseInt(actionRequest.getParameter("startMonth")) + 1)+"-"+actionRequest.getParameter("startYear"));
-			subscriptionVO.setStart(Utilities.getSimpleDateFormat().format(date));
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
-		try {
-			date = Utilities.getSimpleDateFormat().parse(actionRequest.getParameter("endedAtDay") + "-"+(Integer.parseInt(actionRequest.getParameter("endedAtMonth")) + 1)+"-"+actionRequest.getParameter("endedAtYear"));
-			subscriptionVO.setEndedAt(Utilities.getSimpleDateFormat().format(date));
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
-		try {
-			date = Utilities.getSimpleDateFormat().parse(actionRequest.getParameter("canceledAtDay") + "-"+(Integer.parseInt(actionRequest.getParameter("canceledAtMonth")) + 1)+"-"+actionRequest.getParameter("canceledAtYear"));
-			subscriptionVO.setCanceledAt(Utilities.getSimpleDateFormat().format(date));
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
-		try {
-			date = Utilities.getSimpleDateFormat().parse(actionRequest.getParameter("currentPeriodStartDay") + "-"+(Integer.parseInt(actionRequest.getParameter("currentPeriodStartMonth")) + 1)+"-"+actionRequest.getParameter("currentPeriodStartYear"));
-			subscriptionVO.setCurrentPeriodStart(Utilities.getSimpleDateFormat().format(date));
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
-		try {
-			date = Utilities.getSimpleDateFormat().parse(actionRequest.getParameter("currentPeriodEndDay") + "-"+(Integer.parseInt(actionRequest.getParameter("currentPeriodEndMonth")) + 1)+"-"+actionRequest.getParameter("currentPeriodEndYear"));
-			subscriptionVO.setCurrentPeriodEnd(Utilities.getSimpleDateFormat().format(date));
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
-		try {
-			date = Utilities.getSimpleDateFormat().parse(actionRequest.getParameter("trialStartDay") + "-"+(Integer.parseInt(actionRequest.getParameter("trialStartMonth")) + 1)+"-"+actionRequest.getParameter("trialStartYear"));
-			subscriptionVO.setTrialStart(Utilities.getSimpleDateFormat().format(date));
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
-		try {
-			date = Utilities.getSimpleDateFormat().parse(actionRequest.getParameter("trialEndDay") + "-"+(Integer.parseInt(actionRequest.getParameter("trialEndMonth")) + 1)+"-"+actionRequest.getParameter("trialEndYear"));
-			subscriptionVO.setTrialEnd(Utilities.getSimpleDateFormat().format(date));
+			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("startAt"));
+			subscriptionVO.setStart(Utilities.getDateFormat(5).format(date));
+			
+			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("endedAt"));
+			subscriptionVO.setEndedAt(Utilities.getDateFormat(5).format(date));
+			
+			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("canceledAt"));
+			subscriptionVO.setCanceledAt(Utilities.getDateFormat(5).format(date));
+			
+			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("currentPeriodStart"));
+			subscriptionVO.setCurrentPeriodStart(Utilities.getDateFormat(5).format(date));
+			
+			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("currentPeriodEnd"));
+			subscriptionVO.setCurrentPeriodEnd(Utilities.getDateFormat(5).format(date));
+			
+			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("trialStartDay"));
+			subscriptionVO.setTrialStart(Utilities.getDateFormat(5).format(date));
+			
+			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("trialEndDay"));
+			subscriptionVO.setTrialEnd(Utilities.getDateFormat(5).format(date));
+			
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		} catch (ParseException e) {
@@ -134,6 +111,7 @@ public class FormSubscription extends MVCPortlet {
 		} else {
 			subscriptionVO.setTaxPercent(actionRequest.getParameter("taxPercent"));
 		}
+		
 		session.setAttribute("subscriptionVO", subscriptionVO);
 		try {
 			procesorFacade.saveSubscription(subscriptionVO);
@@ -141,6 +119,7 @@ public class FormSubscription extends MVCPortlet {
 				ArrayList<SubscriptionVO> listSubscriptions = procesorFacade.listSubscriptions(new SubscriptionVO());
 				session.setAttribute("listSubscriptions", listSubscriptions);
 				SessionMessages.add(actionRequest, "subscriptionSavedSuccessfully");
+				session.removeAttribute("subscriptionVO");
 				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
 			} else {
 				System.out.println("basicPaymentResponseModel.getMessage(): " + subscriptionVO.getMessage());
@@ -166,12 +145,13 @@ public class FormSubscription extends MVCPortlet {
 		}
 	}
 	
-	public void listPlan(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+	public void listPlanSubscriptions(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
 		try {
 			HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 			HttpSession session = request.getSession();
 			ArrayList<PlanVO> listPlans = procesorFacade.listPlans(new PlanVO());
 			session.setAttribute("listPlans", listPlans);
+			session.removeAttribute("subscriptionVO");
 		} catch (ProcesorFacadeException e) {
 			e.printStackTrace();
 			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
@@ -181,7 +161,6 @@ public class FormSubscription extends MVCPortlet {
 		}
 		actionResponse.setRenderParameter("jspPage", "/jsp/newSubscription.jsp");
 	}
-
 	
 	public void listPlanEditPlan(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
 		try {
@@ -217,62 +196,27 @@ public class FormSubscription extends MVCPortlet {
 		
 		Date date;
 		try {
-			date = Utilities.getSimpleDateFormat().parse(actionRequest.getParameter("startDay") + "-"+(Integer.parseInt(actionRequest.getParameter("startMonth")) + 1)+"-"+actionRequest.getParameter("startYear"));
-			subscriptionVO.setStart(Utilities.getSimpleDateFormat().format(date));
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
-		try {
-			date = Utilities.getSimpleDateFormat().parse(actionRequest.getParameter("endedAtDay") + "-"+(Integer.parseInt(actionRequest.getParameter("endedAtMonth")) + 1)+"-"+actionRequest.getParameter("endedAtYear"));
-			subscriptionVO.setEndedAt(Utilities.getSimpleDateFormat().format(date));
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
-		try {
-			date = Utilities.getSimpleDateFormat().parse(actionRequest.getParameter("canceledAtDay") + "-"+(Integer.parseInt(actionRequest.getParameter("canceledAtMonth")) + 1)+"-"+actionRequest.getParameter("canceledAtYear"));
-			subscriptionVO.setCanceledAt(Utilities.getSimpleDateFormat().format(date));
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
-		try {
-			date = Utilities.getSimpleDateFormat().parse(actionRequest.getParameter("currentPeriodStartDay") + "-"+(Integer.parseInt(actionRequest.getParameter("currentPeriodStartMonth")) + 1)+"-"+actionRequest.getParameter("currentPeriodStartYear"));
-			subscriptionVO.setCurrentPeriodStart(Utilities.getSimpleDateFormat().format(date));
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
-		try {
-			date = Utilities.getSimpleDateFormat().parse(actionRequest.getParameter("currentPeriodEndDay") + "-"+(Integer.parseInt(actionRequest.getParameter("currentPeriodEndMonth")) + 1)+"-"+actionRequest.getParameter("currentPeriodEndYear"));
-			subscriptionVO.setCurrentPeriodEnd(Utilities.getSimpleDateFormat().format(date));
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
-		try {
-			date = Utilities.getSimpleDateFormat().parse(actionRequest.getParameter("trialStartDay") + "-"+(Integer.parseInt(actionRequest.getParameter("trialStartMonth")) + 1)+"-"+actionRequest.getParameter("trialStartYear"));
-			subscriptionVO.setTrialStart(Utilities.getSimpleDateFormat().format(date));
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
-		try {
-			date = Utilities.getSimpleDateFormat().parse(actionRequest.getParameter("trialEndDay") + "-"+(Integer.parseInt(actionRequest.getParameter("trialEndMonth")) + 1)+"-"+actionRequest.getParameter("trialEndYear"));
-			subscriptionVO.setTrialEnd(Utilities.getSimpleDateFormat().format(date));
+			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("startAt"));
+			subscriptionVO.setStart(Utilities.getDateFormat(5).format(date));
+			
+			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("endedAt"));
+			subscriptionVO.setEndedAt(Utilities.getDateFormat(5).format(date));
+			
+			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("canceledAt"));
+			subscriptionVO.setCanceledAt(Utilities.getDateFormat(5).format(date));
+			
+			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("currentPeriodStart"));
+			subscriptionVO.setCurrentPeriodStart(Utilities.getDateFormat(5).format(date));
+			
+			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("currentPeriodEnd"));
+			subscriptionVO.setCurrentPeriodEnd(Utilities.getDateFormat(5).format(date));
+			
+			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("trialStartDay"));
+			subscriptionVO.setTrialStart(Utilities.getDateFormat(5).format(date));
+			
+			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("trialEndDay"));
+			subscriptionVO.setTrialEnd(Utilities.getDateFormat(5).format(date));
+			
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		} catch (ParseException e) {
@@ -290,6 +234,7 @@ public class FormSubscription extends MVCPortlet {
 			if(subscriptionVO.getStatus().equalsIgnoreCase("success")) {
 				ArrayList<SubscriptionVO> listSubscriptions = procesorFacade.listSubscriptions(new SubscriptionVO());
 				session.setAttribute("listSubscriptions", listSubscriptions);
+				session.removeAttribute("subscriptionVO");
 				SessionMessages.add(actionRequest, "subscriptionSavedSuccessfully");
 				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
 			} else {
@@ -323,9 +268,6 @@ public class FormSubscription extends MVCPortlet {
 		ArrayList<SubscriptionVO> resultsListSubscriptions = (ArrayList<SubscriptionVO>)session.getAttribute("results");
 		SubscriptionVO subscriptionVO = (SubscriptionVO)resultsListSubscriptions.get(Integer.parseInt(actionRequest.getParameter("indice")));
 		
-//		String indice = actionRequest.getParameter("indice");
-//		ArrayList<SubscriptionVO> resultsListCharge = (ArrayList<SubscriptionVO>)session.getAttribute("results");
-//		SubscriptionVO subscriptionVO = (SubscriptionVO)resultsListCharge.get(Integer.parseInt(indice));
 		try {
 			procesorFacade.deleteSubscription(subscriptionVO);
 			if(subscriptionVO.getStatus().equalsIgnoreCase("success")) {
@@ -333,12 +275,10 @@ public class FormSubscription extends MVCPortlet {
 				session.setAttribute("listSubscriptions", listSubscriptions);
 				SessionMessages.add(actionRequest, "subscriptionDeletedSuccessfully");
 			}else{
-				System.out.println("basicPaymentResponseModel.getMessage(): " + subscriptionVO.getMessage());
 				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 				SessionErrors.add(actionRequest, "error");
-				System.out.println("subscriptionVO.getMessage(): " + subscriptionVO.getMessage());
 				SessionErrors.add(actionRequest,subscriptionVO.getMessage());
 				session.setAttribute("subscriptionVO", subscriptionVO);
 			}

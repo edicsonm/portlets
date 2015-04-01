@@ -23,142 +23,140 @@
 	SubscriptionVO subscriptionVO = (SubscriptionVO)resultsListSubscriptions.get(Integer.parseInt(ParamUtil.getString(request, "indice")));
 	request.setAttribute("subscriptionVO", subscriptionVO);
 %>
-<portlet:renderURL var="goBack">
+<portlet:renderURL var="goBackSubscription">
 	<portlet:param name="jspPage" value="/jsp/view.jsp" />
 </portlet:renderURL>
 
 <aui:form method="post">
-	<div class="table">
-		<div class="section">
-			<div class="row">
-				<div class="row">
-					<div class="column1-1">
-						<label class="aui-field-label sub-title"><fmt:message key="label.informationSubscription"/></label>
+	<fieldset class="fieldset">
+		<legend class="fieldset-legend">
+			<span class="legend"><fmt:message key="label.informationSubscription"/> </span>
+		</legend>
+		<div class="">
+			<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
+			<div class="details">
+				<div id="contenedor">
+					<div id="contenidos">
+						<div id="columna1-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.plan"/></dt>
+								<dd><c:out value="${subscriptionVO.planVO.name}"/></dd>
+							</dl>
+						</div>
+						<div id="columna2-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.status"/></dt>
+								<dd><c:out value="${subscriptionVO.status}"/></dd>
+							</dl>
+						</div>
 					</div>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-4">
-					<label class="aui-field-label"><fmt:message key="label.plan"/></label>
-				</div>
-				<div class="column2-4">
-					<c:out value="${subscriptionVO.planVO.name}"/>
-				</div>
-				<div class="column3-4">
-					<label class="aui-field-label"><fmt:message key="label.status"/></label>
-				</div>
-				<div class="column4-4">
-					<c:out value="${subscriptionVO.status}"/>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-4">
-					<label class="aui-field-label"><fmt:message key="label.quantity"/></label>
-				</div>
-				<div class="column2-4">
-					<c:out value="${subscriptionVO.quantity}"/>
-				</div>
-				<div class="column3-4">
-					<label class="aui-field-label"><fmt:message key="label.cancelAtPeriodEnd"/></label>
-				</div>
-				<div class="column4-4">
-					<c:out value="${subscriptionVO.cancelAtPeriodEnd}"/>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-4">
-					<label class="aui-field-label"><fmt:message key="label.applicationFeePercent"/></label>
-				</div>
-				<div class="column2-4">
-					<c:out value="${subscriptionVO.applicationFeePercent}"/>
-				</div>
-				<div class="column3-4">
-					<label class="aui-field-label"><fmt:message key="label.taxPercent"/></label>
-				</div>
-				<div class="column4-4">
-					<c:out value="${subscriptionVO.taxPercent}"/>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-4">
-					<label class="aui-field-label"><fmt:message key="label.start"/></label>
-				</div>
-				<div class="column2-4">
-					<%-- <c:out value="${subscriptionVO.start}"/> --%>
-					<c:out value="<%=Utilities.formatDate(subscriptionVO.getStart()) %>"/>
-				</div>
-				<div class="column3-4">
-					<label class="aui-field-label"><fmt:message key="label.endedAt"/></label>
-				</div>
-				<div class="column4-4">
-					<%-- <c:out value="${subscriptionVO.endedAt}"/> --%>
-					<c:out value="<%=Utilities.formatDate(subscriptionVO.getEndedAt()) %>"/>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-4">
-					<label class="aui-field-label"><fmt:message key="label.canceledAt"/></label>
-				</div>
-				<div class="column2-4">
-					<%-- <c:out value="${subscriptionVO.canceledAt}"/> --%>
-					<c:out value="<%=Utilities.formatDate(subscriptionVO.getCanceledAt()) %>"/>
-				</div>
-				<div class="column3-4">
-					<%-- <label class="aui-field-label"><fmt:message key="label.endedAt"/></label> --%>
-				</div>
-				<div class="column4-4">
-					<%-- <c:out value="${subscriptionVO.endedAt}"/> --%>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-4">
-					<label class="aui-field-label"><fmt:message key="label.currentPeriodStart"/></label>
-				</div>
-				<div class="column2-4">
-					<%-- <c:out value="${subscriptionVO.currentPeriodStart}"/> --%>
-					<c:out value="<%=Utilities.formatDate(subscriptionVO.getCurrentPeriodStart()) %>"/>
-				</div>
-				<div class="column3-4">
-					<label class="aui-field-label"><fmt:message key="label.currentPeriodEnd"/></label>
-				</div>
-				<div class="column4-4">
-					<%-- <c:out value="${subscriptionVO.currentPeriodEnd}"/> --%>
-					<c:out value="<%=Utilities.formatDate(subscriptionVO.getCurrentPeriodEnd()) %>"/>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-4">
-					<label class="aui-field-label"><fmt:message key="label.trialStart"/></label>
-				</div>
-				<div class="column2-4">
-					<%-- <c:out value="${subscriptionVO.trialStart}"/> --%>
-					<c:out value="<%=Utilities.formatDate(subscriptionVO.getTrialStart()) %>"/>
-				</div>
-				<div class="column3-4">
-					<label class="aui-field-label"><fmt:message key="label.trialEnd"/></label>
-				</div>
-				<div class="column4-4">
-					<%-- <c:out value="${Utilities.formatDate(subscriptionVO.trialEnd)}"/> --%>
-					<c:out value="<%=Utilities.formatDate(subscriptionVO.getTrialEnd()) %>"/>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="column1-2">
-						<span class="goBack" >
-							<a href="<%= goBack %>"><fmt:message key="label.goBack"/></a>
-						</span>
+					<div id="contenidos">	
+						<div id="columna1-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.quantity"/></dt>
+								<dd><c:out value="${subscriptionVO.quantity}"/></dd>
+							</dl>
+						</div>
+						<div id="columna2-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.cancelAtPeriodEnd"/></dt>
+									<c:choose>
+									  <c:when test="${subscriptionVO.cancelAtPeriodEnd ==  1}">
+									  	<dd>True</dd>
+									  </c:when>
+									  <c:otherwise>
+									  	<dd>False</dd>
+									  </c:otherwise>
+									</c:choose>
+									<%-- <c:if test="${subscriptionVO.cancelAtPeriodEnd ==  1}">
+									   <dd>True</dd>
+									</c:if>
+									
+									<% if(subscriptionVO.getCancelAtPeriodEnd().equalsIgnoreCase("1")){
+										%><dd>True</dd><%
+									}else{
+										%><dd>False</dd><%
+									}%> --%>
+								<%-- <dd><c:out value="${subscriptionVO.cancelAtPeriodEnd}"/></dd> --%>
+							</dl>
+						</div>
 					</div>
-				<div class="column2-2">
+					
+					<div id="contenidos">	
+						<div id="columna1-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.applicationFeePercent"/></dt>
+								<dd><c:out value="${subscriptionVO.applicationFeePercent}"/></dd>
+							</dl>
+						</div>
+						<div id="columna2-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.taxPercent"/></dt>
+								<dd><c:out value="${subscriptionVO.taxPercent}"/></dd>
+							</dl>
+						</div>
+					</div>
+					
+					<div id="contenidos">	
+						<div id="columna1-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.start"/></dt>
+								<dd><c:out value="${Utils:formatDate(3,subscriptionVO.start,6)}"/></dd>
+							</dl>
+						</div>
+						<div id="columna2-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.endedAt"/></dt>
+								<dd><c:out value="${Utils:formatDate(3,subscriptionVO.endedAt,6)}"/></dd>
+							</dl>
+						</div>
+					</div>
+					
+					<div id="contenidos">	
+						<div id="columna1-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.canceledAt"/></dt>
+								<dd><c:out value="${Utils:formatDate(3,subscriptionVO.canceledAt,6)}"/></dd>
+							</dl>
+						</div>
+						<div id="columna2-2">
+							<dl class="property-list">
+							</dl>
+						</div>
+					</div>
+					
+					<div id="contenidos">	
+						<div id="columna1-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.currentPeriodStart"/></dt>
+								<dd><c:out value="${Utils:formatDate(3,subscriptionVO.currentPeriodStart,6)}"/></dd>
+							</dl>
+						</div>
+						<div id="columna2-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.currentPeriodEnd"/></dt>
+								<dd><c:out value="${Utils:formatDate(3,subscriptionVO.currentPeriodEnd,6)}"/></dd>
+							</dl>
+						</div>
+					</div>
+					
+					<div id="contenidos">	
+						<div id="columna1-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.trialStart"/></dt>
+								<dd><c:out value="${Utils:formatDate(3,subscriptionVO.trialStart,6)}"/></dd>
+							</dl>
+						</div>
+						<div id="columna2-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.trialEnd"/></dt>
+								<dd><c:out value="${Utils:formatDate(3,subscriptionVO.trialEnd,6)}"/></dd>
+							</dl>
+						</div>
+					</div>
+					<a href="<%= goBackSubscription %>"><fmt:message key="label.goBack"/></a>
 				</div>
 			</div>
 		</div>
-	</div>
+	</fieldset>
 </aui:form>

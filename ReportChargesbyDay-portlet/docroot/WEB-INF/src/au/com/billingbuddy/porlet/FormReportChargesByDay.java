@@ -80,7 +80,6 @@ public class FormReportChargesByDay extends MVCPortlet {
         try {
 			session.removeAttribute("transactionVOCharges");
 			session.removeAttribute("reportCharges");
-			
 			TransactionVO transactionVO = new TransactionVO();
 			Date date;
 			try {
@@ -100,19 +99,6 @@ public class FormReportChargesByDay extends MVCPortlet {
 			ArrayList<TransactionVO> listChargesByDay = procesorFacade.searchChargesByDay(transactionVO);
 			ReporteChargesByDay reporteChargesByDay = new ReporteChargesByDay(xslStream, GraphTemplate.getMap());
 			StringWriter report = reporteChargesByDay.CreateXml(listChargesByDay);
-//			
-//			try {
-//				date = Utilities.getDateFormat(6).parse(resourceRequest.getParameter("fromDateCharges"));
-//				transactionVO.setInitialDateReport(Utilities.getDateFormat(2).format(date));
-//				date = Utilities.getDateFormat(6).parse(resourceRequest.getParameter("toDateCharges"));
-//				transactionVO.setFinalDateReport(Utilities.getDateFormat(2).format(date));
-//			} catch (NumberFormatException e) {
-//				e.printStackTrace();
-//			} catch (ParseException e) {
-//				e.printStackTrace();
-//			}
-			
-//			StringWriter report = reportFacade.searchChargesByDay(transactionVO);
 			resourceResponse.setContentType("text/html");
 			PrintWriter writer = resourceResponse.getWriter();
 			writer.print(report.toString());
@@ -121,10 +107,10 @@ public class FormReportChargesByDay extends MVCPortlet {
 			session.setAttribute("transactionVOCharges", transactionVO);
         } catch (ProcesorFacadeException | ReporteChargesByDayException e) {
 			e.printStackTrace();
-//			PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
-//			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
-//			SessionMessages.add(renderRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
-//			SessionErrors.add(renderRequest,e.getErrorCode());
+			PortletConfig portletConfig = (PortletConfig)resourceRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+			SessionMessages.add(resourceRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+			SessionErrors.add(resourceRequest,e.getErrorCode());
 			System.out.println("e.getMessage(): " + e.getMessage());
 			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
 			System.out.println("e.getErrorCode(): " + e.getErrorCode());
