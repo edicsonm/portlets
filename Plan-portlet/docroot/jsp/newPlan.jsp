@@ -39,19 +39,25 @@
 		</legend>
 		<div class="">
 			<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
-			
+			<div class="control-group">
+				<aui:input label="label.name" helpMessage="help.name" showRequiredLabel="false" type="text" required="true" name="name" value="${planVO.name}">
+					</aui:input>
+			</div>
 			<div class="control-group">
 				<aui:input label="label.amount" helpMessage="help.amount" showRequiredLabel="false" type="text" required="true" name="amount" value="${planVO.amount}">
-					<aui:validator name="digits"/>
+					<aui:validator name="custom" errorMessage="error.decimalNumber">
+						function (val, fieldNode, ruleValue) {
+							var result = ( /^(\d+|\d+.\d{1,2})$/.test(val));
+							return result;
+						}
+					</aui:validator>
 				</aui:input>
 			</div>
 			
 			<div class="control-group">
-				<%-- <aui:input label="label.currency" helpMessage="help.currency" showRequiredLabel="false" size="3" type="text" required="true" name="currency" value="${planVO.currency}">
-				</aui:input> --%>
 				<aui:select name="currency" onChange="searchMerchantInformation();" helpMessage="help.currency" label="label.currency" id="currency">
 					<c:forEach var="currencyVO" items="${listCurrencies}">
-						<aui:option value="${currencyVO.alphabeticCode}" label="${currencyVO.alphabeticCode}" selected="${currencyVO.alphabeticCode==planVO.currency}"/>
+						<aui:option value="${currencyVO.alphabeticCode}" label="${currencyVO.alphabeticCode} - ${currencyVO.countryName}" selected="${currencyVO.alphabeticCode==planVO.currency}"/>
 					</c:forEach>
 				</aui:select>
 			</div>
@@ -64,15 +70,12 @@
 					<aui:option value="Year" label="label.year" selected="${planVO.interval=='Year'}"/>
 				</aui:select>
 			</div>
-			<div class="control-group">
+			
+			<%-- <div class="control-group">
 				<aui:input label="label.intervalCount" helpMessage="help.intervalCount" showRequiredLabel="false" type="text" required="false" name="intervalCount" value="${planVO.intervalCount}">
 					<aui:validator name="digits"/>
 				</aui:input>
-			</div>
-			<div class="control-group">
-				<aui:input label="label.name" helpMessage="help.name" showRequiredLabel="false" type="text" required="true" name="name" value="${planVO.name}">
-					</aui:input>
-			</div>
+			</div> --%>
 			
 			<div class="control-group">
 				<aui:input label="label.trialPeriodDays"  helpMessage="help.trialPeriodDays" showRequiredLabel="false" type="text" required="false" name="trialPeriodDays" value="${planVO.trialPeriodDays}">

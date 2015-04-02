@@ -1,25 +1,34 @@
 package au.com.billingbuddy.porlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletConfig;
 import javax.portlet.PortletException;
+import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
+import javax.portlet.ResourceRequest;
+import javax.portlet.ResourceResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.json.simple.JSONObject;
 
 import au.com.billigbuddy.utils.BBUtils;
 import au.com.billingbuddy.business.objects.ProcesorFacade;
 import au.com.billingbuddy.common.objects.Utilities;
 import au.com.billingbuddy.exceptions.objects.ProcesorFacadeException;
 import au.com.billingbuddy.vo.objects.ChargeVO;
+import au.com.billingbuddy.vo.objects.MerchantVO;
 import au.com.billingbuddy.vo.objects.PlanVO;
 import au.com.billingbuddy.vo.objects.SubscriptionVO;
 
@@ -38,7 +47,6 @@ public class FormSubscription extends MVCPortlet {
 		try {
 			HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
 			HttpSession session = request.getSession();
-			
 			
 			SubscriptionVO subscriptionVO = new SubscriptionVO();
 			subscriptionVO.setStart(BBUtils.getCurrentDate(6,0));
@@ -267,7 +275,6 @@ public class FormSubscription extends MVCPortlet {
 		
 		ArrayList<SubscriptionVO> resultsListSubscriptions = (ArrayList<SubscriptionVO>)session.getAttribute("results");
 		SubscriptionVO subscriptionVO = (SubscriptionVO)resultsListSubscriptions.get(Integer.parseInt(actionRequest.getParameter("indice")));
-		
 		try {
 			procesorFacade.deleteSubscription(subscriptionVO);
 			if(subscriptionVO.getStatus().equalsIgnoreCase("success")) {
@@ -293,6 +300,38 @@ public class FormSubscription extends MVCPortlet {
 			session.setAttribute("subscriptionVO", subscriptionVO);
 		}
 		actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
+	}
+	
+	public void serveResource(ResourceRequest resourceRequest, ResourceResponse resourceResponse) throws IOException, PortletException {
+		HttpServletRequest request = PortalUtil.getHttpServletRequest(resourceRequest);
+		HttpServletResponse response = PortalUtil.getHttpServletResponse(resourceResponse);
+		
+		HttpSession session = request.getSession();
+		String action = resourceRequest.getParameter("action");
+		
+		if (action.equals("trialStartDate")) {
+			ArrayList<PlanVO> listPlans = (ArrayList<PlanVO>)session.getAttribute("listPlans");
+			PlanVO planVO = (PlanVO)listPlans.get(listPlans.indexOf(new PlanVO((String)resourceRequest.getParameter("planId"))));
+			
+			response.setContentType("application/json");
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("trialEnd", BBUtils.getCurrentDate(6,Integer.parseInt(planVO.getTrialPeriodDays())));
+			jsonObject.put("start", BBUtils.getCurrentDate(6,Integer.parseInt(planVO.getTrialPeriodDays()) + 1));
+			PrintWriter writer = resourceResponse.getWriter();
+			writer.write(jsonObject.toString());
+			writer.flush();
+			writer.close();
+			
+			/*Para una respuesta HTML*/
+//			resourceResponse.setContentType("text/html");
+//			PrintWriter printWriter = resourceResponse.getWriter();
+//			printWriter.print(BBUtils.getCurrentDate(6,Integer.parseInt(planVO.getTrialPeriodDays())));
+//			printWriter.flush();
+//			printWriter.close();
+			super.serveResource(resourceRequest, resourceResponse);
+			/*Para incluir una pagina HTML en un div*/
+//			include("/jsp/include.jsp", resourceRequest, resourceResponse, PortletRequest.RESOURCE_PHASE);
+		}
 	}
 	
 }

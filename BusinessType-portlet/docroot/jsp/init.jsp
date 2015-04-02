@@ -25,6 +25,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
 
+<%@page import="com.liferay.portal.kernel.dao.search.DisplayTerms" %>
+<%@page import="com.liferay.portal.util.PortalUtil" %>
+<%@page import="com.liferay.portal.kernel.util.Validator" %>
+
 <%@ page import="java.util.Calendar"%>
 <%@ page import="java.util.GregorianCalendar"%>
 <%@ page import="java.util.Locale"%>
@@ -37,3 +41,17 @@
 <%@ page import="au.com.billingbuddy.common.objects.Currency" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="au.com.billingbuddy.vo.objects.BusinessTypeVO" %>
+
+<portlet:defineObjects />
+<liferay-theme:defineObjects />
+
+<%
+	String currentURL = PortalUtil.getCurrentURL(request);
+	String Name = ParamUtil.getString(request, "Name");
+	System.out.println("Name: " + Name);
+	/* String lastName = ("lastName");
+	int studentAge = 18;
+	int studentGender = 0;
+	String studentAddress = ("studentAddress"); */
+%>
+

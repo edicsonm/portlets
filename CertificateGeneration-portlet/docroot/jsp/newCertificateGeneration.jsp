@@ -44,7 +44,6 @@
 <script>
 function searchMerchantInformation(){
 	var data = $("#<portlet:namespace />merchant").find('option:selected').attr('value');
-	alert(data);
 	var url = '<%=searchMerchantInformation%>';
     $.ajax({
     type : "POST",

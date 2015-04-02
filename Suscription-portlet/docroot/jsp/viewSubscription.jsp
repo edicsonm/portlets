@@ -60,24 +60,14 @@
 						<div id="columna2-2">
 							<dl class="property-list">
 								<dt><fmt:message key="label.cancelAtPeriodEnd"/></dt>
-									<c:choose>
-									  <c:when test="${subscriptionVO.cancelAtPeriodEnd ==  1}">
-									  	<dd>True</dd>
-									  </c:when>
-									  <c:otherwise>
-									  	<dd>False</dd>
-									  </c:otherwise>
-									</c:choose>
-									<%-- <c:if test="${subscriptionVO.cancelAtPeriodEnd ==  1}">
-									   <dd>True</dd>
-									</c:if>
-									
-									<% if(subscriptionVO.getCancelAtPeriodEnd().equalsIgnoreCase("1")){
-										%><dd>True</dd><%
-									}else{
-										%><dd>False</dd><%
-									}%> --%>
-								<%-- <dd><c:out value="${subscriptionVO.cancelAtPeriodEnd}"/></dd> --%>
+								<c:choose>
+								  <c:when test="${subscriptionVO.cancelAtPeriodEnd == 0}">
+								  	<dd>True</dd>
+								  </c:when>
+								  <c:otherwise>
+								  	<dd>False</dd>
+								  </c:otherwise>
+								</c:choose>
 							</dl>
 						</div>
 					</div>

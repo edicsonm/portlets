@@ -113,6 +113,7 @@ public class FormPlan extends MVCPortlet {
 			if(planVO.getStatus().equalsIgnoreCase("success")) {
 				ArrayList<PlanVO> listPlans = procesorFacade.listPlans(new PlanVO());
 				session.setAttribute("listPlans", listPlans);
+				session.removeAttribute("planVO");
 				SessionMessages.add(actionRequest, "planSavedSuccessfully");
 				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
 			}else{
@@ -160,14 +161,13 @@ public class FormPlan extends MVCPortlet {
 				ArrayList<PlanVO> listPlans = procesorFacade.listPlans(new PlanVO());
 				session.setAttribute("listPlans", listPlans);
 				SessionMessages.add(actionRequest, "planUpdatedSuccessfully");
+				session.removeAttribute("planVO");
 				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
 			}else{
-				System.out.println("basicPaymentResponseModel.getMessage(): " + planVO.getMessage());
 				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 				SessionErrors.add(actionRequest, "error");
-				System.out.println("planVO.getMessage(): " + planVO.getMessage());
 				SessionErrors.add(actionRequest,planVO.getMessage());
 				session.setAttribute("planVO", planVO);
 				actionResponse.setRenderParameter("jspPage", "/jsp/editPlan.jsp");
@@ -200,14 +200,13 @@ public class FormPlan extends MVCPortlet {
 			if(planVO.getStatus().equalsIgnoreCase("success")) {
 				ArrayList<PlanVO> listPlans = procesorFacade.listPlans(new PlanVO());
 				session.setAttribute("listPlans", listPlans);
+				session.removeAttribute("planVO");
 				SessionMessages.add(actionRequest, "planDeletedSuccessfully");
 			}else{
-				System.out.println("basicPaymentResponseModel.getMessage(): " + planVO.getMessage());
 				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 				SessionErrors.add(actionRequest, "error");
-				System.out.println("planVO.getMessage(): " + planVO.getMessage());
 				SessionErrors.add(actionRequest,planVO.getMessage());
 				session.setAttribute("planVO", planVO);
 			}
