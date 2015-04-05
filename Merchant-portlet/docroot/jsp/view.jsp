@@ -58,13 +58,48 @@
 %>
 
 <portlet:actionURL var="newMerchant" name="newMerchant"/>
+<portlet:actionURL var="listFilter" name="listFilter"/>
 
-<liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURL" />
-<aui:form method="post">
+<liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLMerchant">
+	<portlet:param name="action" value="listAllMerchantsFilter" />
+	<portlet:param name="nameMerchant" value="<%= nameMerchant %>" />
+	<portlet:param name="status" value="<%= status %>" />
+</liferay-portlet:renderURL>
+
+<liferay-portlet:renderURL varImpl="merchantSearchURL">
+	<portlet:param name="mvcPath" value="/jsp/view.jsp" />
+</liferay-portlet:renderURL>
+
+<%-- <aui:form action="<%=merchantSearchURL %>" method="post"> --%>
+
+<aui:form action="<%=listFilter %>" method="post">
+
 		<div class="table">
-			<liferay-ui:search-container emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURL%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
+			<liferay-ui:search-container displayTerms="<%= new DisplayTerms(renderRequest) %>" emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURLMerchant%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
+				
+				<liferay-ui:search-form page="/jsp/merchant_search.jsp" servletContext="<%= application %>"/>
+				
 				<liferay-ui:search-container-results>
 					<%
+						DisplayTerms displayTerms =searchContainer.getDisplayTerms();
+						System.out.println("displayTerms.isAndOperator()? ... " + displayTerms.isAndOperator());
+						System.out.println("displayTerms.isAdvancedSearch()? ... " + displayTerms.isAdvancedSearch());
+						/* Methods.searchBusiness(listBusinessTypes, orderByCol, orderByType); */
+						if (displayTerms.isAdvancedSearch()) {
+							System.out.println("nameMerchant ... " + nameMerchant);
+							System.out.println("status ... " + status);
+						}else{
+							String searchkeywords = displayTerms.getKeywords();
+							System.out.println("searchkeywords: " + searchkeywords);
+							String numbesearchkeywords = Validator.isNumber(searchkeywords) ? searchkeywords : String.valueOf(0);
+							System.out.println("numbesearchkeywords: " + numbesearchkeywords);
+							System.out.println("nameMerchant ... " + nameMerchant);
+							System.out.println("status ... " + status);
+						}
+						System.out.println("\n\n\n\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ... ");	
+					
+					
+					
 						listMerchants = Methods.orderMerchant(listMerchants,orderByCol,orderByType);
 						results = new ArrayList<MerchantVO>(ListUtil.subList(listMerchants, searchContainer.getStart(), searchContainer.getEnd()));
 						total = listMerchants.size();

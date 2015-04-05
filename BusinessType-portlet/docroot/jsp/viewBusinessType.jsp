@@ -56,29 +56,40 @@
 	<portlet:param name="jspPage" value="/jsp/newBusinessType.jsp" />
 </portlet:renderURL>
 
-<liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLBusinessType">
+<liferay-portlet:renderURLParams varImpl="studentSearchURL" />
+
+<liferay-portlet:renderURL varImpl="studentSearchURL">
+	<portlet:param name="mvcPath" value="/jsp/viewBusinessType.jsp" />
 </liferay-portlet:renderURL>
 
-<aui:form method="post">
+<liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLBusinessType">
+		<portlet:param name="businessName" value="<%= businessName %>" />
+</liferay-portlet:renderURL>
+
+<aui:form action="<%=studentSearchURL %>" method="post">
 	<div class="table">
 			<liferay-ui:search-container displayTerms="<%= new DisplayTerms(renderRequest) %>" emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURLBusinessType%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
 				  
-				<liferay-ui:search-form page="/jsp/student_search.jsp" servletContext="<%= application %>"/>
+				<liferay-ui:search-form page="/jsp/businessType_search.jsp" servletContext="<%= application %>"/>
 				  
 				<liferay-ui:search-container-results>
 					<%
 						DisplayTerms displayTerms =searchContainer.getDisplayTerms();
-						String searchkeywords = displayTerms.getKeywords();
-						System.out.println("searchkeywords: " + searchkeywords);
-						
-						System.out.println("displayTerms.isAdvancedSearch(): " + displayTerms.isAdvancedSearch());
-						
-						
-						String numbesearchkeywords = Validator.isNumber(searchkeywords) ? searchkeywords : String.valueOf(0);
-						System.out.println("numbesearchkeywords: " + numbesearchkeywords);
+						System.out.println("displayTerms.isAndOperator()? ... " + displayTerms.isAndOperator());
+						System.out.println("displayTerms.isAdvancedSearch()? ... " + displayTerms.isAdvancedSearch());
+						/* Methods.searchBusiness(listBusinessTypes, orderByCol, orderByType); */
+						if (displayTerms.isAdvancedSearch()) {
+							System.out.println("businessName ... " + businessName);
+						}else{
+							String searchkeywords = displayTerms.getKeywords();
+							System.out.println("searchkeywords: " + searchkeywords);
+							String numbesearchkeywords = Validator.isNumber(searchkeywords) ? searchkeywords : String.valueOf(0);
+							System.out.println("numbesearchkeywords: " + numbesearchkeywords);
+							System.out.println("businessName ... " + businessName);
+						}
+						System.out.println("\n\n\n\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ... ");
 /* 						total = StudentLocalServiceUtil.getSearchStudentsCount(firstName,lastName, studentAge, studentGender, studentAddress,displayTerms.isAndOperator());
 						searchContainer.setResults(StudentLocalServiceUtil.getSerachStudents(searchkeywords,searchkeywords,Integer.parseInt(numbesearchkeywords),Integer.parseInt(numbesearchkeywords), searchkeywords,false, searchContainer.getStart(), searchContainer.getEnd(), new StudentNameComparator()));
-					
  */					
 						listBusinessTypes = Methods.orderBusinessType(listBusinessTypes,orderByCol,orderByType);
 						results = new ArrayList<BusinessTypeVO>(ListUtil.subList(listBusinessTypes, searchContainer.getStart(), searchContainer.getEnd()));

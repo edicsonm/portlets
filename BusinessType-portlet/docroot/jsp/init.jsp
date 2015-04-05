@@ -47,11 +47,6 @@
 
 <%
 	String currentURL = PortalUtil.getCurrentURL(request);
-	String Name = ParamUtil.getString(request, "Name");
-	System.out.println("Name: " + Name);
-	/* String lastName = ("lastName");
-	int studentAge = 18;
-	int studentGender = 0;
-	String studentAddress = ("studentAddress"); */
+	String businessName = ParamUtil.getString(request, "businessName");
 %>
 

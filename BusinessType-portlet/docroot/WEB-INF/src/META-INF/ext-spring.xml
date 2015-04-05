@@ -1,0 +1,27 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+	<bean id="basePersistence" abstract="true">
+		<property name="dataSource" ref="tcsDS" />
+		<property name="sessionFactory" ref="tcsSessionFactory" />
+	</bean>
+
+	<bean id="tcsHibernateSessionFactory" class="com.liferay.portal.spring.hibernate.PortletHibernateConfiguration" lazy-init="true">
+		<property name="dataSource" ref="tcsDS" />
+	</bean>
+
+	<bean id="tcsSessionFactory" class="com.liferay.portal.dao.orm.hibernate.SessionFactoryImpl" lazy-init="true">
+		<property name="sessionFactoryImplementor" ref="tcsHibernateSessionFactory" />
+	</bean>
+
+	<bean id="tcsDS" class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy">
+		<property name="targetDataSource">
+			<bean class="com.liferay.portal.dao.jdbc.util.DataSourceFactoryBean">
+				<property name="propertyPrefix" value="jdbc.billingbuddy." />
+			</bean>
+		</property>
+	</bean>
+
+</beans>

@@ -1,0 +1,1 @@
+create index IX_819060F9 on AA_Foo (field2);

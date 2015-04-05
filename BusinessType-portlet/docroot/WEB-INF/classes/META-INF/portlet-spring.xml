@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" default-destroy-method="destroy" default-init-method="afterPropertiesSet" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	<bean id="au.com.billingbuddy.porlet.services.service.BusinessTypeLocalService" class="au.com.billingbuddy.porlet.services.service.impl.BusinessTypeLocalServiceImpl" />
+	<bean id="au.com.billingbuddy.porlet.services.service.BusinessTypeService" class="au.com.billingbuddy.porlet.services.service.impl.BusinessTypeServiceImpl" />
+	<bean id="au.com.billingbuddy.porlet.services.service.persistence.BusinessTypePersistence" class="au.com.billingbuddy.porlet.services.service.persistence.BusinessTypePersistenceImpl" parent="basePersistence">
+		<property name="dataSource" ref="tcsDS" />
+		<property name="sessionFactory" ref="tcsSessionFactory" />
+	</bean>
+</beans>

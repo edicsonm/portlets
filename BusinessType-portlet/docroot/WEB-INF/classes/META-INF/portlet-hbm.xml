@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false" auto-import="false">
+	<import class="au.com.billingbuddy.porlet.services.model.BusinessType" />
+	<class name="au.com.billingbuddy.porlet.services.model.impl.BusinessTypeImpl" table="BusinessType">
+		<cache usage="read-write" />
+		<id name="Buty_ID" type="int">
+			<generator class="assigned" />
+		</id>
+		<property name="Buty_Description" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="Buty_Status" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+	</class>
+</hibernate-mapping>

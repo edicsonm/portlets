@@ -25,6 +25,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
 
+<%@page import="com.liferay.portal.kernel.dao.search.DisplayTerms" %>
+<%@page import="com.liferay.portal.util.PortalUtil" %>
+<%@page import="com.liferay.portal.kernel.util.Validator" %>
 <%@ page import="com.liferay.portal.kernel.language.LanguageUtil" %>
 
 <%@ page import="com.liferay.portal.service.RoleServiceUtil" %>
@@ -46,3 +49,11 @@
 <%@ page import="au.com.billingbuddy.vo.objects.BusinessTypeVO" %>
 <%@ page import="au.com.billingbuddy.vo.objects.IndustryVO" %>
 
+<portlet:defineObjects />
+<liferay-theme:defineObjects />
+
+<%
+	String currentURL = PortalUtil.getCurrentURL(request);
+	String nameMerchant = ParamUtil.getString(request, "nameMerchant");
+	String status = ParamUtil.getString(request, "status");
+%>

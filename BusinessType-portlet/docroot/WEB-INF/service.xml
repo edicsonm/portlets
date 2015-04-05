@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 6.2.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_6_2_0.dtd">
+<service-builder package-path="au.com.billingbuddy.porlet.services">
+	<author>Edicson Morales</author>
+	<namespace>IPG</namespace>
+	<entity name="BusinessType" table="BusinessType" local-service="true" remote-service="true" data-source="tcsDS" session-factory="tcsSessionFactory" tx-manager="tcsTransactionManager">
+	<!-- <entity name="Foo" local-service="true" remote-service="true"> -->
+
+		<!-- PK fields -->
+
+		<column name="Buty_ID" type="int" primary="true" />
+
+		<!-- Group instance -->
+
+		<!-- Audit fields -->
+
+		<!-- Other fields -->
+
+		<column name="Buty_Description" type="String" />
+		<column name="Buty_Status" type="String" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="Buty_Description" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="Finder_Buty_Description" return-type="Collection">
+			<finder-column name="Buty_Description" />
+		</finder>
+	</entity>
+</service-builder>

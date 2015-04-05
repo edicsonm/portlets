@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="au.com.billingbuddy.porlet.services.model.BusinessType">
+		<field name="Buty_ID" type="int" />
+		<field name="Buty_Description" type="String" />
+		<field name="Buty_Status" type="String" />
+	</model>
+</model-hints>

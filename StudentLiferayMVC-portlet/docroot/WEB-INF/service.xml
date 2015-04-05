@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 6.2.0//EN" 
+"http://www.liferay.com/dtd/liferay-service-builder_6_2_0.dtd">
+<service-builder package-path="com.meera.dbservice">
+	<author>LiferaySavvy</author>
+	<namespace>LS</namespace>
+	<entity name="Student" local-service="true" remote-service="false" data-source="hmiProductDataSource" session-factory="externalSessionFactory" tx-manager="externalTransactionManager">
+	<!-- <entity name="Student" local-service="true" table="training" remote-service="true" data-source="myDatasource" session-factory="testSessionFactory" tx-manager="testTransactionManager"> -->
+	<!-- <entity name="Student" local-service="true" remote-service="false" data-source="anotherDataSource" session-factory="anotherSessionFactory" tx-manager="anotherTransactionManager"> -->
+	<!-- <entity name="Student" local-service="true" remote-service="true"  data-source="anotherDataSource"> -->
+	<!-- <entity name="Student" local-service="true" remote-service="true"> -->
+		<!-- PK fields -->
+		<column name="studentId" type="long" primary="true" />
+		<column name="firstName" type="String" />
+		<column name="lastName" type="String" />
+		<column name="studentAge" type="int" />
+		<column name="studentGender" type="int" />
+		<column name="studentAddress" type="String" />
+		<!-- Order -->
+		<order by="asc">
+			<order-column name="studentId" />
+		</order>
+		<!-- Finder methods -->
+		<finder name="byGender" return-type="Collection">
+			<finder-column name="studentGender"/>
+		</finder>
+	</entity>
+</service-builder>

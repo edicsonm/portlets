@@ -19,14 +19,6 @@
 	SearchContainer searchContainer = (SearchContainer)request.getAttribute("liferay-ui:search:searchContainer");
 	DisplayTerms displayTerms = searchContainer.getDisplayTerms();
 %>
-<liferay-ui:search-toggle buttonLabel="Student Search" displayTerms="<%= displayTerms %>" id="toggle_id_student_search">
-	<aui:input label="firstName" name="firstName"  value="carlos" />
-	<aui:input label="familyName" name="familyName" value="perez" />
-	<%-- <aui:input label="Last Name" name="lastName" value="<%=lastName %>" />
-	<aui:input label="studentAge" name="studentAge" value="<%= studentAge %>" />
-	<aui:select name="studentGender">
-	<aui:option label="Male" value="1"></aui:option>
-	<aui:option label="Female" value="0"></aui:option>
-	</aui:select>
-	<aui:input label="studentAddress" name="studentAddress" value="<%= studentAddress %>" /> --%>
+<liferay-ui:search-toggle buttonLabel="Buscar..." displayTerms="<%= displayTerms %>" id="toggle_id_businessType_search">
+	<aui:input label="businessName" id="businessName" name="businessName" value="<%=businessName %>"/>
 </liferay-ui:search-toggle>

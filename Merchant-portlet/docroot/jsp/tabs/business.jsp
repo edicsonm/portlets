@@ -47,7 +47,6 @@
 			</aui:input>
 		</div>
 		
-		
 		<div class="control-group">
 			<aui:input label="label.cityBusinessInformation" helpMessage="help.cityBusinessInformation" name="cityBusinessInformation" value="${merchantVO.cityBusinessInformation}" showRequiredLabel="false" type="text" required="true" >
 			</aui:input>

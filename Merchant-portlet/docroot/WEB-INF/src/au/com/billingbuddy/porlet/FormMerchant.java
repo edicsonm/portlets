@@ -50,15 +50,18 @@ public class FormMerchant extends MVCPortlet {
 		
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
 		HttpSession session = request.getSession();
+		
+		System.out.println("1 Action: " + request.getParameter("action"));
+		System.out.println("2 Action: " + renderRequest.getAttribute("action"));
+		System.out.println("3 Action: " + renderRequest.getParameter("action"));
+		
 //		String UserId = (String)PortalSessionThreadLocal.getHttpSession().getAttribute("UserId");
 		try {
 //			ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
 //			User user = themeDisplay.getRealUser();
 			
-			
 			ArrayList<MerchantVO> listMerchants = procesorFacade.listAllMerchants(new MerchantVO(String.valueOf(PortalUtil.getUserId(request))));
 			session.setAttribute("listMerchants", listMerchants);
-			
 			/**/
 			ArrayList<CountryVO> listCountries = procesorFacade.listCountries();
 			session.setAttribute("listCountries", listCountries);
@@ -82,6 +85,10 @@ public class FormMerchant extends MVCPortlet {
 		}
 		
 		super.doView(renderRequest, renderResponse);
+	}
+	
+	public void listFilter(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+		
 	}
 	
 	public void keepInformation(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
