@@ -29,6 +29,7 @@
 	
 	<div class="control-group">
 		<aui:select name="countryBusinessInformation" helpMessage="help.countryBusinessInformation"  label="label.countryBusinessInformation" id="countryBusinessInformation">
+			<aui:option value="NULL" label="label.All" selected="${countryVO.numeric==countryBusinessInformation}"/>
 			<c:forEach var="countryVO" items="${listCountries}">
 				<aui:option value="${countryVO.numeric}" label="${countryVO.name}" selected="${countryVO.numeric==merchantVO.countryNumericMerchant}"/>
 			</c:forEach>
@@ -37,6 +38,7 @@
 	
 	<div class="control-group">
 		<aui:select name="businessType" helpMessage="help.businessType"  label="label.businessType" id="businessType">
+			<aui:option value="NULL" label="label.All" selected="${businessTypeVO.id==businessType}"/>
 			<c:forEach var="businessTypeVO" items="${listBusinessTypes}">
 				<aui:option value="${businessTypeVO.id}" label="${businessTypeVO.description}" selected="${businessTypeVO.id==merchantVO.businessTypeId}"/>
 			</c:forEach>
@@ -45,17 +47,29 @@
 	
 	<div class="control-group">
 		<aui:select name="industry" helpMessage="help.industry"  label="label.industry" id="industry">
+			<aui:option value="NULL" label="label.All" selected="${industryVO.id==industry}"/>
 			<c:forEach var="industryVO" items="${listIndustries}">
 				<aui:option value="${industryVO.id}" label="${industryVO.description}" selected="${industryVO.id==merchantVO.industryId}"/>
 			</c:forEach>
 		</aui:select>
 	</div>
 	
+	
+	<div class="control-group">
+		<aui:select name="status">
+			<aui:option value="NULL" label="label.All"></aui:option>
+			<aui:option value="0" label="label.active"></aui:option>
+			<aui:option value="1" label="label.inactive"></aui:option>
+			<%-- <aui:option value="NULL" label="label.All" selected="${industryVO.id=="NULL"}"></aui:option>
+			<aui:option value="0" label="label.active"  selected="${industryVO.id=="0"}"></aui:option>
+			<aui:option value="1" label="label.inactive" selected="${industryVO.id=="1"}"></aui:option> --%>
+		</aui:select>
+	</div>
 	<%-- <aui:select name="studentGender">
 		<aui:option label="Male" value="1"></aui:option>
 		<aui:option label="Female" value="0"></aui:option>
 	</aui:select> --%>
 	
-	<aui:input label="status" id="status" name="status" value="<%=status %>"/>
+	<%-- <aui:input label="status" id="status" name="status" value="<%=status %>"/> --%>
 	
 </liferay-ui:search-toggle>

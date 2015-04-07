@@ -21,9 +21,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import au.com.billigbuddy.utils.BBUtils;
+import au.com.billingbuddy.business.objects.ProcesorFacade;
 import au.com.billingbuddy.business.objects.ReportFacade;
 import au.com.billingbuddy.common.objects.Utilities;
+import au.com.billingbuddy.exceptions.objects.ProcesorFacadeException;
 import au.com.billingbuddy.exceptions.objects.ReportFacadeException;
+import au.com.billingbuddy.vo.objects.CountryVO;
+import au.com.billingbuddy.vo.objects.CurrencyVO;
+import au.com.billingbuddy.vo.objects.MerchantVO;
 import au.com.billingbuddy.vo.objects.TransactionVO;
 
 import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
@@ -38,6 +43,7 @@ import com.liferay.util.bridges.mvc.MVCPortlet;
 public class FormReportTransactionsByDay extends MVCPortlet {
 	
 	private ReportFacade reportFacade = ReportFacade.getInstance();
+	private ProcesorFacade procesorFacade = ProcesorFacade.getInstance();
 	
 	@Override
 	public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
@@ -54,10 +60,19 @@ public class FormReportTransactionsByDay extends MVCPortlet {
 			ArrayList<TransactionVO> listTransactionsByDay = reportFacade.searchTransactionsByDay(transactionVO);
 			session.setAttribute("listTransactionsByDay", listTransactionsByDay);
 			
+			ArrayList<CountryVO> listCountries = procesorFacade.listCountries();
+			session.setAttribute("listCountries", listCountries);
+			
+			ArrayList<CurrencyVO> listCurrencies = procesorFacade.listCurrencies();
+			session.setAttribute("listCurrencies", listCurrencies);
+			
+			ArrayList<MerchantVO> listMerchants = procesorFacade.listAllMerchants(new MerchantVO(String.valueOf(PortalUtil.getUserId(request))));
+			session.setAttribute("listMerchants", listMerchants);
+			
 			transactionVO.setInitialDateReport(BBUtils.getCurrentDate(6,-1*(150)));
 			transactionVO.setFinalDateReport(BBUtils.getCurrentDate(6,0));
 			session.setAttribute("transactionVOTransactions", transactionVO);
-		} catch (ReportFacadeException e) {
+		} catch (ReportFacadeException | ProcesorFacadeException e) {
 			e.printStackTrace();
 			PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;

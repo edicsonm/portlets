@@ -1,3 +1,4 @@
+<%@page import="au.com.billigbuddy.utils.BBUtils"%>
 <%
 /**
  * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
@@ -58,7 +59,12 @@
 %>
 
 <portlet:actionURL var="newMerchant" name="newMerchant"/>
-<portlet:actionURL var="listFilter" name="listFilter"/>
+
+<portlet:actionURL var="listFilter" name="listFilter">
+	<%-- <portlet:param name="action" value="listAllMerchantsFilter" />
+	<portlet:param name="nameMerchant" value="<%= nameMerchant %>" />
+	<portlet:param name="status" value="<%= status %>" /> --%>
+</portlet:actionURL>
 
 <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLMerchant">
 	<portlet:param name="action" value="listAllMerchantsFilter" />
@@ -72,40 +78,103 @@
 
 <%-- <aui:form action="<%=merchantSearchURL %>" method="post"> --%>
 
-<aui:form action="<%=listFilter %>" method="post">
+<aui:form action="<%=merchantSearchURL %>" method="post">
 
 		<div class="table">
-			<liferay-ui:search-container displayTerms="<%= new DisplayTerms(renderRequest) %>" emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURLMerchant%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
+			<liferay-ui:search-container displayTerms="<%= new DisplayTerms(renderRequest) %>" emptyResultsMessage="label.empty" delta="5" iteratorURL="<%=renderURLMerchant%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
 				
-				<liferay-ui:search-form page="/jsp/merchant_search.jsp" servletContext="<%= application %>"/>
+				<liferay-ui:search-form  page="/jsp/merchant_search.jsp" servletContext="<%= application %>"/>
 				
 				<liferay-ui:search-container-results>
 					<%
 						DisplayTerms displayTerms =searchContainer.getDisplayTerms();
-						System.out.println("displayTerms.isAndOperator()? ... " + displayTerms.isAndOperator());
+						MerchantVO merchantVOAUX = new MerchantVO();	
 						System.out.println("displayTerms.isAdvancedSearch()? ... " + displayTerms.isAdvancedSearch());
 						/* Methods.searchBusiness(listBusinessTypes, orderByCol, orderByType); */
-						if (displayTerms.isAdvancedSearch()) {
-							System.out.println("nameMerchant ... " + nameMerchant);
-							System.out.println("status ... " + status);
+						if (displayTerms.isAdvancedSearch()) {//Entra aca si selecciona la busqueda avanzada
+							System.out.println("Entra por el if ... ");
+							if(displayTerms.isAndOperator()){//Selecciono ALL
+								System.out.println("Selecciono *ALL");
+								
+								merchantVOAUX.setName(nameMerchant);
+								merchantVOAUX.setCountryNumericMerchant(BBUtils.nullStringToNULL(countryBusinessInformation));
+								merchantVOAUX.setBusinessTypeId(BBUtils.nullStringToNULL(businessType));
+								merchantVOAUX.setIndustryId(BBUtils.nullStringToNULL(industry));
+								merchantVOAUX.setStatus(BBUtils.nullStringToNULL(status));
+								merchantVOAUX.setMatch("0");
+								merchantVOAUX.setUserId(String.valueOf(PortalUtil.getUserId(request)));
+								/* System.out.println("merchantVOAUX.getName() " + merchantVOAUX.getName());
+								System.out.println("merchantVOAUX.getCountryNumericMerchant() " + merchantVOAUX.getCountryNumericMerchant());
+								System.out.println("merchantVOAUX.getBusinessTypeId() " + merchantVOAUX.getBusinessTypeId());
+								System.out.println("merchantVOAUX.getIndustryId() " + merchantVOAUX.getIndustryId());
+								System.out.println("merchantVOAUX.getStatus() " + merchantVOAUX.getStatus());
+								System.out.println("merchantVOAUX.getMatch() " + merchantVOAUX.getMatch());
+								System.out.println("merchantVOAUX.getUserId() " + merchantVOAUX.getUserId()); */
+								
+							}else{
+								
+								System.out.println("Selecciono *ANY");
+								merchantVOAUX.setName(nameMerchant);
+								merchantVOAUX.setCountryNumericMerchant(BBUtils.nullStringToNULL(countryBusinessInformation));
+								merchantVOAUX.setBusinessTypeId(BBUtils.nullStringToNULL(businessType));
+								merchantVOAUX.setIndustryId(BBUtils.nullStringToNULL(industry));
+								merchantVOAUX.setStatus(BBUtils.nullStringToNULL(status));
+								merchantVOAUX.setMatch("1");
+								merchantVOAUX.setUserId(String.valueOf(PortalUtil.getUserId(request)));
+								
+								/* System.out.println("merchantVOAUX.getName() " + merchantVOAUX.getName());
+								System.out.println("merchantVOAUX.getCountryNumericMerchant() " + merchantVOAUX.getCountryNumericMerchant());
+								System.out.println("merchantVOAUX.getBusinessTypeId() " + merchantVOAUX.getBusinessTypeId());
+								System.out.println("merchantVOAUX.getIndustryId() " + merchantVOAUX.getIndustryId());
+								System.out.println("merchantVOAUX.getStatus() " + merchantVOAUX.getStatus());
+								System.out.println("merchantVOAUX.getMatch() " + merchantVOAUX.getMatch());
+								System.out.println("merchantVOAUX.getUserId() " + merchantVOAUX.getUserId()); */
+								
+							}
+							/* System.out.println("nameMerchant ... " + nameMerchant);
+							System.out.println("status ... " + status); */
 						}else{
-							String searchkeywords = displayTerms.getKeywords();
-							System.out.println("searchkeywords: " + searchkeywords);
+							System.out.println("Entra por el else ... ");
+							/* pstmt.setString(1,merchantVO.getName());
+							pstmt.setString(2,merchantVO.getCountryNumericMerchant());
+							pstmt.setString(3,merchantVO.getBusinessTypeId());
+							pstmt.setString(4,merchantVO.getIndustryId());
+							pstmt.setString(5,merchantVO.getStatus());
+							pstmt.setString(6,merchantVO.getMatch());
+							pstmt.setString(7,merchantVO.getUserId()); */
+							
+							merchantVOAUX.setName(displayTerms.getKeywords());
+							merchantVOAUX.setMatch("1");
+							merchantVOAUX.setUserId(String.valueOf(PortalUtil.getUserId(request)));
+							
+							/* listMerchants = Methods.listAllMerchantsFilter(merchantVOAUX);
+							results = new ArrayList<MerchantVO>(ListUtil.subList(listMerchants, searchContainer.getStart(), searchContainer.getEnd()));
+							searchContainer.setTotal(listMerchants.size());
+							searchContainer.setResults(results); */
+							
+							/* System.out.println("listMerchants.size(): " + listMerchants.size()); */
+							
+							/* String searchkeywords = displayTerms.getKeywords(); */
+							/* System.out.println("searchkeywords: " + searchkeywords);
 							String numbesearchkeywords = Validator.isNumber(searchkeywords) ? searchkeywords : String.valueOf(0);
 							System.out.println("numbesearchkeywords: " + numbesearchkeywords);
 							System.out.println("nameMerchant ... " + nameMerchant);
-							System.out.println("status ... " + status);
+							System.out.println("status ... " + status); */
 						}
-						System.out.println("\n\n\n\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ... ");	
+						System.out.println("displayTerms.isAndOperator()? ... " + displayTerms.isAndOperator());
+						System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ... ");	
 					
-					
-					
-						listMerchants = Methods.orderMerchant(listMerchants,orderByCol,orderByType);
+						listMerchants = Methods.listAllMerchantsFilter(merchantVOAUX);
+						results = new ArrayList<MerchantVO>(ListUtil.subList(listMerchants, searchContainer.getStart(), searchContainer.getEnd()));
+						searchContainer.setTotal(listMerchants.size());
+						searchContainer.setResults(results);
+						session.setAttribute("results", results);
+						/* listMerchants = Methods.orderMerchant(listMerchants,orderByCol,orderByType);
 						results = new ArrayList<MerchantVO>(ListUtil.subList(listMerchants, searchContainer.getStart(), searchContainer.getEnd()));
 						total = listMerchants.size();
 						pageContext.setAttribute("results", results);
 						pageContext.setAttribute("total", total);
-						session.setAttribute("results", results);
+						session.setAttribute("results", results); */
 				    %>
 				</liferay-ui:search-container-results>
 				<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.MerchantVO" rowVar="posi" indexVar="indice" keyProperty="id" modelVar="merchantVO">

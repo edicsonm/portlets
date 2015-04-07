@@ -162,9 +162,107 @@
 					</div>
 				</div>
 			</div>
-			<liferay-ui:search-container emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURL%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
+			<liferay-ui:search-container displayTerms="<%= new DisplayTerms(renderRequest) %>" emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURL%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
+				
+				<liferay-ui:search-form  page="/jsp/transaction_search.jsp" servletContext="<%= application %>"/>
+				
 				<liferay-ui:search-container-results>
 					<%
+						
+						DisplayTerms displayTerms =searchContainer.getDisplayTerms();
+						TransactionVO transactionVOAUX = new TransactionVO();	
+						System.out.println("displayTerms.isAdvancedSearch()? ... " + displayTerms.isAdvancedSearch());	
+						if (displayTerms.isAdvancedSearch()) {//Entra aca si selecciona la busqueda avanzada
+							System.out.println("Entra por el if ... ");
+							if(displayTerms.isAndOperator()){//Selecciono ALL
+								System.out.println("Selecciono *ALL");
+								
+								/* currency
+								merchant
+								countryCard */
+								transactionVOAUX.setCardVO(new CardVO());
+								transactionVOAUX.getCardVO().setNumber(cardNumber);
+								transactionVOAUX.setMerchantId(merchant);
+								transactionVOAUX.getCardVO().setBrand(brand);
+								
+								transactionVOAUX.getCardVO().setCountry(countryCard);
+								
+								transactionVOAUX.setChargeVO(new ChargeVO());
+								transactionVOAUX.getChargeVO().setCurrency(currency);
+								transactionVOAUX.setMatch("0");
+								
+								transactionVOAUX.getInitialDateReport();
+								transactionVOAUX.getFinalDateReport();
+								transactionVOAUX.getUserId(String.valueOf(PortalUtil.getUserId(request)));
+								
+								transactionVOAUX.setCountryNumericMerchant(BBUtils.nullStringToNULL(countryBusinessInformation));
+								merchantVOAUX.setBusinessTypeId(BBUtils.nullStringToNULL(businessType));
+								merchantVOAUX.setIndustryId(BBUtils.nullStringToNULL(industry));
+								merchantVOAUX.setStatus(BBUtils.nullStringToNULL(status));
+								
+								/* System.out.println("merchantVOAUX.getName() " + merchantVOAUX.getName());
+								System.out.println("merchantVOAUX.getCountryNumericMerchant() " + merchantVOAUX.getCountryNumericMerchant());
+								System.out.println("merchantVOAUX.getBusinessTypeId() " + merchantVOAUX.getBusinessTypeId());
+								System.out.println("merchantVOAUX.getIndustryId() " + merchantVOAUX.getIndustryId());
+								System.out.println("merchantVOAUX.getStatus() " + merchantVOAUX.getStatus());
+								System.out.println("merchantVOAUX.getMatch() " + merchantVOAUX.getMatch());
+								System.out.println("merchantVOAUX.getUserId() " + merchantVOAUX.getUserId()); */
+								
+							}else{
+								
+								System.out.println("Selecciono *ANY");
+								/* merchantVOAUX.setName(nameMerchant);
+								merchantVOAUX.setCountryNumericMerchant(BBUtils.nullStringToNULL(countryBusinessInformation));
+								merchantVOAUX.setBusinessTypeId(BBUtils.nullStringToNULL(businessType));
+								merchantVOAUX.setIndustryId(BBUtils.nullStringToNULL(industry));
+								merchantVOAUX.setStatus(BBUtils.nullStringToNULL(status));
+								merchantVOAUX.setMatch("1");
+								merchantVOAUX.setUserId(String.valueOf(PortalUtil.getUserId(request))); */
+								
+								/* System.out.println("merchantVOAUX.getName() " + merchantVOAUX.getName());
+								System.out.println("merchantVOAUX.getCountryNumericMerchant() " + merchantVOAUX.getCountryNumericMerchant());
+								System.out.println("merchantVOAUX.getBusinessTypeId() " + merchantVOAUX.getBusinessTypeId());
+								System.out.println("merchantVOAUX.getIndustryId() " + merchantVOAUX.getIndustryId());
+								System.out.println("merchantVOAUX.getStatus() " + merchantVOAUX.getStatus());
+								System.out.println("merchantVOAUX.getMatch() " + merchantVOAUX.getMatch());
+								System.out.println("merchantVOAUX.getUserId() " + merchantVOAUX.getUserId()); */
+								
+							}
+							/* System.out.println("nameMerchant ... " + nameMerchant);
+							System.out.println("status ... " + status); */
+						}else{
+							System.out.println("Entra por el else ... ");
+							/* pstmt.setString(1,merchantVO.getName());
+							pstmt.setString(2,merchantVO.getCountryNumericMerchant());
+							pstmt.setString(3,merchantVO.getBusinessTypeId());
+							pstmt.setString(4,merchantVO.getIndustryId());
+							pstmt.setString(5,merchantVO.getStatus());
+							pstmt.setString(6,merchantVO.getMatch());
+							pstmt.setString(7,merchantVO.getUserId()); */
+							
+							merchantVOAUX.setName(displayTerms.getKeywords());
+							merchantVOAUX.setMatch("1");
+							merchantVOAUX.setUserId(String.valueOf(PortalUtil.getUserId(request)));
+							
+							/* listMerchants = Methods.listAllMerchantsFilter(merchantVOAUX);
+							results = new ArrayList<MerchantVO>(ListUtil.subList(listMerchants, searchContainer.getStart(), searchContainer.getEnd()));
+							searchContainer.setTotal(listMerchants.size());
+							searchContainer.setResults(results); */
+							
+							/* System.out.println("listMerchants.size(): " + listMerchants.size()); */
+							
+							/* String searchkeywords = displayTerms.getKeywords(); */
+							/* System.out.println("searchkeywords: " + searchkeywords);
+							String numbesearchkeywords = Validator.isNumber(searchkeywords) ? searchkeywords : String.valueOf(0);
+							System.out.println("numbesearchkeywords: " + numbesearchkeywords);
+							System.out.println("nameMerchant ... " + nameMerchant);
+							System.out.println("status ... " + status); */
+						}
+						System.out.println("displayTerms.isAndOperator()? ... " + displayTerms.isAndOperator());
+						System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ... ");	
+					
+						
+						
 						listTransactionsByDay = Methods.orderReportTransactionsByDay(listTransactionsByDay,orderByCol,orderByType);
 						results = new ArrayList(ListUtil.subList(listTransactionsByDay, searchContainer.getStart(), searchContainer.getEnd()));
 						total = listTransactionsByDay.size();

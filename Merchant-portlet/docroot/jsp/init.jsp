@@ -54,6 +54,9 @@
 
 <%
 	String currentURL = PortalUtil.getCurrentURL(request);
-	String nameMerchant = ParamUtil.getString(request, "nameMerchant");
+	String nameMerchant = ParamUtil.getString(request, "name");
+	String countryBusinessInformation = ParamUtil.getString(request, "countryBusinessInformation");
+	String businessType = ParamUtil.getString(request, "businessType");
+	String industry = ParamUtil.getString(request, "industry");
 	String status = ParamUtil.getString(request, "status");
 %>

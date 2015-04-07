@@ -26,7 +26,12 @@
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
 
 <%@ page import="com.liferay.portal.service.RoleServiceUtil" %>
+<%@page import="com.liferay.portal.kernel.dao.search.DisplayTerms" %>
+<%@page import="com.liferay.portal.util.PortalUtil" %>
+<%@page import="com.liferay.portal.kernel.util.Validator" %>
+<%@ page import="com.liferay.portal.kernel.language.LanguageUtil" %>
 
+<%@ page import="java.util.ArrayList" %>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="java.util.Date"%>
 <%@ page import="java.util.Calendar"%>
@@ -40,5 +45,28 @@
 <%@ page import="au.com.billingbuddy.porlet.utilities.Methods" %>
 <%@ page import="au.com.billingbuddy.common.objects.Utilities" %>
 <%@ page import="au.com.billingbuddy.common.objects.Currency" %>
-<%@ page import="java.util.ArrayList" %>
+
 <%@ page import="au.com.billingbuddy.vo.objects.TransactionVO" %>
+<%@ page import="au.com.billingbuddy.vo.objects.MerchantVO" %>
+<%@ page import="au.com.billingbuddy.vo.objects.CountryVO" %>
+<%@ page import="au.com.billingbuddy.vo.objects.CurrencyVO" %>
+<%@ page import="au.com.billingbuddy.vo.objects.CardVO" %>
+<%@ page import="au.com.billingbuddy.vo.objects.ChargeVO" %>
+
+
+
+<portlet:defineObjects />
+<liferay-theme:defineObjects />
+
+<%
+	String currentURL = PortalUtil.getCurrentURL(request);
+	String cardNumber = ParamUtil.getString(request, "cardNumber");
+	String merchant = ParamUtil.getString(request, "merchant");
+	String currency = ParamUtil.getString(request, "currency");
+	String countryCard = ParamUtil.getString(request, "countryCard");
+	String brand = ParamUtil.getString(request, "brand");
+	/* String countryBusinessInformation = ParamUtil.getString(request, "countryBusinessInformation");
+	String businessType = ParamUtil.getString(request, "businessType");
+	String industry = ParamUtil.getString(request, "industry");
+	String status = ParamUtil.getString(request, "status"); */
+%>
