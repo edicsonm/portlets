@@ -23,6 +23,10 @@
 	ArrayList<CountryVO> listCountries = (ArrayList<CountryVO>)session.getAttribute("listCountries");
 	ArrayList<CurrencyVO> listCurrencies = (ArrayList<CurrencyVO>)session.getAttribute("listCurrencies");
 	
+	System.out.println("keywords ... " + renderRequest.getParameter("keywords"));
+	String cardNumber = (String)renderRequest.getParameter("cardNumber");
+	System.out.println("keywords ... " + renderRequest.getParameter("cardNumber"));
+	
 %>
 <liferay-ui:search-toggle buttonLabel="Buscar..." displayTerms="<%= displayTerms %>" id="toggle_id_transactions_search">
 	

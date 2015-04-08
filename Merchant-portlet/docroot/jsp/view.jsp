@@ -76,8 +76,6 @@
 	<portlet:param name="mvcPath" value="/jsp/view.jsp" />
 </liferay-portlet:renderURL>
 
-<%-- <aui:form action="<%=merchantSearchURL %>" method="post"> --%>
-
 <aui:form action="<%=merchantSearchURL %>" method="post">
 
 		<div class="table">
@@ -134,7 +132,7 @@
 							/* System.out.println("nameMerchant ... " + nameMerchant);
 							System.out.println("status ... " + status); */
 						}else{
-							System.out.println("Entra por el else ... ");
+							System.out.println("Entra por el else ... " + displayTerms.getKeywords());
 							/* pstmt.setString(1,merchantVO.getName());
 							pstmt.setString(2,merchantVO.getCountryNumericMerchant());
 							pstmt.setString(3,merchantVO.getBusinessTypeId());

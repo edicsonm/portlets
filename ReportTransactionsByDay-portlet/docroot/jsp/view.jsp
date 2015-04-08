@@ -128,7 +128,17 @@
    
 </aui:script>
 
-<aui:form id="frm" action="<%= submitForm %>" method="post">
+<liferay-portlet:renderURL varImpl="transactionsSearchURL">
+	<portlet:param name="mvcPath" value="/jsp/view.jsp" />
+</liferay-portlet:renderURL>
+
+<portlet:actionURL name="pruebas" var="pruebas">
+</portlet:actionURL>
+
+<aui:form action="<%=pruebas %>" method="post">
+
+<%-- <aui:form action="<%=transactionsSearchURL %>" method="post"> --%>
+<%-- <aui:form id="frm" action="<%= submitForm %>" method="post"> --%>
  	<fieldset class="fieldset">
 		<legend class="fieldset-legend">
 			<span class="legend"><fmt:message key="label.reportDescription"/> </span>
@@ -156,20 +166,16 @@
 					</div>
 					<div id="columna3">
 						<div class="control-group">
-							<%-- <aui:button type="button" name="listRefunds" onClick="createGraphicAmount();" value="label.search" /> --%>
 							<aui:button type="submit" name="listTransactions" value="label.search" />
 						</div>
 					</div>
 				</div>
 			</div>
 			<liferay-ui:search-container displayTerms="<%= new DisplayTerms(renderRequest) %>" emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURL%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
-				
 				<liferay-ui:search-form  page="/jsp/transaction_search.jsp" servletContext="<%= application %>"/>
-				
 				<liferay-ui:search-container-results>
 					<%
-						
-						DisplayTerms displayTerms =searchContainer.getDisplayTerms();
+						/* DisplayTerms displayTerms =searchContainer.getDisplayTerms();
 						TransactionVO transactionVOAUX = new TransactionVO();	
 						System.out.println("displayTerms.isAdvancedSearch()? ... " + displayTerms.isAdvancedSearch());	
 						if (displayTerms.isAdvancedSearch()) {//Entra aca si selecciona la busqueda avanzada
@@ -177,92 +183,103 @@
 							if(displayTerms.isAndOperator()){//Selecciono ALL
 								System.out.println("Selecciono *ALL");
 								
-								/* currency
-								merchant
-								countryCard */
 								transactionVOAUX.setCardVO(new CardVO());
 								transactionVOAUX.getCardVO().setNumber(cardNumber);
-								transactionVOAUX.setMerchantId(merchant);
+								transactionVOAUX.setMerchantId(BBUtils.nullStringToNULL(merchant));
 								transactionVOAUX.getCardVO().setBrand(brand);
 								
-								transactionVOAUX.getCardVO().setCountry(countryCard);
+								transactionVOAUX.getCardVO().setCountry(BBUtils.nullStringToNULL(countryCard));
 								
 								transactionVOAUX.setChargeVO(new ChargeVO());
-								transactionVOAUX.getChargeVO().setCurrency(currency);
+								transactionVOAUX.getChargeVO().setCurrency(BBUtils.nullStringToNULL(currency));
 								transactionVOAUX.setMatch("0");
 								
-								transactionVOAUX.getInitialDateReport();
-								transactionVOAUX.getFinalDateReport();
-								transactionVOAUX.getUserId(String.valueOf(PortalUtil.getUserId(request)));
-								
-								transactionVOAUX.setCountryNumericMerchant(BBUtils.nullStringToNULL(countryBusinessInformation));
-								merchantVOAUX.setBusinessTypeId(BBUtils.nullStringToNULL(businessType));
-								merchantVOAUX.setIndustryId(BBUtils.nullStringToNULL(industry));
-								merchantVOAUX.setStatus(BBUtils.nullStringToNULL(status));
-								
-								/* System.out.println("merchantVOAUX.getName() " + merchantVOAUX.getName());
-								System.out.println("merchantVOAUX.getCountryNumericMerchant() " + merchantVOAUX.getCountryNumericMerchant());
-								System.out.println("merchantVOAUX.getBusinessTypeId() " + merchantVOAUX.getBusinessTypeId());
-								System.out.println("merchantVOAUX.getIndustryId() " + merchantVOAUX.getIndustryId());
-								System.out.println("merchantVOAUX.getStatus() " + merchantVOAUX.getStatus());
-								System.out.println("merchantVOAUX.getMatch() " + merchantVOAUX.getMatch());
-								System.out.println("merchantVOAUX.getUserId() " + merchantVOAUX.getUserId()); */
+								if(fromDateTransactions.isEmpty() || toDateTransactions.isEmpty()){
+									transactionVOAUX.setInitialDateReport(BBUtils.getCurrentDate(2,-1*(150)));
+									transactionVOAUX.setFinalDateReport(BBUtils.getCurrentDate(2,0));
+								}else{
+									Date date;
+									try {
+										date = Utilities.getDateFormat(6).parse(fromDateTransactions);
+										transactionVOAUX.setInitialDateReport(Utilities.getDateFormat(2).format(date));
+										date = Utilities.getDateFormat(6).parse(toDateTransactions);
+										transactionVOAUX.setFinalDateReport(Utilities.getDateFormat(2).format(date));
+									} catch (NumberFormatException e) {
+										e.printStackTrace();
+									}
+								}
+								transactionVOAUX.setUserId(String.valueOf(PortalUtil.getUserId(request)));
 								
 							}else{
 								
 								System.out.println("Selecciono *ANY");
-								/* merchantVOAUX.setName(nameMerchant);
-								merchantVOAUX.setCountryNumericMerchant(BBUtils.nullStringToNULL(countryBusinessInformation));
-								merchantVOAUX.setBusinessTypeId(BBUtils.nullStringToNULL(businessType));
-								merchantVOAUX.setIndustryId(BBUtils.nullStringToNULL(industry));
-								merchantVOAUX.setStatus(BBUtils.nullStringToNULL(status));
-								merchantVOAUX.setMatch("1");
-								merchantVOAUX.setUserId(String.valueOf(PortalUtil.getUserId(request))); */
+								transactionVOAUX.setCardVO(new CardVO());
+								transactionVOAUX.getCardVO().setNumber(cardNumber);
+								transactionVOAUX.setMerchantId(BBUtils.nullStringToNULL(merchant));
+								transactionVOAUX.getCardVO().setBrand(brand);
 								
-								/* System.out.println("merchantVOAUX.getName() " + merchantVOAUX.getName());
-								System.out.println("merchantVOAUX.getCountryNumericMerchant() " + merchantVOAUX.getCountryNumericMerchant());
-								System.out.println("merchantVOAUX.getBusinessTypeId() " + merchantVOAUX.getBusinessTypeId());
-								System.out.println("merchantVOAUX.getIndustryId() " + merchantVOAUX.getIndustryId());
-								System.out.println("merchantVOAUX.getStatus() " + merchantVOAUX.getStatus());
-								System.out.println("merchantVOAUX.getMatch() " + merchantVOAUX.getMatch());
-								System.out.println("merchantVOAUX.getUserId() " + merchantVOAUX.getUserId()); */
+								transactionVOAUX.getCardVO().setCountry(BBUtils.nullStringToNULL(countryCard));
+								
+								transactionVOAUX.setChargeVO(new ChargeVO());
+								transactionVOAUX.getChargeVO().setCurrency(BBUtils.nullStringToNULL(currency));
+								transactionVOAUX.setMatch("1");
+								
+								if(fromDateTransactions.isEmpty() || toDateTransactions.isEmpty()){
+									transactionVOAUX.setInitialDateReport(BBUtils.getCurrentDate(2,-1*(150)));
+									transactionVOAUX.setFinalDateReport(BBUtils.getCurrentDate(2,0));
+								}else{
+									Date date;
+									try {
+										date = Utilities.getDateFormat(6).parse(fromDateTransactions);
+										transactionVOAUX.setInitialDateReport(Utilities.getDateFormat(2).format(date));
+										date = Utilities.getDateFormat(6).parse(toDateTransactions);
+										transactionVOAUX.setFinalDateReport(Utilities.getDateFormat(2).format(date));
+									} catch (NumberFormatException e) {
+										e.printStackTrace();
+									}
+								}
+								transactionVOAUX.setUserId(String.valueOf(PortalUtil.getUserId(request)));
 								
 							}
-							/* System.out.println("nameMerchant ... " + nameMerchant);
-							System.out.println("status ... " + status); */
-						}else{
-							System.out.println("Entra por el else ... ");
-							/* pstmt.setString(1,merchantVO.getName());
-							pstmt.setString(2,merchantVO.getCountryNumericMerchant());
-							pstmt.setString(3,merchantVO.getBusinessTypeId());
-							pstmt.setString(4,merchantVO.getIndustryId());
-							pstmt.setString(5,merchantVO.getStatus());
-							pstmt.setString(6,merchantVO.getMatch());
-							pstmt.setString(7,merchantVO.getUserId()); */
+						
+						} else {
 							
-							merchantVOAUX.setName(displayTerms.getKeywords());
-							merchantVOAUX.setMatch("1");
-							merchantVOAUX.setUserId(String.valueOf(PortalUtil.getUserId(request)));
+							System.out.println("Entra por el else ... " + displayTerms.getKeywords());
 							
-							/* listMerchants = Methods.listAllMerchantsFilter(merchantVOAUX);
-							results = new ArrayList<MerchantVO>(ListUtil.subList(listMerchants, searchContainer.getStart(), searchContainer.getEnd()));
-							searchContainer.setTotal(listMerchants.size());
-							searchContainer.setResults(results); */
+							transactionVOAUX.setCardVO(new CardVO());
+							transactionVOAUX.getCardVO().setNumber(displayTerms.getKeywords());
 							
-							/* System.out.println("listMerchants.size(): " + listMerchants.size()); */
+							transactionVOAUX.setChargeVO(new ChargeVO());
+							transactionVOAUX.getChargeVO().setCurrency(null);
 							
-							/* String searchkeywords = displayTerms.getKeywords(); */
-							/* System.out.println("searchkeywords: " + searchkeywords);
-							String numbesearchkeywords = Validator.isNumber(searchkeywords) ? searchkeywords : String.valueOf(0);
-							System.out.println("numbesearchkeywords: " + numbesearchkeywords);
-							System.out.println("nameMerchant ... " + nameMerchant);
-							System.out.println("status ... " + status); */
+							transactionVOAUX.setMatch("1");
+							if(fromDateTransactions.isEmpty() || toDateTransactions.isEmpty()){
+								transactionVOAUX.setInitialDateReport(BBUtils.getCurrentDate(2,-1*(150)));
+								transactionVOAUX.setFinalDateReport(BBUtils.getCurrentDate(2,0));
+							}else{
+								Date date;
+								try {
+									date = Utilities.getDateFormat(6).parse(fromDateTransactions);
+									transactionVOAUX.setInitialDateReport(Utilities.getDateFormat(2).format(date));
+									date = Utilities.getDateFormat(6).parse(toDateTransactions);
+									transactionVOAUX.setFinalDateReport(Utilities.getDateFormat(2).format(date));
+								} catch (NumberFormatException e) {
+									e.printStackTrace();
+								}
+							}
+							System.out.println("fromDateTransactions ... " + fromDateTransactions);
+							System.out.println("toDateTransactions ... " + toDateTransactions);
+							transactionVOAUX.setUserId(String.valueOf(PortalUtil.getUserId(request)));
 						}
 						System.out.println("displayTerms.isAndOperator()? ... " + displayTerms.isAndOperator());
 						System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ... ");	
 					
-						
-						
+						listTransactionsByDay = Methods.searchTransactionsByDayFilter(transactionVOAUX);
+						results = new ArrayList<TransactionVO>(ListUtil.subList(listTransactionsByDay, searchContainer.getStart(), searchContainer.getEnd()));
+						searchContainer.setTotal(listTransactionsByDay.size());
+						searchContainer.setResults(results);
+						session.setAttribute("results", results);
+						/*######################################*/
 						listTransactionsByDay = Methods.orderReportTransactionsByDay(listTransactionsByDay,orderByCol,orderByType);
 						results = new ArrayList(ListUtil.subList(listTransactionsByDay, searchContainer.getStart(), searchContainer.getEnd()));
 						total = listTransactionsByDay.size();

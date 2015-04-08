@@ -30,6 +30,7 @@
 <%@page import="com.liferay.portal.util.PortalUtil" %>
 <%@page import="com.liferay.portal.kernel.util.Validator" %>
 <%@ page import="com.liferay.portal.kernel.language.LanguageUtil" %>
+<%@ page import="java.text.ParseException" %>
 
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.text.SimpleDateFormat"%>
@@ -59,12 +60,15 @@
 <liferay-theme:defineObjects />
 
 <%
-	String currentURL = PortalUtil.getCurrentURL(request);
-	String cardNumber = ParamUtil.getString(request, "cardNumber");
+	/* String currentURL = PortalUtil.getCurrentURL(request);
 	String merchant = ParamUtil.getString(request, "merchant");
 	String currency = ParamUtil.getString(request, "currency");
 	String countryCard = ParamUtil.getString(request, "countryCard");
 	String brand = ParamUtil.getString(request, "brand");
+	
+	String fromDateTransactions = ParamUtil.getString(request, "fromDateTransactions");
+	String toDateTransactions = ParamUtil.getString(request, "toDateTransactions"); */
+	
 	/* String countryBusinessInformation = ParamUtil.getString(request, "countryBusinessInformation");
 	String businessType = ParamUtil.getString(request, "businessType");
 	String industry = ParamUtil.getString(request, "industry");

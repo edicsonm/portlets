@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.Iterator;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -26,6 +28,8 @@ import au.com.billingbuddy.business.objects.ReportFacade;
 import au.com.billingbuddy.common.objects.Utilities;
 import au.com.billingbuddy.exceptions.objects.ProcesorFacadeException;
 import au.com.billingbuddy.exceptions.objects.ReportFacadeException;
+import au.com.billingbuddy.vo.objects.CardVO;
+import au.com.billingbuddy.vo.objects.ChargeVO;
 import au.com.billingbuddy.vo.objects.CountryVO;
 import au.com.billingbuddy.vo.objects.CurrencyVO;
 import au.com.billingbuddy.vo.objects.MerchantVO;
@@ -85,6 +89,130 @@ public class FormReportTransactionsByDay extends MVCPortlet {
 		
 //		include("/hola.jsp", renderRequest, renderResponse, PortletRequest.RESOURCE_PHASE);
 		super.doView(renderRequest, renderResponse);
+	}
+	
+	public void pruebas(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException{
+		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
+		HttpSession session = request.getSession();
+		
+		Enumeration<String> enume = actionRequest.getParameterNames();
+		while (enume.hasMoreElements()){
+			String valor = enume.nextElement();
+			System.out.println("Parametro: " + valor + "-->"+ actionRequest.getParameter(valor));
+		}
+		
+		TransactionVO transactionVO = new TransactionVO();	
+		System.out.println("displayTerms.isAdvancedSearch()? ... " + actionRequest.getParameter("advancedSearch"));	
+		
+		if (actionRequest.getParameter("advancedSearch").equalsIgnoreCase("true")) {//Entra aca si selecciona la busqueda avanzada
+			System.out.println("Entra por el if ... ");
+			
+			if(actionRequest.getParameter("andOperator").equalsIgnoreCase("1")){//Selecciono ALL
+				System.out.println("Selecciono *ALL");
+				
+				/* currency
+				merchant
+				countryCard */
+				transactionVO.setCardVO(new CardVO());
+				transactionVO.getCardVO().setNumber(actionRequest.getParameter("cardNumber"));
+				transactionVO.setMerchantId(BBUtils.nullStringToNULL(actionRequest.getParameter("merchant")));
+				transactionVO.getCardVO().setBrand(actionRequest.getParameter("brand"));
+				transactionVO.getCardVO().setCountry(BBUtils.nullStringToNULL(actionRequest.getParameter("countryCard")));
+				transactionVO.setChargeVO(new ChargeVO());
+				transactionVO.getChargeVO().setCurrency(BBUtils.nullStringToNULL(actionRequest.getParameter("currency")));
+				transactionVO.setMatch("0");
+				
+//				if(fromDateTransactions.isEmpty() || toDateTransactions.isEmpty()){
+//					transactionVOAUX.setInitialDateReport(BBUtils.getCurrentDate(2,-1*(150)));
+//					transactionVOAUX.setFinalDateReport(BBUtils.getCurrentDate(2,0));
+//				}else{
+					Date date;
+					try {
+						date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("fromDateTransactions"));
+						transactionVO.setInitialDateReport(Utilities.getDateFormat(2).format(date));
+						date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("toDateTransactions"));
+						transactionVO.setFinalDateReport(Utilities.getDateFormat(2).format(date));
+					} catch (NumberFormatException | ParseException e) {
+						e.printStackTrace();
+					}
+//				}
+					transactionVO.setUserId(String.valueOf(String.valueOf(PortalUtil.getUserId(request))));
+				
+			}else{
+				
+				System.out.println("Selecciono *ANY");
+				transactionVO.setCardVO(new CardVO());
+				transactionVO.getCardVO().setNumber(actionRequest.getParameter("cardNumber"));
+				transactionVO.setMerchantId(BBUtils.nullStringToNULL(actionRequest.getParameter("merchant")));
+				transactionVO.getCardVO().setBrand(actionRequest.getParameter("brand"));
+				transactionVO.getCardVO().setCountry(BBUtils.nullStringToNULL(actionRequest.getParameter("countryCard")));
+				transactionVO.setChargeVO(new ChargeVO());
+				transactionVO.getChargeVO().setCurrency(BBUtils.nullStringToNULL(actionRequest.getParameter("currency")));
+				transactionVO.setMatch("1");
+				
+//				if(fromDateTransactions.isEmpty() || toDateTransactions.isEmpty()){
+//					transactionVOAUX.setInitialDateReport(BBUtils.getCurrentDate(2,-1*(150)));
+//					transactionVOAUX.setFinalDateReport(BBUtils.getCurrentDate(2,0));
+//				}else{
+					Date date;
+					try {
+						date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("fromDateTransactions"));
+						transactionVO.setInitialDateReport(Utilities.getDateFormat(2).format(date));
+						date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("toDateTransactions"));
+						transactionVO.setFinalDateReport(Utilities.getDateFormat(2).format(date));
+					} catch (NumberFormatException | ParseException e) {
+						e.printStackTrace();
+					}
+//				}
+					transactionVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
+				
+			}
+			/* System.out.println("nameMerchant ... " + nameMerchant);
+			System.out.println("status ... " + status); */
+		
+		} else {
+			System.out.println("Entra por el else ... " + actionRequest.getParameter("keywords"));
+			transactionVO.setCardVO(new CardVO());
+			transactionVO.getCardVO().setNumber(actionRequest.getParameter("keywords"));
+			transactionVO.setChargeVO(new ChargeVO());
+			transactionVO.getChargeVO().setCurrency(null);
+			transactionVO.setMatch("1");
+//			if(fromDateTransactions.isEmpty() || toDateTransactions.isEmpty()){
+//				transactionVOAUX.setInitialDateReport(BBUtils.getCurrentDate(2,-1*(150)));
+//				transactionVOAUX.setFinalDateReport(BBUtils.getCurrentDate(2,0));
+//			}else{
+				Date date;
+				try {
+					date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("fromDateTransactions"));
+					transactionVO.setInitialDateReport(Utilities.getDateFormat(2).format(date));
+					date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("toDateTransactions"));
+					transactionVO.setFinalDateReport(Utilities.getDateFormat(2).format(date));
+				} catch (NumberFormatException | ParseException e) {
+					e.printStackTrace();
+				}
+//			}
+			
+			System.out.println("fromDateTransactions ... " + transactionVO.getInitialDateReport());
+			System.out.println("toDateTransactions ... " + transactionVO.getFinalDateReport());
+			transactionVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
+		}
+		
+		try {
+			actionResponse.setRenderParameter("keywords", actionRequest.getParameter("keywords"));
+			actionResponse.setRenderParameter("cardNumber", actionRequest.getParameter("cardNumber"));
+			
+			ArrayList<TransactionVO> listTransactionsByDay = reportFacade.searchTransactionsByDayFilter(transactionVO);
+			session.setAttribute("listTransactionsByDay", listTransactionsByDay);
+		} catch (ReportFacadeException e) {
+			e.printStackTrace();
+			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+			SessionErrors.add(actionRequest, "error");
+			SessionErrors.add(actionRequest,transactionVO.getMessage());
+			session.setAttribute("transactionVO", transactionVO);
+		}
+		actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
 	}
 	
 	public void searchTransactionsByDay(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException{
