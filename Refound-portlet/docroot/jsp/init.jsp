@@ -33,6 +33,6 @@
 <%@ page import="com.liferay.portal.kernel.dao.search.SearchContainer"%>
 <%@ page import="au.com.billingbuddy.vo.objects.ChargeVO" %>
 <%@ page import="au.com.billingbuddy.vo.objects.RefundVO" %>
-<%@ page import="au.com.billigbuddy.porlet.utilities.Methods" %>
+<%@ page import="au.com.billingbuddy.porlet.utilities.Methods" %>
 <%@ page import="au.com.billingbuddy.common.objects.Utilities" %>
 <%@ page import="au.com.billingbuddy.common.objects.Currency" %>

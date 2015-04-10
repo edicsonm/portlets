@@ -23,15 +23,23 @@
 	ArrayList<CountryVO> listCountries = (ArrayList<CountryVO>)session.getAttribute("listCountries");
 	ArrayList<CurrencyVO> listCurrencies = (ArrayList<CurrencyVO>)session.getAttribute("listCurrencies");
 	
-	System.out.println("keywords ... " + renderRequest.getParameter("keywords"));
-	String cardNumber = (String)renderRequest.getParameter("cardNumber");
-	System.out.println("keywords ... " + renderRequest.getParameter("cardNumber"));
+	/* String cardNumber = (String)renderRequest.getParameter("cardNumber");
+	String brand = (String)renderRequest.getParameter("brand");
+	String merchant = (String)renderRequest.getParameter("merchant");
+	String countryCard = (String)renderRequest.getParameter("countryCard");
+	String currency = (String)renderRequest.getParameter("currency"); */
+	
+	/* String cardNumber = (String)session.getAttribute("cardNumber");
+	String brand = (String)session.getAttribute("brand");
+	String merchant = (String)session.getAttribute("merchant");
+	String countryCard = (String)session.getAttribute("countryCard");
+	String currency = (String)session.getAttribute("currency"); */
 	
 %>
 <liferay-ui:search-toggle buttonLabel="Buscar..." displayTerms="<%= displayTerms %>" id="toggle_id_transactions_search">
 	
 	<aui:input label="label.cardNumber" id="cardNumber" name="cardNumber" value="<%=cardNumber %>"/>
-	<aui:input label="label.brand" id="brand" name="brand" value="<%=cardNumber %>"/>
+	<aui:input label="label.brand" id="brand" name="brand" value="<%=brand %>"/>
 	
 	<c:if test="<%= RoleServiceUtil.hasUserRole(user.getUserId(), user.getCompanyId(), \"BillingBuddyAdministrator\", true) %>">
 		<div class="control-group">
@@ -48,7 +56,7 @@
 		<aui:select name="countryCard" helpMessage="help.countryCard"  label="label.countryCard" id="countryCard">
 			<aui:option value="NULL" label="label.All" selected="${countryVO.numeric==countryBusinessInformation}"/>
 			<c:forEach var="countryVO" items="${listCountries}">
-				<aui:option value="${countryVO.numeric}" label="${countryVO.name}" selected="${countryVO.numeric==countryCard}"/>
+				<aui:option value="${countryVO.alpha_2}" label="${countryVO.name}" selected="${countryVO.numeric==countryCard}"/>
 			</c:forEach>
 		</aui:select>
 	</div>
@@ -57,7 +65,7 @@
 		<aui:select name="currency" helpMessage="help.currency"  label="label.currency" id="currency">
 			<aui:option value="NULL" label="label.All" selected="${countryVO.numeric==countryBusinessInformation}"/>
 			<c:forEach var="currencyVO" items="${listCurrencies}">
-				<aui:option value="${currencyVO.numericCode}" label="${currencyVO.alphabeticCode} - ${currencyVO.countryName}" selected="${currencyVO.numericCode==currency}"/>
+				<aui:option value="${currencyVO.alphabeticCode}" label="${currencyVO.alphabeticCode} - ${currencyVO.countryName}" selected="${currencyVO.numericCode==currency}"/>
 			</c:forEach>
 		</aui:select>
 	</div>

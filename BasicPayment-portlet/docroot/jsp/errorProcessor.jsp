@@ -22,8 +22,6 @@
 <%@ page import="javax.portlet.PortletPreferences" %>
 <%@ page import="javax.portlet.PortletURL"%>
 
-<%-- <%@page import="com.liferay.portal.kernel.portlet.LiferayWindowState"%> --%>
-
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 
@@ -235,7 +233,6 @@ $.ajax({
 	dataType: "jsonp",
 	contentType: "application/json",
 	data: { status: "<%=transactionVO.getStatus()%>", message:"<%=transactionVO.getMessage()%>", data: "<%=transactionVO.getData()%>", orderNumber:<%=transactionVO.getOrderNumber()%>},
-	/*jsonpCallback: "metodo2",*/
 	success: function (response) {				
 		$("#msgid").attr("class", "information orange");
     	$("#msgid").html("The merchant has received the payment at "+response.date+". You can close this window." + response);
@@ -247,31 +244,7 @@ $.ajax({
         alert("Error " + jqXHR.responseText );
     },
     fail: function(jqXHR, textStatus ) {
-		alert( "Request failed " + textStatus +"-->"+jqXHR.status);
+		alert( "Request failed " + textStatus +":"+jqXHR.status);
 	}
 });
-
-<%-- Esta es la version que estab funcionando-- $.ajax({
-	/* url: "http://192.168.0.10:8080/MerchantApp/answerError.jsp", */
-	/* url: "http://merchant.billingbuddy.com/Merchant/answerProcessor.jsp", */
-	url: "<%=merchantVO.getMerchantConfigurationVO().getUrlDeny()%>",
-	type: "GET",
-    dataType: "html",
-   /*  async: false, */
-     data: { status: "<%=transactionVO.getStatus()%>", message:"<%=transactionVO.getMessage()%>", data: "<%=transactionVO.getData()%>", orderNumber:<%=transactionVO.getOrderNumber()%>},
-    success: function (response) {
-    	$("#msgid").attr("class", "information orange");
-    	$("#msgid").html("The merchant has received the response. You can close this window." + response);
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-    	$("#msgid").attr("class", "information red");	
-    	$("#msgid").html("An error occurred with number " + jqXHR.status);
-    	/* alert("Error " + jqXHR.status + ":"+textStatus);
-        alert("Error " + jqXHR.responseText ); */
-    },
-    fail: function(jqXHR, textStatus ) {
-		alert( "Request failed " + textStatus +"-->"+jqXHR.status);
-	}
-});	  --%>
-	
 </script>

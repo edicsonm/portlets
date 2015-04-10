@@ -28,6 +28,7 @@ import au.com.billingbuddy.business.objects.ReportFacade;
 import au.com.billingbuddy.common.objects.Utilities;
 import au.com.billingbuddy.exceptions.objects.ProcesorFacadeException;
 import au.com.billingbuddy.exceptions.objects.ReportFacadeException;
+import au.com.billingbuddy.porlet.utilities.Methods;
 import au.com.billingbuddy.vo.objects.CardVO;
 import au.com.billingbuddy.vo.objects.ChargeVO;
 import au.com.billingbuddy.vo.objects.CountryVO;
@@ -53,53 +54,63 @@ public class FormReportTransactionsByDay extends MVCPortlet {
 	public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
 		HttpSession session = request.getSession();
-		try {
-			
-			TransactionVO transactionVO = new TransactionVO();
-//			transactionVO.setInitialDateReport(BBUtils.getCurrentDate(2,-1*(Integer.parseInt(ConfigurationSystem.getKey("days.PROC_SEARCH_AMOUNT_BY_DAY")))));
-			transactionVO.setInitialDateReport(BBUtils.getCurrentDate(2,-1*(150)));
-			transactionVO.setFinalDateReport(BBUtils.getCurrentDate(2,0));
-			transactionVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
-			
-			ArrayList<TransactionVO> listTransactionsByDay = reportFacade.searchTransactionsByDay(transactionVO);
-			session.setAttribute("listTransactionsByDay", listTransactionsByDay);
-			
-			ArrayList<CountryVO> listCountries = procesorFacade.listCountries();
-			session.setAttribute("listCountries", listCountries);
-			
-			ArrayList<CurrencyVO> listCurrencies = procesorFacade.listCurrencies();
-			session.setAttribute("listCurrencies", listCurrencies);
-			
-			ArrayList<MerchantVO> listMerchants = procesorFacade.listAllMerchants(new MerchantVO(String.valueOf(PortalUtil.getUserId(request))));
-			session.setAttribute("listMerchants", listMerchants);
-			
-			transactionVO.setInitialDateReport(BBUtils.getCurrentDate(6,-1*(150)));
-			transactionVO.setFinalDateReport(BBUtils.getCurrentDate(6,0));
-			session.setAttribute("transactionVOTransactions", transactionVO);
-		} catch (ReportFacadeException | ProcesorFacadeException e) {
-			e.printStackTrace();
-			PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
-			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
-			SessionMessages.add(renderRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
-			SessionErrors.add(renderRequest,e.getErrorCode());
-			System.out.println("e.getMessage(): " + e.getMessage());
-			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
-			System.out.println("e.getErrorCode(): " + e.getErrorCode());
-		}
 		
+		System.err.println("XXXXXXXXXXXXXXXXXXXXXXX renderRequest XXXXXXXXXXXXXXXXXXXXXXX " + request.getParameter("accion"));
+		if(request.getParameter("accion") == null) {
+			try {
+				
+				TransactionVO transactionVO = new TransactionVO();
+	//			transactionVO.setInitialDateReport(BBUtils.getCurrentDate(2,-1*(Integer.parseInt(ConfigurationSystem.getKey("days.PROC_SEARCH_AMOUNT_BY_DAY")))));
+				transactionVO.setInitialDateReport(BBUtils.getCurrentDate(2,-1*(150)));
+				transactionVO.setFinalDateReport(BBUtils.getCurrentDate(2,0));
+				transactionVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
+				
+				ArrayList<TransactionVO> listTransactionsByDay = reportFacade.searchTransactionsByDay(transactionVO);
+				session.setAttribute("listTransactionsByDay", listTransactionsByDay);
+				
+				ArrayList<CountryVO> listCountries = procesorFacade.listCountries();
+				session.setAttribute("listCountries", listCountries);
+				
+				ArrayList<CurrencyVO> listCurrencies = procesorFacade.listCurrencies();
+				session.setAttribute("listCurrencies", listCurrencies);
+				
+				ArrayList<MerchantVO> listMerchants = procesorFacade.listAllMerchants(new MerchantVO(String.valueOf(PortalUtil.getUserId(request))));
+				session.setAttribute("listMerchants", listMerchants);
+				
+				transactionVO.setInitialDateReport(BBUtils.getCurrentDate(6,-1*(150)));
+				transactionVO.setFinalDateReport(BBUtils.getCurrentDate(6,0));
+				session.setAttribute("transactionVOTransactions", transactionVO);
+			} catch (ReportFacadeException | ProcesorFacadeException e) {
+				e.printStackTrace();
+				PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+				SessionMessages.add(renderRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+				SessionErrors.add(renderRequest,e.getErrorCode());
+				System.out.println("e.getMessage(): " + e.getMessage());
+				System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
+				System.out.println("e.getErrorCode(): " + e.getErrorCode());
+			}
+		} else  if(request.getParameter("accion") != null && request.getParameter("accion").equalsIgnoreCase("renderURLTransactionsByDay")) {
+//			Methods.printParameters(renderRequest);
+//			if(request.getParameter("lastCur") != null &&  (request.getParameter("lastCur") != request.getParameter("cur"))) {
+//				System.out.println("Paginando ... ");
+//			} else {
+				ArrayList<TransactionVO> listTransactionsByDay = (ArrayList<TransactionVO>)session.getAttribute("listTransactionsByDay");
+				if(listTransactionsByDay == null) listTransactionsByDay = new ArrayList<TransactionVO>();
+				listTransactionsByDay = Methods.orderReportTransactionsByDay(listTransactionsByDay,request.getParameter("orderByCol"),request.getParameter("orderByType"));
+				session.setAttribute("listTransactionsByDay", listTransactionsByDay);
+				System.out.println("Ordenando ... ");
+//			}
+		}
 //		include("/hola.jsp", renderRequest, renderResponse, PortletRequest.RESOURCE_PHASE);
 		super.doView(renderRequest, renderResponse);
 	}
 	
-	public void pruebas(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException{
+	public void listarTransacciones(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException{
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 		HttpSession session = request.getSession();
 		
-		Enumeration<String> enume = actionRequest.getParameterNames();
-		while (enume.hasMoreElements()){
-			String valor = enume.nextElement();
-			System.out.println("Parametro: " + valor + "-->"+ actionRequest.getParameter(valor));
-		}
+//		Methods.printParameters(actionRequest);
 		
 		TransactionVO transactionVO = new TransactionVO();	
 		System.out.println("displayTerms.isAdvancedSearch()? ... " + actionRequest.getParameter("advancedSearch"));	
@@ -114,9 +125,9 @@ public class FormReportTransactionsByDay extends MVCPortlet {
 				merchant
 				countryCard */
 				transactionVO.setCardVO(new CardVO());
-				transactionVO.getCardVO().setNumber(actionRequest.getParameter("cardNumber"));
+				transactionVO.getCardVO().setNumber(BBUtils.nullStringToNULL(actionRequest.getParameter("cardNumber")));
 				transactionVO.setMerchantId(BBUtils.nullStringToNULL(actionRequest.getParameter("merchant")));
-				transactionVO.getCardVO().setBrand(actionRequest.getParameter("brand"));
+				transactionVO.getCardVO().setBrand(BBUtils.nullStringToNULL(actionRequest.getParameter("brand")));
 				transactionVO.getCardVO().setCountry(BBUtils.nullStringToNULL(actionRequest.getParameter("countryCard")));
 				transactionVO.setChargeVO(new ChargeVO());
 				transactionVO.getChargeVO().setCurrency(BBUtils.nullStringToNULL(actionRequest.getParameter("currency")));
@@ -142,9 +153,9 @@ public class FormReportTransactionsByDay extends MVCPortlet {
 				
 				System.out.println("Selecciono *ANY");
 				transactionVO.setCardVO(new CardVO());
-				transactionVO.getCardVO().setNumber(actionRequest.getParameter("cardNumber"));
+				transactionVO.getCardVO().setNumber(BBUtils.nullStringToNULL(actionRequest.getParameter("cardNumber")));
 				transactionVO.setMerchantId(BBUtils.nullStringToNULL(actionRequest.getParameter("merchant")));
-				transactionVO.getCardVO().setBrand(actionRequest.getParameter("brand"));
+				transactionVO.getCardVO().setBrand(BBUtils.nullStringToNULL(actionRequest.getParameter("brand")));
 				transactionVO.getCardVO().setCountry(BBUtils.nullStringToNULL(actionRequest.getParameter("countryCard")));
 				transactionVO.setChargeVO(new ChargeVO());
 				transactionVO.getChargeVO().setCurrency(BBUtils.nullStringToNULL(actionRequest.getParameter("currency")));
@@ -167,9 +178,19 @@ public class FormReportTransactionsByDay extends MVCPortlet {
 					transactionVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
 				
 			}
-			/* System.out.println("nameMerchant ... " + nameMerchant);
-			System.out.println("status ... " + status); */
 		
+			actionResponse.setRenderParameter("cardNumber", actionRequest.getParameter("cardNumber"));
+			actionResponse.setRenderParameter("brand", actionRequest.getParameter("brand"));
+			actionResponse.setRenderParameter("merchant", actionRequest.getParameter("merchant"));
+			actionResponse.setRenderParameter("countryCard", actionRequest.getParameter("countryCard"));
+			actionResponse.setRenderParameter("currency", actionRequest.getParameter("currency"));
+		
+//			session.setAttribute("cardNumber", actionRequest.getParameter("cardNumber"));
+//			session.setAttribute("brand", actionRequest.getParameter("brand"));
+//			session.setAttribute("merchant", actionRequest.getParameter("merchant"));
+//			session.setAttribute("countryCard", actionRequest.getParameter("countryCard"));
+//			session.setAttribute("currency", actionRequest.getParameter("currency"));
+			
 		} else {
 			System.out.println("Entra por el else ... " + actionRequest.getParameter("keywords"));
 			transactionVO.setCardVO(new CardVO());
@@ -195,14 +216,14 @@ public class FormReportTransactionsByDay extends MVCPortlet {
 			System.out.println("fromDateTransactions ... " + transactionVO.getInitialDateReport());
 			System.out.println("toDateTransactions ... " + transactionVO.getFinalDateReport());
 			transactionVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
+			actionResponse.setRenderParameter("keywords", actionRequest.getParameter("keywords"));
 		}
 		
 		try {
-			actionResponse.setRenderParameter("keywords", actionRequest.getParameter("keywords"));
-			actionResponse.setRenderParameter("cardNumber", actionRequest.getParameter("cardNumber"));
 			
 			ArrayList<TransactionVO> listTransactionsByDay = reportFacade.searchTransactionsByDayFilter(transactionVO);
 			session.setAttribute("listTransactionsByDay", listTransactionsByDay);
+			
 		} catch (ReportFacadeException e) {
 			e.printStackTrace();
 			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);

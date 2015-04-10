@@ -49,6 +49,15 @@ public class FormBasicPayment extends MVCPortlet {
 	private long initialTime;
 	private long finalTime;
 	
+//	@Override
+//	public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
+//		HttpServletRequest request = PortalUtil.getOriginalServletRequest(PortalUtil.getHttpServletRequest(renderRequest));
+//		HttpSession session = request.getSession();
+//		TransactionVO transactionVO = new TransactionVO();
+//		session.setAttribute("transactionVO", transactionVO);
+//		super.doView(renderRequest, renderResponse);
+//	}
+	
 	@Override
 	public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
 		HttpServletRequest request = PortalUtil.getOriginalServletRequest(PortalUtil.getHttpServletRequest(renderRequest));
@@ -97,6 +106,8 @@ public class FormBasicPayment extends MVCPortlet {
 								
 								transactionVO.setIp(request.getRemoteAddr());
 //								transactionVO.setIp("27.32.44.176");
+//								transactionVO.setIp("188.138.9.49");
+//								transactionVO.setIp("77.247.181.165");
 								
 								transactionVO.setSessionId(request.getRequestedSessionId());
 								transactionVO.setUserAgent(request.getHeader("User-Agent"));
@@ -144,8 +155,6 @@ public class FormBasicPayment extends MVCPortlet {
 							e1.printStackTrace();
 						}
 						include("/jsp/error.jsp", renderRequest, renderResponse);
-						
-						
 					}
 				} else if(merchantVO.getMerchantConfigurationVO() == null){
 					/*MisconfiguredMerchant Error*/
@@ -275,7 +284,6 @@ public class FormBasicPayment extends MVCPortlet {
 			}
 		} catch (Exception ex){
 			ex.printStackTrace();
-			System.out.println("sale por 4");
 			include("/jsp/unauthorizedAccess.jsp", renderRequest, renderResponse);
 		}
 	}
@@ -331,8 +339,6 @@ public class FormBasicPayment extends MVCPortlet {
 				} catch (AddressException e1) {
 					e1.printStackTrace();
 				}
-				
-				
 //				SessionMessages.add(actionRequest, "paymentSuccessful", new Object[] { transactionVO.getId() });
 				SessionMessages.add(actionRequest, "paymentSuccessful");
 				session.setAttribute("transactionId", transactionVO.getId());
@@ -341,11 +347,11 @@ public class FormBasicPayment extends MVCPortlet {
 				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
-				SessionErrors.add(actionRequest, "error");
-				System.out.println("transactionVO.getMessage(): " + transactionVO.getMessage());
-				SessionErrors.add(actionRequest,transactionVO.getMessage());
+//				SessionErrors.add(actionRequest, "error");
+				SessionErrors.add(actionRequest,transactionVO.getErrorCode());
 				session.setAttribute("transactionVO", transactionVO);
-				actionResponse.setRenderParameter("jspPage", "/jsp/errorProcessor.jsp");
+//				actionResponse.setRenderParameter("jspPage", "/jsp/errorProcessor.jsp");
+				actionResponse.setRenderParameter("jspPage", "/jsp/error.jsp");
 			}
 		} catch (TransactionFacadeException e) {
 			
@@ -364,129 +370,12 @@ public class FormBasicPayment extends MVCPortlet {
 			System.out.println("e.getErrorCode(): " + e.getErrorCode());
 			
 			session.setAttribute("transactionVO", transactionVO);
-			actionResponse.setRenderParameter("jspPage", "/jsp/errorProcessor.jsp");
+//			actionResponse.setRenderParameter("jspPage", "/jsp/errorProcessor.jsp");
+			actionResponse.setRenderParameter("jspPage", "/jsp/error.jsp");
 		}
 	}
 	
-	public void savePayment_bk(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
-		
-//		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
-//		HttpSession session = request.getSession();
-//		
-//		try {
-//			
-//			TransactionVO transactionVO = new TransactionVO();
-//			CardVO cardVO = new CardVO();
-//			ShippingAddressVO shippingAddressVO = new ShippingAddressVO();
-//			CustomerVO customerVO = new CustomerVO();
-//			
-//			/****** Table Card ******/
-//			cardVO.setName(request.getParameter("name"));
-//			cardVO.setNumber(request.getParameter("cardNumber"));
-//			cardVO.setBin(cardVO.getNumber().substring(0, 6));
-//			cardVO.setExpYear(request.getParameter("expirationYear"));
-//			String expirationMonth = "0"+ request.getParameter("expirationMonth");
-//			cardVO.setExpMonth(expirationMonth.substring(expirationMonth.length()-2));
-//			cardVO.setCvv(request.getParameter("securityCode"));
-//			
-//			
-//			/****** Table TransactionInformation ******/
-//			transactionVO.setOrderAmount("100");
-//
-//			transactionVO.setOrderCurrency("USD");
-//			transactionVO.setMerchantId("2");
-//			transactionVO.setTxnType("creditcard");
-//			
-//			transactionVO.setIp(request.getRemoteAddr());
-//			transactionVO.setBillingAddressCity("New York");
-//			transactionVO.setBillingAddressRegion("NY");
-//			transactionVO.setBillingAddressPostal("11434");
-//			transactionVO.setBillingAddressCountry("US");
-////			transactionVO.setId(jSONObject.get("txnID").toString());
-//			transactionVO.setSessionId(request.getRequestedSessionId());
-//			transactionVO.setUserAgent(request.getHeader("User-Agent"));
-//			transactionVO.setAcceptLanguage(request.getHeader("Accept-Language"));
-//			transactionVO.setDomain("yahoo.com");
-//
-//			/****** Table ShippingAddress ******/
-//			shippingAddressVO.setAddress("145-50 157TH STREET");
-//			shippingAddressVO.setCity("Jamaica");
-//			shippingAddressVO.setRegion("NY");
-//			shippingAddressVO.setPostal("11434");
-//			shippingAddressVO.setCountry("US");
-//			
-//			/****** Table Customer ******/
-//			customerVO.setEmail(request.getParameter("email"));
-//			customerVO.setUsername("1234");
-//			customerVO.setPassword("test_carder_password");
-//			
-//			transactionVO.setCardVO(cardVO);
-////			transactionVO.setShippingAddressVO(shippingAddressVO);
-////			transactionVO.setCustomerVO(customerVO);
-//			
-//			transactionVO = transactionFacade.proccesPayment(transactionVO);
-//			if(transactionVO.getStatus().equalsIgnoreCase("success")){
-//				SessionMessages.add(actionRequest, "paymentSuccessful");
-//				session.setAttribute("transactionId", transactionVO.getId());
-//				actionResponse.setRenderParameter("jspPage", "/jsp/sumaryPayment.jsp");
-//			}else{
-//				
-//				System.out.println("basicPaymentResponseModel.getMessage(): " + transactionVO.getMessage());
-//				
-//				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
-//				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
-//				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
-//				SessionErrors.add(actionRequest, "error");
-//				SessionErrors.add(actionRequest,transactionVO.getMessage());
-//				session.setAttribute("transactionVO", transactionVO);
-//				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
-//			}
-			
-/*Aca comienza el anterior proceso definido para trabajar con JSON*/			
-			
-//			BasicPaymentModel basicPaymentModel = new BasicPaymentModel();
-//			basicPaymentModel.setName(request.getParameter("name"));
-//			basicPaymentModel.setEmail(request.getParameter("email"));
-//			basicPaymentModel.setCompanyName(request.getParameter("companyName"));
-//			basicPaymentModel.setCardNumber(request.getParameter("cardNumber"));
-//			basicPaymentModel.setExpirationYear(request.getParameter("expirationYear"));
-//			String expirationMonth = "0"+ request.getParameter("expirationMonth");
-//			basicPaymentModel.setExpirationMonth(expirationMonth.substring(expirationMonth.length()-2));
-//			basicPaymentModel.setCvv(request.getParameter("securityCode"));
-//			
-//			basicPaymentModel.setIp(request.getRemoteAddr());
-//			basicPaymentModel.setSessionId(request.getRequestedSessionId());
-//			basicPaymentModel.setUserAgent(request.getHeader("User-Agent"));
-//			basicPaymentModel.setAcceptLanguage(request.getHeader("Accept-Language"));
-			
-//			JSONObject jSONObject = jsonProcessor.encodeJSONBasicPayment(basicPaymentModel);
-//			System.out.println("Mensaje construido: " + jSONObject.toJSONString());
-//			String respuesta = transactionFacade.proccesMessage(jSONObject.toJSONString());
-//			System.out.println("respuesta: " + respuesta);
-//			basicPaymentModel = jsonProcessor.decodeJSONBasicPayment(respuesta);
-			
-//			if(basicPaymentModel.getStatus().equalsIgnoreCase("success")){
-//				SessionMessages.add(actionRequest, "paymentSuccessful");
-//				session.setAttribute("basicPaymentModel", basicPaymentModel);
-//				actionResponse.setRenderParameter("jspPage", "/jsp/sumaryPayment.jsp");
-//			} else {
-//				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
-//				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
-//				System.out.println("basicPaymentResponseModel.getMessage(): " + basicPaymentModel.getMessage());
-//				
-//				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
-//				SessionErrors.add(actionRequest, "error");
-//				SessionErrors.add(actionRequest,basicPaymentModel.getMessage());
-//				session.setAttribute("basicPaymentModel", basicPaymentModel);
-//				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
-//			}
-/*Aca termina el anterior proceso definido para trabajar con JSON*/
-			
-//		} catch (DataSanitizeException e) {
-//			e.printStackTrace();
-//		}
-	}
-	
+
 	public void acceptPayment(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
 		addProcessActionSuccessMessage = false;
 		actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
@@ -587,15 +476,5 @@ public class FormBasicPayment extends MVCPortlet {
 		System.out.println("serveResource");
 		super.serveResource(resourceRequest, resourceResponse);
 	}
-	
-//	@Override
-//	protected void addSuccessMessage(ActionRequest actionRequest, ActionResponse actionResponse) {
-//		System.out.println("Ejecuta addSuccessMessage ...");
-//		if (!addProcessActionSuccessMessage) {
-//			addProcessActionSuccessMessage = true;
-//			return;
-//		}
-//		SessionMessages.add(actionRequest, "success");
-//	}
 	
 }

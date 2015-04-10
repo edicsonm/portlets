@@ -35,9 +35,12 @@
 <liferay-ui:error key="SecurityMDTR.validateSignature.NullPointerException" message="error.SecurityMDTR.validateSignature.NullPointerException" />
 <liferay-ui:error key="SecurityMDTR.validateSignature.FileNotFoundException" message="error.SecurityMDTR.validateSignature.FileNotFoundException" />
 <liferay-ui:error key="SecurityMDTR.validateSignature.DecoderException" message="error.SecurityMDTR.validateSignature.DecoderException" />
+<liferay-ui:error key="ProcessorMDTR.creditCardFraudDetection.TransactionDAOException" message="error.ProcessorMDTR.creditCardFraudDetection.TransactionDAOException" />
+<liferay-ui:error key="TransactionFacade.2" message="error.TransactionFacade.2" />
+
 <%
 	TransactionVO transactionVO = (TransactionVO)session.getAttribute("transactionVO");
-	MerchantVO merchantVO = (MerchantVO)session.getAttribute("merchantVO");	
+	MerchantVO merchantVO = (MerchantVO)session.getAttribute("merchantVO");
 %>
 <aui:form action="" method="post">
 	<div class="tabla"> 
@@ -63,11 +66,9 @@ $.ajax({
     error: function(jqXHR, textStatus, errorThrown) {
     	$("#msgid").attr("class", "information red");	
     	$("#msgid").html("An error occurred with number " + jqXHR.status);
-    	/* alert("Error " + jqXHR.status + ":"+textStatus);
-        alert("Error " + jqXHR.responseText ); */
     },
     fail: function(jqXHR, textStatus ) {
-		alert( "Request failed " + textStatus +"-->"+jqXHR.status);
+		alert( "Request failed " + textStatus +":"+jqXHR.status);
 	}
 });	 
 	

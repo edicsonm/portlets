@@ -71,7 +71,6 @@
 	
 	<div class="tabla">
 			<div class="fila">
-				
 				<liferay-ui:search-container emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURL%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
 				   
 				   <liferay-ui:search-container-results>
@@ -92,11 +91,13 @@
 							<portlet:param name="orderNumber" value="<%=String.valueOf(chargeVO.getId())%>"/>
 						</portlet:actionURL>
 						
-					<liferay-ui:search-container-column-text name="Charge" property="id" value="transactionId" orderable="true" orderableProperty="id" href="<%= rowURL %>"/>
+					<liferay-ui:search-container-column-text name="label.transactionAmount" value="<%=Utilities.stripeToCurrency(chargeVO.getAmount(),chargeVO.getCurrency().toUpperCase()) %>" orderable="true" orderableProperty="amount" href="<%= rowURL %>"/>
+					<liferay-ui:search-container-column-text name="label.date" value="${Utils:formatDate(3,chargeVO.creationTime,3)}" orderable="true" orderableProperty="creationTime" />
+					<liferay-ui:search-container-column-text name="label.cardNumber" property="cardVO.last4" orderable="true" orderableProperty="cardVO.last4" />
+					
+					<%-- <liferay-ui:search-container-column-text name="Charge" property="id" value="transactionId" orderable="true" orderableProperty="id" href="<%= rowURL %>"/> --%>
 					<liferay-ui:search-container-column-text name="label.cardType" value="${Utils:printString(chargeVO.cardVO.brand)}" orderable="true" orderableProperty="cardVO.brand" />
 					<liferay-ui:search-container-column-text name="label.currency" value="<%=chargeVO.getCurrency().toUpperCase()%>" orderable="true" orderableProperty="currency" />
-					<liferay-ui:search-container-column-text name="label.transactionAmount" value="<%=Utilities.stripeToCurrency(chargeVO.getAmount(),chargeVO.getCurrency().toUpperCase()) %>" orderable="true" orderableProperty="amount" />
-					<liferay-ui:search-container-column-text name="label.dateRefund" value="<%=Utilities.formatDate(chargeVO.getCreationTime()) %>" orderable="true" orderableProperty="creationTime" />
 					<liferay-ui:search-container-column-text name="label.refunded" value="${Utils:stripeToCurrency(chargeVO.amountRefunded, chargeVO.currency)}" orderable="false"/>
 					
 					<%-- <liferay-ui:search-container-column-text name="Last 4 Digits Card Number" property="cardVO.last4" orderable="true" orderableProperty="cardVO.last4" />

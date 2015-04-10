@@ -54,23 +54,13 @@
 <%@ page import="au.com.billingbuddy.vo.objects.CardVO" %>
 <%@ page import="au.com.billingbuddy.vo.objects.ChargeVO" %>
 
-
-
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 
 <%
-	/* String currentURL = PortalUtil.getCurrentURL(request);
-	String merchant = ParamUtil.getString(request, "merchant");
-	String currency = ParamUtil.getString(request, "currency");
-	String countryCard = ParamUtil.getString(request, "countryCard");
-	String brand = ParamUtil.getString(request, "brand");
-	
-	String fromDateTransactions = ParamUtil.getString(request, "fromDateTransactions");
-	String toDateTransactions = ParamUtil.getString(request, "toDateTransactions"); */
-	
-	/* String countryBusinessInformation = ParamUtil.getString(request, "countryBusinessInformation");
-	String businessType = ParamUtil.getString(request, "businessType");
-	String industry = ParamUtil.getString(request, "industry");
-	String status = ParamUtil.getString(request, "status"); */
+	String cardNumber = (String)renderRequest.getParameter("cardNumber");
+	String brand = (String)renderRequest.getParameter("brand");
+	String merchant = (String)renderRequest.getParameter("merchant");
+	String countryCard = (String)renderRequest.getParameter("countryCard");
+	String currency = (String)renderRequest.getParameter("currency");
 %>

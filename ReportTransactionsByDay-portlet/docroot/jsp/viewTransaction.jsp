@@ -61,7 +61,9 @@
 						</div>
 					</div>
 				</div>
+				
 				<p id="sub-legend" class="description"><fmt:message key="label.cardDetails"/></p>
+				<hr>
 				<div id="contenedor">
 					<div id="contenidos">
 						<div id="columna1-3">
@@ -72,7 +74,7 @@
 						</div>
 						<div id="columna2-3">
 							<dl class="property-list">
-								<dt><fmt:message key="label.number"/></dt>
+								<dt><fmt:message key="label.cardNumber"/></dt>
 								<dd><c:out value="${Utils:printCardNumber(transactionVO.cardVO.number)}"/></dd>
 							</dl>
 						</div>
@@ -112,7 +114,9 @@
 						</div>
 					</div>
 				</div>
+				
 				<p id="sub-legend" class="description"><fmt:message key="label.transactionDetails"/></p>
+				<hr>
 				<div id="contenedor">
 					<div id="contenidos">
 						<div id="columna1-4">

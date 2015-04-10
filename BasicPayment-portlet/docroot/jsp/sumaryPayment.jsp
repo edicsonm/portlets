@@ -35,6 +35,7 @@
 	String cardNumber = CreditCard.hide(transactionVO.getCardVO().getNumber(), "X");
 %>
 <portlet:actionURL var="acceptPayment" name="acceptPayment"/>
+
 <aui:form action="<%= acceptPayment %>" method="post">
 	<fieldset class="fieldset">
 		<legend class="fieldset-legend">
@@ -152,27 +153,9 @@
 						</div>
 					</div>
 				</div>
-				
-				<%-- <p id="sub-legend" class="description"><fmt:message key="label.log"/></p>
-				<div id="contenedor">
-					<div id="contenidos">
-						<div id="columna1-1" class="section">
-							<div id="msgid"></div>
-						</div>
-					</div>
-				</div> --%>
-				
 			</div>
 		</div>
 	</fieldset>
-
-	<!-- <div class="tabla">
-		<div class="tabla">
-			<div class="section">
-			</div>
-		</div>
-		<div id="msgid"></div>
-	</div> -->
 </aui:form>
 <%
 	if(transactionVO != null)	{
@@ -199,7 +182,7 @@
 	            alert("Error " + jqXHR.responseText );
 	        },
 	        fail: function(jqXHR, textStatus ) {
-				alert( "Request failed " + textStatus +"-->"+jqXHR.status);
+				alert( "Request failed " + textStatus +":"+jqXHR.status);
 			}
 		});
 	</script>

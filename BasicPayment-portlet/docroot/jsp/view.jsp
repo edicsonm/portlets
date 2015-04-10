@@ -63,40 +63,56 @@
 		<div class="">
 			<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
 			<div class="details">
-				<p id="sub-legend" class="description"><fmt:message key="label.paymentDetails"/></p>
-				<div id="contenedor">
-					<div id="contenidos">
-						<div id="columna1-2">
-							<dl class="property-list">
-								<dt><fmt:message key="label.merchantID"/></dt>
-								<dd><c:out value="${merchantID}"/></dd>
-							</dl>
+				<div class="paymentDetails">
+					<p id="sub-legend" class="description"><fmt:message key="label.paymentDetails"/></p>
+					<div id="contenedor">
+						<div id="contenidos">
+							<div id="columna1-2">
+								<dl class="property-list">
+									<dt><fmt:message key="label.merchantID"/></dt>
+									<dd><c:out value="${merchantID}"/></dd>
+								</dl>
+							</div>
+							<div id="columna2-2">
+								<dl class="property-list">
+									<dt><fmt:message key="label.orderNumber"/></dt>
+									<dd><c:out value="${orderNumber}"/></dd>
+								</dl>
+							</div>
 						</div>
-						<div id="columna2-2">
-							<dl class="property-list">
-								<dt><fmt:message key="label.orderNumber"/></dt>
-								<dd><c:out value="${orderNumber}"/></dd>
-							</dl>
-						</div>
-					</div>
-					<div id="contenidos">
-						<div id="columna1-2">
-							<dl class="property-list">
-								<dt><fmt:message key="label.currency"/></dt>
-								<dd><c:out value="${currency}"/></dd>
-							</dl>
-						</div>
-						<div id="columna2-2">
-							<dl class="property-list">
-								<dt><fmt:message key="label.transactionAmount"/></dt>
-								<dd><c:out value="${transactionAmount}"/></dd>
-							</dl>
+						<div id="contenidos">
+							<div id="columna1-2">
+								<dl class="property-list">
+									<dt><fmt:message key="label.currency"/></dt>
+									<dd><c:out value="${currency}"/></dd>
+								</dl>
+							</div>
+							<div id="columna2-2">
+								<dl class="property-list">
+									<dt><fmt:message key="label.transactionAmount"/></dt>
+									<dd><c:out value="${transactionAmount}"/></dd>
+								</dl>
+							</div>
 						</div>
 					</div>
 				</div>
 				
 				<p id="sub-legend" class="description"><fmt:message key="label.cardInformation"/></p>
-				<div id="contenedor">
+				<div class="control-group">
+					<aui:input label="label.name" showRequiredLabel="false" required="true" name="name" value="${transactionVO.cardVO.name}"/>
+				</div>
+				<div class="control-group">
+					<aui:input label="label.email" showRequiredLabel="false" required="true" name="email" value="${transactionVO.cardVO.customerVO.email}">
+						<aui:validator name="email"/>
+					</aui:input>
+				</div>
+				<div class="control-group">
+					<aui:input label="label.phoneNumber" showRequiredLabel="false" required="true" name="phoneNumber" value="${transactionVO.cardVO.customerVO.phoneNumber}">
+						<aui:validator name="digits"/>
+					</aui:input>
+				</div>
+				
+				<%-- <div id="contenedor">
 					<div id="contenidos">
 						<div id="columna1-3">
 							<dl class="property-list">
@@ -117,9 +133,40 @@
 								</aui:input>
 							</dl>
 						</div>
+					</div> --%>
+					
+					<div class="control-group">
+						<aui:input label="label.cardNumber" showRequiredLabel="false" required="true" name="cardNumber" value="${transactionVO.cardVO.number}">
+						  	<aui:validator name="digits"/>
+						  	<aui:validator name="rangeLength" errorMessage="You must imput a number between 16 and 20 digits">[16,20]</aui:validator>
+						 </aui:input>
+					</div>
+					<div class="control-group">
+						<aui:input label="label.securityCode" showRequiredLabel="false" size="3"  type="text" required="true" name="securityCode" value="${transactionVO.cardVO.cvv}">
+							<aui:validator name="digits"/>
+							<aui:validator name="minLength" errorMessage="You must imput a number with 3 digits">3</aui:validator>
+							<aui:validator name="maxLength" errorMessage="You must imput a number with 3 digits">3</aui:validator>
+						</aui:input>
+					</div>
+					<div class="control-group">
+						<aui:select name="expirationMonth" label="label.expirationMonth">
+							<c:forEach var="i" begin="1" end="12">
+								<aui:option label="${i}" value="${i}"/> 
+							</c:forEach>
+						</aui:select>
+					</div>
+					<div class="control-group">
+						<aui:select name="expirationYear" label="label.expirationYear">
+							<c:forEach var="i" begin="<%= initialYear%>" end="<%= initialYear + 15%>">
+								<aui:option label="${i}" value="${i}"/> 
+							</c:forEach>
+						</aui:select>
+					</div>
+					<div class="control-group">
+						
 					</div>
 					
-					<div id="contenidos">
+					<%-- <div id="contenidos">
 						<div id="columna1-2">
 							<dl class="property-list">
 								<aui:input label="label.cardNumber" showRequiredLabel="false" required="true" name="cardNumber" value="${transactionVO.cardVO.number}">
@@ -137,9 +184,9 @@
 								</aui:input>
 							</dl>
 						</div>
-					</div>
+					</div> --%>
 					
-					<div id="contenidos">
+					<%-- <div id="contenidos">
 						<div id="columna1-2">
 							<dl class="property-list">
 								<aui:select name="expirationMonth" label="label.expirationMonth">
@@ -158,7 +205,7 @@
 								</aui:select>
 							</dl>
 						</div>
-					</div>
+					</div> --%>
 				</div>
 				
 				<p id="sub-legend" class="description"><fmt:message key="label.billingAddressInformation"/></p>
@@ -200,7 +247,6 @@
 				</div>
 			</div>
 			<aui:button type="submit" name="Name" value="label.save" />
-		</div>
 	</fieldset>
 </aui:form>
 
