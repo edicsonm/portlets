@@ -21,61 +21,106 @@
 <%@ page import="com.liferay.portal.kernel.util.ListUtil" %>
 <%@ page import="javax.portlet.PortletPreferences" %>
 <%@ page import="javax.portlet.PortletURL"%>
+
 <%@ taglib uri="http://www.billingbuddy.com/.com/bbtlds" prefix="Utils" %>
 <fmt:setBundle basename="Language"/>
 <portlet:defineObjects />
-<%-- <liferay-theme:defineObjects /> --%>
 
 <liferay-ui:success key="refundSuccessful" message="label.success" />
 
-<%-- <liferay-ui:error key="error" message="label.unsatisfactoryRegistration" />
-<liferay-ui:error key="claveDuplicada" message="error.claveDuplicada"  /> --%>
 <aui:script use="aui">
+
+	YUI().use('aui-datepicker', function(Y) {
+	    new Y.DatePicker(
+	    	{
+	        trigger: '#<portlet:namespace />fromDateCharges',
+	        popover: {
+	          zIndex: 1
+	        }
+	      });
+	  }
+	);
+	
+	YUI().use(
+	  'aui-datepicker',
+	  function(Y) {
+	    new Y.DatePicker(
+	      {
+	        trigger: '#<portlet:namespace />toDateCharges',
+	        popover: {
+	          zIndex: 1
+	        }
+	      });
+	  }
+	);
+	
 	showDetails = function(val){
 		alert(val);
 	}
 </aui:script>
 <%
-	String orderByColAnterior = (String)session.getAttribute("orderByCol");
-	String orderByTypeAnterior = (String)session.getAttribute("orderByType");
+	String orderByCol = ParamUtil.getString(request, "orderByCol", "creationTime");
+	String orderByType = ParamUtil.getString(request, "orderByType","desc");
+	pageContext.setAttribute("orderByCol", orderByCol);
+	pageContext.setAttribute("orderByType", orderByType);
 	
-	String orderByCol = (String)renderRequest.getParameter("orderByCol");
-	String orderByType = (String)renderRequest.getAttribute("orderByType");
-	
-	if(orderByType == null){
-		orderByType = "desc";
-	}
-	
-	if(orderByCol == null){
-		orderByCol = "creationTime";
-	}else if(orderByCol.equalsIgnoreCase(orderByColAnterior)){
-		if (orderByTypeAnterior.equalsIgnoreCase("asc")){
-			orderByType = "desc";
-		}else{
-			orderByType = "asc";
-		}
-	}else{
-		orderByType = "asc";
-	}
 	/* com.liferay.portal.kernel.dao.search.SearchContainer<ChargeVO> searchContainer = null; */
 	ArrayList<ChargeVO> listCharge = (ArrayList)session.getAttribute("listCharge");
 	if(listCharge == null) listCharge = new ArrayList<ChargeVO>();
+	
+	ChargeVO chargeVOCharges = (ChargeVO)session.getAttribute("chargeVOCharges");
+	if(chargeVOCharges == null) chargeVOCharges = new ChargeVO();
+	
 	session.setAttribute("orderByCol", orderByCol);
 	session.setAttribute("orderByType", orderByType);
 	session.setAttribute("page", "view.jsp");
 %>
 
-<liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURL"/>
+<liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLCharges">
+	<portlet:param name="accion" value="renderURLRefunds"/>
+	<portlet:param name="cardNumber" value="<%=cardNumber%>"/>
+	<portlet:param name="brand" value="<%=brand%>"/>
+	<portlet:param name="merchant" value="<%=merchant%>"/>
+	<portlet:param name="countryCard" value="<%=countryCard%>"/>
+	<portlet:param name="currency" value="<%=currency%>"/>
+</liferay-portlet:renderURL>
 
 <aui:form name="operacion" method="post">
 	
 	<div class="tabla">
 			<div class="fila">
-				<liferay-ui:search-container emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURL%>" orderByCol="<%=orderByCol%>" orderByType="<%=orderByType%>">
-				   
+				<liferay-ui:search-container orderByType="<%=orderByType %>" orderByCol="<%=orderByCol %>"  displayTerms="<%= new DisplayTerms(renderRequest) %>" emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURLCharges%>">
+					<div id="contenedor">
+						<div id="contenidos">
+							<div id=columna1-3>
+								<div class="control-group">
+									<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace />fromDateTransactionsPicker">
+									<aui:input onkeypress="return false;" value="<%= chargeVOCharges.getInitialDateReport()%>" label="label.from" helpMessage="help.from" showRequiredLabel="false" size="10" type="text" required="false" name="fromDateCharges">
+										 <aui:validator name="date" />
+									</aui:input>
+								</div>
+							</div>
+						</div>
+						
+						<div id="columna2-3">
+							<div class="control-group">
+								<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace  />toDateTransactionsPicker">
+									<aui:input onkeypress="return false;" value="<%= chargeVOCharges.getFinalDateReport()%>" label="label.to" helpMessage="help.to" showRequiredLabel="false" size="10" type="text" required="false" name="toDateCharges">
+										 <aui:validator name="date" />
+									</aui:input>
+								</div>
+							</div>
+						</div>
+						<div id="columna3-3">
+							<div class="control-group">
+								<liferay-ui:search-form  page="/jsp/charge_search.jsp" servletContext="<%= application %>"/>
+								</div>
+							</div>
+						</div>
+					</div>
 				   <liferay-ui:search-container-results>
 				      <%
-						listCharge = Methods.orderCharges(listCharge,orderByCol,orderByType);
+						/* listCharge = Methods.orderCharges(listCharge,orderByCol,orderByType); */
 						results = new ArrayList(ListUtil.subList(listCharge, searchContainer.getStart(), searchContainer.getEnd()));
 						total = listCharge.size();
 						pageContext.setAttribute("results", results);
@@ -91,9 +136,9 @@
 							<portlet:param name="orderNumber" value="<%=String.valueOf(chargeVO.getId())%>"/>
 						</portlet:actionURL>
 						
-					<liferay-ui:search-container-column-text name="label.transactionAmount" value="<%=Utilities.stripeToCurrency(chargeVO.getAmount(),chargeVO.getCurrency().toUpperCase()) %>" orderable="true" orderableProperty="amount" href="<%= rowURL %>"/>
-					<liferay-ui:search-container-column-text name="label.date" value="${Utils:formatDate(3,chargeVO.creationTime,3)}" orderable="true" orderableProperty="creationTime" />
-					<liferay-ui:search-container-column-text name="label.cardNumber" property="cardVO.last4" orderable="true" orderableProperty="cardVO.last4" />
+					<liferay-ui:search-container-column-text name="label.transactionAmount" value="${Utils:stripeToCurrency(chargeVO.amount,chargeVO.currency)}" orderable="true" orderableProperty="amount" href="<%= rowURL %>"/>
+					<liferay-ui:search-container-column-text name="label.date" value="${Utils:formatDate(3,chargeVO.creationTime,7)}" orderable="true" orderableProperty="creationTime" />
+					<liferay-ui:search-container-column-text name="label.cardNumber" value="${Utils:printCardNumber(chargeVO.cardVO.number)}" orderable="false"/>
 					
 					<%-- <liferay-ui:search-container-column-text name="Charge" property="id" value="transactionId" orderable="true" orderableProperty="id" href="<%= rowURL %>"/> --%>
 					<liferay-ui:search-container-column-text name="label.cardType" value="${Utils:printString(chargeVO.cardVO.brand)}" orderable="true" orderableProperty="cardVO.brand" />

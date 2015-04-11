@@ -25,7 +25,12 @@ import au.com.billingbuddy.business.objects.ProcesorFacade;
 import au.com.billingbuddy.business.objects.TransactionFacade;
 import au.com.billingbuddy.common.objects.Utilities;
 import au.com.billingbuddy.exceptions.objects.ProcesorFacadeException;
+import au.com.billingbuddy.porlet.utilities.Methods;
+import au.com.billingbuddy.vo.objects.CardVO;
 import au.com.billingbuddy.vo.objects.ChargeVO;
+import au.com.billingbuddy.vo.objects.CountryVO;
+import au.com.billingbuddy.vo.objects.CurrencyVO;
+import au.com.billingbuddy.vo.objects.MerchantVO;
 import au.com.billingbuddy.vo.objects.RefundVO;
 import au.com.billingbuddy.vo.objects.TransactionVO;
 
@@ -47,26 +52,59 @@ public class FormRefund extends MVCPortlet {
 	
 	@Override
 	public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
-		try {
-			HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
-			HttpServletResponse response = PortalUtil.getHttpServletResponse(renderResponse);
-			
-			HttpSession session = request.getSession();
-			ArrayList<ChargeVO> listCharge;
+		HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
+		HttpSession session = request.getSession();
 		
-			listCharge = procesorFacade.listCharge(new ChargeVO(String.valueOf(PortalUtil.getUserId(request))));
+		if(request.getParameter("accion") == null) {
+		
+			try {
+				ChargeVO chargeVO = new ChargeVO();
+				chargeVO.setCardVO(new CardVO());
+				chargeVO.getCardVO().setNumber(null);
+				
+				chargeVO.setTransactionVO(new TransactionVO());
+				chargeVO.getTransactionVO().setMerchantId(null);
+				
+				chargeVO.getCardVO().setBrand(null);
+				chargeVO.getCardVO().setCountry(null);
+				chargeVO.setCurrency("1");
+				
+				chargeVO.setInitialDateReport(BBUtils.getCurrentDate(2,-1*(150)));
+				chargeVO.setFinalDateReport(BBUtils.getCurrentDate(2,0));
+				chargeVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
+				
+				ArrayList<ChargeVO> listCharge = procesorFacade.listChargeByDayFiter(chargeVO);
+				session.setAttribute("listCharge", listCharge);
+				
+				ArrayList<CountryVO> listCountries = procesorFacade.listCountries();
+				session.setAttribute("listCountries", listCountries);
+				
+				ArrayList<CurrencyVO> listCurrencies = procesorFacade.listCurrencies();
+				session.setAttribute("listCurrencies", listCurrencies);
+				
+				ArrayList<MerchantVO> listMerchants = procesorFacade.listAllMerchants(new MerchantVO(String.valueOf(PortalUtil.getUserId(request))));
+				session.setAttribute("listMerchants", listMerchants);
+				
+				chargeVO.setInitialDateReport(BBUtils.getCurrentDate(6,-1*(150)));
+				chargeVO.setFinalDateReport(BBUtils.getCurrentDate(6,0));
+				session.setAttribute("chargeVOCharges", chargeVO);
+				
+			} catch (ProcesorFacadeException e) {
+				e.printStackTrace();
+				PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+				SessionMessages.add(renderRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+				SessionErrors.add(renderRequest,e.getErrorCode());
+				System.out.println("e.getMessage(): " + e.getMessage());
+				System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
+				System.out.println("e.getErrorCode(): " + e.getErrorCode());
+			}
+		} else  if(request.getParameter("accion") != null && request.getParameter("accion").equalsIgnoreCase("renderURLRefunds")) {
+			ArrayList<ChargeVO> listCharge = (ArrayList)session.getAttribute("listCharge");
+			if(listCharge == null) listCharge = new ArrayList<ChargeVO>();
+			listCharge = Methods.orderCharges(listCharge,request.getParameter("orderByCol"),request.getParameter("orderByType"));
 			session.setAttribute("listCharge", listCharge);
-			
-		} catch (ProcesorFacadeException e) {
-			e.printStackTrace();
-			PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
-			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
-			SessionMessages.add(renderRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
-			SessionErrors.add(renderRequest,e.getErrorCode());
-			System.out.println("e.getMessage(): " + e.getMessage());
-			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
-			System.out.println("e.getErrorCode(): " + e.getErrorCode());
-		}
+		}	
 		super.doView(renderRequest, renderResponse);
 	}
 	
@@ -105,6 +143,8 @@ public class FormRefund extends MVCPortlet {
 			
 			listRefunds = procesorFacade.listRefunds(refundVO);
 			session.setAttribute("listRefunds", listRefunds);
+			
+			session.setAttribute("indiceRefunds", indice);
 			
 		} catch (ProcesorFacadeException e) {
 			e.printStackTrace();
@@ -155,6 +195,9 @@ public class FormRefund extends MVCPortlet {
 						e1.printStackTrace();
 					}
 					
+//					ArrayList<ChargeVO> resultsListCharge = (ArrayList<ChargeVO>)session.getAttribute("results");
+//					ChargeVO chargeVOAux = (ChargeVO)resultsListCharge.get(Integer.parseInt((String)session.getAttribute("indiceRefunds")));
+					
 					chargeVO = procesorFacade.listChargeDetail(chargeVO);
 					session.setAttribute("chargeVO", chargeVO);
 					
@@ -162,7 +205,13 @@ public class FormRefund extends MVCPortlet {
 					session.setAttribute("listRefunds", listRefunds);
 					
 					
+					ArrayList<ChargeVO> listCharge = (ArrayList<ChargeVO>)session.getAttribute("listCharge");
+					listCharge.add(listCharge.indexOf(chargeVO), chargeVO);
+					session.setAttribute("listCharge", listCharge);
 					
+					ArrayList<ChargeVO> resultsListCharge = (ArrayList<ChargeVO>)session.getAttribute("results");
+					resultsListCharge.add(resultsListCharge.indexOf(chargeVO), chargeVO);
+					session.setAttribute("results", resultsListCharge);
 					
 				} catch (ProcesorFacadeException e) {
 					e.printStackTrace();

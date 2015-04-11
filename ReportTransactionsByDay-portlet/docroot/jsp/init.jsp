@@ -44,13 +44,13 @@
 <%@ page import="com.liferay.portal.kernel.util.ListUtil" %>
 <%@ page import="com.liferay.portal.kernel.util.ParamUtil" %>
 <%@ page import="au.com.billingbuddy.porlet.utilities.Methods" %>
-<%@ page import="au.com.billingbuddy.common.objects.Utilities" %>
-<%@ page import="au.com.billingbuddy.common.objects.Currency" %>
+<%-- <%@ page import="au.com.billingbuddy.common.objects.Utilities" %>
+<%@ page import="au.com.billingbuddy.common.objects.Currency" %> --%>
 
 <%@ page import="au.com.billingbuddy.vo.objects.TransactionVO" %>
 <%@ page import="au.com.billingbuddy.vo.objects.MerchantVO" %>
-<%@ page import="au.com.billingbuddy.vo.objects.CountryVO" %>
-<%@ page import="au.com.billingbuddy.vo.objects.CurrencyVO" %>
+<%-- <%@ page import="au.com.billingbuddy.vo.objects.CountryVO" %>
+<%@ page import="au.com.billingbuddy.vo.objects.CurrencyVO" %> --%>
 <%@ page import="au.com.billingbuddy.vo.objects.CardVO" %>
 <%@ page import="au.com.billingbuddy.vo.objects.ChargeVO" %>
 

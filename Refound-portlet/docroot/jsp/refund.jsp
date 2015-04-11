@@ -126,8 +126,6 @@
 	    dataType: "html",
 	    data: {orderNumber:<%=chargeVO.getTransactionId()%>},
 	    success : function(data){
-	    	alert("Termina: " + data);
-	    	<%-- $( "#listRefunds" ).load('<%=renderRequest.getContextPath()%>'+'/jsp/refunds.jsp'); --%>
 	    	$( "#listRefunds" ).load("<%=ajaxUrl%>");
 	    },error : function(XMLHttpRequest, textStatus, errorThrown){
 	          alert("XMLHttpRequest..." + XMLHttpRequest);
@@ -158,7 +156,7 @@
 					<div id="columna2-2">
 						<dl class="property-list">
 							<dt><fmt:message key="label.dateOrderPlaced"/></dt>
-							<dd><c:out value="${Utils:formatDate(3,chargeVO.creationTime,3)}"/></dd>
+							<dd><c:out value="${Utils:formatDate(3,chargeVO.creationTime,7)}"/></dd>
 						</dl>
 					</div>
 				</div>
@@ -213,7 +211,12 @@
 					<div id="columna3-3">
 						<div class="control-group">
 							<aui:input label="label.refundAmount" showRequiredLabel="false" required="true" id="refundAmount" name="refundAmount" disabled="false" value="<%=Utilities.stripeToCurrency(String.valueOf(Integer.parseInt(chargeVO.getAmount()) - Integer.parseInt(chargeVO.getAmountRefunded())),chargeVO.getCurrency().toUpperCase()) %>">
-								<%-- <aui:validator name="number" /> --%>
+								<aui:validator name="custom" errorMessage="error.decimalNumber">
+									function (val, fieldNode, ruleValue) {
+										var result = ( /^(\d+|\d+.\d{1,2})$/.test(val));
+										return result;
+									}
+								</aui:validator>
 							</aui:input>
 						</div>
 					</div>
@@ -254,10 +257,9 @@
 			       %>
 				</liferay-ui:search-container-results>
 				<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.RefundVO" rowVar="posi" indexVar="indiceTable" keyProperty="id" modelVar="refundVO">
-				<%-- <liferay-ui:search-container-column-text name="Refund" property="id" value="id" orderable="false" orderableProperty="id"/> --%>
 				<liferay-ui:search-container-column-text name="label.currency" value="${Utils:toUpperCase(refundVO.currency)}" orderable="false" orderableProperty="currency" />
 				<liferay-ui:search-container-column-text name="label.refundAmount" value="<%=Utilities.stripeToCurrency(refundVO.getAmount(),refundVO.getCurrency().toUpperCase()) %>" orderable="false" orderableProperty="amount" />
-				<liferay-ui:search-container-column-text name="label.dateRefund" value="<%=Utilities.formatDate(refundVO.getCreationTime())%>"  orderable="false" orderableProperty="creationTime" />
+				<liferay-ui:search-container-column-text name="label.dateRefund" value="${Utils:formatDate(3,refundVO.creationTime,7)}"  orderable="false" orderableProperty="creationTime" />
 				<liferay-ui:search-container-column-text name="Reason" property="reason" orderable="false" orderableProperty="reason" />
 			   </liferay-ui:search-container-row>
 			   <liferay-ui:search-iterator paginate="false" />

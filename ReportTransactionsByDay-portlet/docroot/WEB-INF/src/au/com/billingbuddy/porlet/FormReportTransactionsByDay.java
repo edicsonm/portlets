@@ -55,7 +55,6 @@ public class FormReportTransactionsByDay extends MVCPortlet {
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
 		HttpSession session = request.getSession();
 		
-		System.err.println("XXXXXXXXXXXXXXXXXXXXXXX renderRequest XXXXXXXXXXXXXXXXXXXXXXX " + request.getParameter("accion"));
 		if(request.getParameter("accion") == null) {
 			try {
 				
@@ -99,7 +98,7 @@ public class FormReportTransactionsByDay extends MVCPortlet {
 				if(listTransactionsByDay == null) listTransactionsByDay = new ArrayList<TransactionVO>();
 				listTransactionsByDay = Methods.orderReportTransactionsByDay(listTransactionsByDay,request.getParameter("orderByCol"),request.getParameter("orderByType"));
 				session.setAttribute("listTransactionsByDay", listTransactionsByDay);
-				System.out.println("Ordenando ... ");
+//				System.out.println("Ordenando ... ");
 //			}
 		}
 //		include("/hola.jsp", renderRequest, renderResponse, PortletRequest.RESOURCE_PHASE);
@@ -113,13 +112,13 @@ public class FormReportTransactionsByDay extends MVCPortlet {
 //		Methods.printParameters(actionRequest);
 		
 		TransactionVO transactionVO = new TransactionVO();	
-		System.out.println("displayTerms.isAdvancedSearch()? ... " + actionRequest.getParameter("advancedSearch"));	
+//		System.out.println("displayTerms.isAdvancedSearch()? ... " + actionRequest.getParameter("advancedSearch"));	
 		
 		if (actionRequest.getParameter("advancedSearch").equalsIgnoreCase("true")) {//Entra aca si selecciona la busqueda avanzada
-			System.out.println("Entra por el if ... ");
+//			System.out.println("Entra por el if ... ");
 			
 			if(actionRequest.getParameter("andOperator").equalsIgnoreCase("1")){//Selecciono ALL
-				System.out.println("Selecciono *ALL");
+//				System.out.println("Selecciono *ALL");
 				
 				/* currency
 				merchant
@@ -151,7 +150,7 @@ public class FormReportTransactionsByDay extends MVCPortlet {
 				
 			}else{
 				
-				System.out.println("Selecciono *ANY");
+//				System.out.println("Selecciono *ANY");
 				transactionVO.setCardVO(new CardVO());
 				transactionVO.getCardVO().setNumber(BBUtils.nullStringToNULL(actionRequest.getParameter("cardNumber")));
 				transactionVO.setMerchantId(BBUtils.nullStringToNULL(actionRequest.getParameter("merchant")));
@@ -192,7 +191,7 @@ public class FormReportTransactionsByDay extends MVCPortlet {
 //			session.setAttribute("currency", actionRequest.getParameter("currency"));
 			
 		} else {
-			System.out.println("Entra por el else ... " + actionRequest.getParameter("keywords"));
+//			System.out.println("Entra por el else ... " + actionRequest.getParameter("keywords"));
 			transactionVO.setCardVO(new CardVO());
 			transactionVO.getCardVO().setNumber(actionRequest.getParameter("keywords"));
 			transactionVO.setChargeVO(new ChargeVO());
@@ -213,8 +212,8 @@ public class FormReportTransactionsByDay extends MVCPortlet {
 				}
 //			}
 			
-			System.out.println("fromDateTransactions ... " + transactionVO.getInitialDateReport());
-			System.out.println("toDateTransactions ... " + transactionVO.getFinalDateReport());
+//			System.out.println("fromDateTransactions ... " + transactionVO.getInitialDateReport());
+//			System.out.println("toDateTransactions ... " + transactionVO.getFinalDateReport());
 			transactionVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
 			actionResponse.setRenderParameter("keywords", actionRequest.getParameter("keywords"));
 		}

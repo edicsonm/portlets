@@ -24,15 +24,32 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="co"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
+<%@ taglib uri="http://www.billingbuddy.com/.com/bbtlds" prefix="Utils" %>
 
+<%@ page import="com.liferay.portal.service.RoleServiceUtil" %>
+<%@page import="com.liferay.portal.kernel.dao.search.DisplayTerms" %>
 
+<%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.Calendar"%>
 <%@ page import="java.util.GregorianCalendar"%>
 <%@ page import="java.util.Locale"%>
 <%@ page import="com.liferay.portal.kernel.util.CalendarFactoryUtil" %>
 <%@ page import="com.liferay.portal.kernel.dao.search.SearchContainer"%>
+<%@ page import="au.com.billingbuddy.porlet.utilities.Methods" %>
+<%@ page import="au.com.billingbuddy.vo.objects.MerchantVO" %>
 <%@ page import="au.com.billingbuddy.vo.objects.ChargeVO" %>
 <%@ page import="au.com.billingbuddy.vo.objects.RefundVO" %>
-<%@ page import="au.com.billingbuddy.porlet.utilities.Methods" %>
-<%@ page import="au.com.billingbuddy.common.objects.Utilities" %>
-<%@ page import="au.com.billingbuddy.common.objects.Currency" %>
+
+<%@ page import="au.com.billingbuddy.vo.objects.CountryVO" %>
+<%@ page import="au.com.billingbuddy.vo.objects.CurrencyVO" %>
+
+<portlet:defineObjects />
+<liferay-theme:defineObjects />
+
+<%
+	String cardNumber = (String)renderRequest.getParameter("cardNumber");
+	String brand = (String)renderRequest.getParameter("brand");
+	String merchant = (String)renderRequest.getParameter("merchant");
+	String countryCard = (String)renderRequest.getParameter("countryCard");
+	String currency = (String)renderRequest.getParameter("currency");
+%>

@@ -56,7 +56,7 @@
 						<div id="columna3-3">
 							<dl class="property-list">
 								<dt><fmt:message key="label.creationTime"/></dt>
-								<dd><c:out value="${Utils:formatDate(3,transactionVO.creationTime,3)}"/></dd>
+								<dd><c:out value="${Utils:formatDate(3,transactionVO.creationTime,7)}"/></dd>
 							</dl>
 						</div>
 					</div>

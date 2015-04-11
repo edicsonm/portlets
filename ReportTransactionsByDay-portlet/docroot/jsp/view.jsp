@@ -42,27 +42,8 @@
 </portlet:resourceURL>
 
 <% 
-	//orderByCol is the column name passed in the request while sorting
-	 String orderByCol = ParamUtil.getString(request, "orderByCol", "creationTime");
-
-	//orderByType is passed in the request while sorting. It can be either asc or desc
+	String orderByCol = ParamUtil.getString(request, "orderByCol", "creationTime");
 	String orderByType = ParamUtil.getString(request, "orderByType","desc");
-	
-	System.out.println("JSP orderByCol: " + orderByCol);
-	System.out.println("JSP orderByType: " + orderByType);
-	
-	//Logic for toggle asc and desc
-	
-	/* if(orderByType.equals("desc")){
-	  orderByType = "asc";
-	}else{
-	  orderByType = "desc";
-	}
-	
-	if(Validator.isNull(orderByType)){
-	  orderByType = "desc";
-	} */
-	
 	pageContext.setAttribute("orderByCol", orderByCol);
     pageContext.setAttribute("orderByType", orderByType); 
 
@@ -185,7 +166,7 @@
 					</c:if>
 					
 					<liferay-ui:search-container-column-text name="label.amount" value="${Utils:stripeToCurrency(transactionVO.chargeVO.amount, transactionVO.chargeVO.currency)}" orderable="true" orderableProperty="chargeVO.amount" href="<%= rowURL %>"/>
-					<liferay-ui:search-container-column-text name="label.date" value="${Utils:formatDate(3,transactionVO.creationTime,3)}" orderable="true" orderableProperty="creationTime"/>
+					<liferay-ui:search-container-column-text name="label.date" value="${Utils:formatDate(3,transactionVO.creationTime,7)}" orderable="true" orderableProperty="creationTime"/>
 					<liferay-ui:search-container-column-text name="label.cardNumber" value="${Utils:printCardNumber(transactionVO.cardVO.number)}" orderable="false"/>
 					<liferay-ui:search-container-column-text name="label.brand" value="${Utils:printString(transactionVO.cardVO.brand)}" orderable="true" orderableProperty="cardVO.brand"/>
 					<liferay-ui:search-container-column-text name="label.currency" value="${Utils:toUpperCase(transactionVO.chargeVO.currency)}" orderable="true" orderableProperty="chargeVO.currency"/>
