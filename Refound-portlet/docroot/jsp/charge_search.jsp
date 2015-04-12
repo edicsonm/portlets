@@ -36,7 +36,7 @@
 	String currency = (String)session.getAttribute("currency"); */
 	
 %>
-<liferay-ui:search-toggle buttonLabel="Buscar..." displayTerms="<%= displayTerms %>" id="toggle_id_transactions_search">
+<liferay-ui:search-toggle buttonLabel="Buscar..." displayTerms="<%= displayTerms %>" id="toggle_id_charges_search">
 	
 	<aui:input label="label.cardNumber" id="cardNumber" name="cardNumber" value="<%=cardNumber %>"/>
 	<aui:input label="label.brand" id="brand" name="brand" value="<%=brand %>"/>

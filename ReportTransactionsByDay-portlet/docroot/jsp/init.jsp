@@ -26,7 +26,7 @@
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
 
 <%@ page import="com.liferay.portal.service.RoleServiceUtil" %>
-<%@page import="com.liferay.portal.kernel.dao.search.DisplayTerms" %>
+<%@page import="com.liferay.portal.kernel.dao.search.DisplayTerms" %> 
 <%@page import="com.liferay.portal.util.PortalUtil" %>
 <%@page import="com.liferay.portal.kernel.util.Validator" %>
 <%@ page import="com.liferay.portal.kernel.language.LanguageUtil" %>
@@ -49,8 +49,8 @@
 
 <%@ page import="au.com.billingbuddy.vo.objects.TransactionVO" %>
 <%@ page import="au.com.billingbuddy.vo.objects.MerchantVO" %>
-<%-- <%@ page import="au.com.billingbuddy.vo.objects.CountryVO" %>
-<%@ page import="au.com.billingbuddy.vo.objects.CurrencyVO" %> --%>
+<%@ page import="au.com.billingbuddy.vo.objects.CountryVO" %>
+<%@ page import="au.com.billingbuddy.vo.objects.CurrencyVO" %>
 <%@ page import="au.com.billingbuddy.vo.objects.CardVO" %>
 <%@ page import="au.com.billingbuddy.vo.objects.ChargeVO" %>
 

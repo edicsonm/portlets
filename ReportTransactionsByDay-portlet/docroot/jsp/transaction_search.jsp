@@ -22,19 +22,6 @@
 	ArrayList<MerchantVO> listMerchants = (ArrayList<MerchantVO>)session.getAttribute("listMerchants");
 	ArrayList<CountryVO> listCountries = (ArrayList<CountryVO>)session.getAttribute("listCountries");
 	ArrayList<CurrencyVO> listCurrencies = (ArrayList<CurrencyVO>)session.getAttribute("listCurrencies");
-	
-	/* String cardNumber = (String)renderRequest.getParameter("cardNumber");
-	String brand = (String)renderRequest.getParameter("brand");
-	String merchant = (String)renderRequest.getParameter("merchant");
-	String countryCard = (String)renderRequest.getParameter("countryCard");
-	String currency = (String)renderRequest.getParameter("currency"); */
-	
-	/* String cardNumber = (String)session.getAttribute("cardNumber");
-	String brand = (String)session.getAttribute("brand");
-	String merchant = (String)session.getAttribute("merchant");
-	String countryCard = (String)session.getAttribute("countryCard");
-	String currency = (String)session.getAttribute("currency"); */
-	
 %>
 <liferay-ui:search-toggle buttonLabel="Buscar..." displayTerms="<%= displayTerms %>" id="toggle_id_transactions_search">
 	

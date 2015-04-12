@@ -105,7 +105,7 @@ public class FormReportTransactionsByDay extends MVCPortlet {
 		super.doView(renderRequest, renderResponse);
 	}
 	
-	public void listarTransacciones(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException{
+	public void listTransactions(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException{
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 		HttpSession session = request.getSession();
 		
@@ -222,6 +222,10 @@ public class FormReportTransactionsByDay extends MVCPortlet {
 			
 			ArrayList<TransactionVO> listTransactionsByDay = reportFacade.searchTransactionsByDayFilter(transactionVO);
 			session.setAttribute("listTransactionsByDay", listTransactionsByDay);
+			
+			transactionVO.setInitialDateReport(actionRequest.getParameter("fromDateTransactions"));
+			transactionVO.setFinalDateReport(actionRequest.getParameter("toDateTransactions"));
+			session.setAttribute("transactionVOTransactions", transactionVO);
 			
 		} catch (ReportFacadeException e) {
 			e.printStackTrace();

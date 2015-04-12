@@ -114,6 +114,9 @@
 	if(listRefunds == null) listRefunds = new ArrayList<RefundVO>();
 	session.setAttribute("orderByColRefunds", orderByColRefunds);
 	session.setAttribute("orderByTypeRefunds", orderByTypeRefunds);
+	int refunded = Integer.parseInt(chargeVO.getAmount()) - Integer.parseInt(chargeVO.getAmountRefunded());
+	pageContext.setAttribute("refunded", refunded);
+	
 %>
 <script type="text/javascript">
 	function listRefunds() {
@@ -210,7 +213,7 @@
 					</div>
 					<div id="columna3-3">
 						<div class="control-group">
-							<aui:input label="label.refundAmount" showRequiredLabel="false" required="true" id="refundAmount" name="refundAmount" disabled="false" value="<%=Utilities.stripeToCurrency(String.valueOf(Integer.parseInt(chargeVO.getAmount()) - Integer.parseInt(chargeVO.getAmountRefunded())),chargeVO.getCurrency().toUpperCase()) %>">
+							<aui:input label="label.refundAmount" showRequiredLabel="false" required="true" id="refundAmount" name="refundAmount" disabled="false" value="${Utils:stripeToCurrency(refunded, chargeVO.currency)}">
 								<aui:validator name="custom" errorMessage="error.decimalNumber">
 									function (val, fieldNode, ruleValue) {
 										var result = ( /^(\d+|\d+.\d{1,2})$/.test(val));
@@ -258,7 +261,7 @@
 				</liferay-ui:search-container-results>
 				<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.RefundVO" rowVar="posi" indexVar="indiceTable" keyProperty="id" modelVar="refundVO">
 				<liferay-ui:search-container-column-text name="label.currency" value="${Utils:toUpperCase(refundVO.currency)}" orderable="false" orderableProperty="currency" />
-				<liferay-ui:search-container-column-text name="label.refundAmount" value="<%=Utilities.stripeToCurrency(refundVO.getAmount(),refundVO.getCurrency().toUpperCase()) %>" orderable="false" orderableProperty="amount" />
+				<liferay-ui:search-container-column-text name="label.refundAmount" value="${Utils:stripeToCurrency(refundVO.amount, refundVO.currency)}" orderable="false" orderableProperty="amount" />
 				<liferay-ui:search-container-column-text name="label.dateRefund" value="${Utils:formatDate(3,refundVO.creationTime,7)}"  orderable="false" orderableProperty="creationTime" />
 				<liferay-ui:search-container-column-text name="Reason" property="reason" orderable="false" orderableProperty="reason" />
 			   </liferay-ui:search-container-row>

@@ -106,16 +106,15 @@
    
 </aui:script>
 
-<portlet:actionURL name="listarTransacciones" var="listarTransacciones">
+<portlet:actionURL name="listTransactions" var="listTransactions">
 </portlet:actionURL>
 
-<aui:form action="<%=listarTransacciones %>" method="post">
+<aui:form action="<%=listTransactions %>" method="post">
  	<fieldset class="fieldset">
 		<legend class="fieldset-legend">
 			<span class="legend"><fmt:message key="label.reportDescription"/> </span>
 		</legend>
 		<div class="">
-		<%-- orderByType="<%=orderByType %>" --%>
 			<liferay-ui:search-container orderByType="<%=orderByType %>" orderByCol="<%=orderByCol %>"  displayTerms="<%= new DisplayTerms(renderRequest) %>" emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURLTransactionsByDay%>">
 				<div id="contenedor">
 					<div id="contenidos">
@@ -144,6 +143,7 @@
 						</div>
 					</div>
 				</div>
+				<%-- <liferay-ui:search-form  page="/jsp/transaction_search.jsp" servletContext="<%= application %>"/> --%>
 				<liferay-ui:search-container-results>
 					<%
 						/* listTransactionsByDay = Methods.orderReportTransactionsByDay(listTransactionsByDay,orderByCol,orderByType); */
