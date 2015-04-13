@@ -149,6 +149,17 @@
 		<div class="details">
 			<p id="sub-legend" class="description"><fmt:message key="label.paymentDetails"/></p>
 			<div id="contenedor">
+				<c:if test="<%= RoleServiceUtil.hasUserRole(user.getUserId(), user.getCompanyId(), \"BillingBuddyAdministrator\", true) %>">
+					<div id="contenidos">
+						<div id="columna1-2">
+							<dl class="property-list">
+								<dt><fmt:message key="label.merchant"/></dt>
+								<dd><c:out value="${chargeVO.transactionVO.merchantVO.name}"/></dd>
+							</dl>
+						</div>
+					</div>
+				</c:if>
+				
 				<div id="contenidos">
 					<div id="columna1-2">
 						<dl class="property-list">

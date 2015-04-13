@@ -90,17 +90,17 @@ public class FormSubscription extends MVCPortlet {
 			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("startAt"));
 			subscriptionVO.setStart(Utilities.getDateFormat(5).format(date));
 			
-			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("endedAt"));
-			subscriptionVO.setEndedAt(Utilities.getDateFormat(5).format(date));
-			
-			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("canceledAt"));
-			subscriptionVO.setCanceledAt(Utilities.getDateFormat(5).format(date));
-			
-			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("currentPeriodStart"));
-			subscriptionVO.setCurrentPeriodStart(Utilities.getDateFormat(5).format(date));
-			
-			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("currentPeriodEnd"));
-			subscriptionVO.setCurrentPeriodEnd(Utilities.getDateFormat(5).format(date));
+//			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("endedAt"));
+//			subscriptionVO.setEndedAt(Utilities.getDateFormat(5).format(date));
+//			
+//			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("canceledAt"));
+//			subscriptionVO.setCanceledAt(Utilities.getDateFormat(5).format(date));
+//			
+//			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("currentPeriodStart"));
+//			subscriptionVO.setCurrentPeriodStart(Utilities.getDateFormat(5).format(date));
+//			
+//			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("currentPeriodEnd"));
+//			subscriptionVO.setCurrentPeriodEnd(Utilities.getDateFormat(5).format(date));
 			
 			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("trialStartDay"));
 			subscriptionVO.setTrialStart(Utilities.getDateFormat(5).format(date));

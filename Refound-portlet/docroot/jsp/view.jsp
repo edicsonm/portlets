@@ -137,7 +137,11 @@
 							<portlet:param name="jspPage" value="/jsp/refund.jsp" />
 							<portlet:param name="orderNumber" value="<%=String.valueOf(chargeVO.getId())%>"/>
 						</portlet:actionURL>
-						
+					
+					<c:if test="<%= RoleServiceUtil.hasUserRole(user.getUserId(), user.getCompanyId(), \"BillingBuddyAdministrator\", true) %>">
+						<liferay-ui:search-container-column-text name="label.merchant" property="transactionVO.merchantVO.name" orderable="true" orderableProperty="transactionVO.merchantVO.name"/>
+					</c:if>
+					
 					<liferay-ui:search-container-column-text name="label.transactionAmount" value="${Utils:stripeToCurrency(chargeVO.amount,chargeVO.currency)}" orderable="true" orderableProperty="amount" href="<%= rowURL %>"/>
 					<liferay-ui:search-container-column-text name="label.date" value="${Utils:formatDate(3,chargeVO.creationTime,7)}" orderable="true" orderableProperty="creationTime" />
 					<liferay-ui:search-container-column-text name="label.cardNumber" value="${Utils:printCardNumber(chargeVO.cardVO.number)}" orderable="false"/>

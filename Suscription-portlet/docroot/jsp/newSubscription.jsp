@@ -221,12 +221,12 @@
 		</div>
 		<!-- planVO.setTrialPeriodDays -->
 		
-		<div class="control-group">
+		<%-- <div class="control-group">
 			<aui:select label="label.cancelAtPeriodEnd" name="cancelAtPeriodEnd" helpMessage="help.cancelAtPeriodEnd" id="cancelAtPeriodEnd">
 				<aui:option value="0" label="True" selected="${subscriptionVO.cancelAtPeriodEnd=='0'}"/>
 				<aui:option value="1" label="False" selected="${subscriptionVO.cancelAtPeriodEnd=='1'}"/>
 			</aui:select>
-		</div>
+		</div> --%>
 		
 		<%-- <div class="control-group">
 			<aui:select label="label.status" name="status" helpMessage="help.status" id="status">
@@ -238,7 +238,7 @@
 			</aui:select>
 		</div> --%>
 		
-		<div class="control-group">
+		<%-- <div class="control-group">
 			<aui:input label="label.applicationFeePercent" helpMessage="help.applicationFeePercent" showRequiredLabel="false" type="text" required="true" name="applicationFeePercent" value="${subscriptionVO.applicationFeePercent}">
 				<aui:validator name="custom" errorMessage="error.decimalNumber">
 					function (val, fieldNode, ruleValue) {
@@ -247,7 +247,8 @@
 					}
 				</aui:validator>
 			</aui:input>
-		</div>
+		</div> --%>
+		
 		<div class="control-group">
 			<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace />startPicker">
 				<aui:input onkeypress="return false;" value="${Utils:formatDateDefaultValue(3,subscriptionVO.start,6,0)}"  label="label.start" helpMessage="help.start" showRequiredLabel="false" size="10" type="text" required="true" name="startAt">
@@ -255,21 +256,21 @@
 				</aui:input>
 			</div>
 		</div>
-		<div class="control-group">
+		<%-- <div class="control-group">
 			<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace />endedAtPicker">
 				<aui:input onkeypress="return false;" value="${Utils:formatDate(3,subscriptionVO.endedAt,6)}"  label="label.endedAt" helpMessage="help.endedAt" showRequiredLabel="false" size="10" type="text" required="true" name="endedAt">
 					 <aui:validator name="date" />
 				</aui:input>
 			</div>
-		</div>
-		<div class="control-group">
+		</div> --%>
+		<%-- <div class="control-group">
 			<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace />canceledAtPicker">
 				<aui:input onkeypress="return false;" value="${Utils:formatDate(3,subscriptionVO.canceledAt,6)}" label="label.canceledAt" helpMessage="help.canceledAt" showRequiredLabel="false" size="10" type="text" required="true" name="canceledAt">
 					 <aui:validator name="date" />
 				</aui:input>
 			</div>
-		</div>
-		<div class="control-group">
+		</div> --%>
+	<%-- 	<div class="control-group">
 			<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace />currentPeriodStartPicker">
 				<aui:input onkeypress="return false;" value="${Utils:formatDate(3,subscriptionVO.currentPeriodStart,6)}" label="label.currentPeriodStart" helpMessage="help.currentPeriodStart" showRequiredLabel="false" size="10" type="text" required="true" name="currentPeriodStart">
 					 <aui:validator name="date" />
@@ -282,7 +283,7 @@
 					 <aui:validator name="date" />
 				</aui:input>
 			</div>
-		</div>
+		</div> --%>
 		
 		<div class="control-group">
 			<aui:input label="label.taxPercent" helpMessage="help.taxPercent" showRequiredLabel="false" type="text" required="false" name="taxPercent" value="${subscriptionVO.taxPercent}">

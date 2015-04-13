@@ -315,7 +315,8 @@ public class FormBasicPayment extends MVCPortlet {
 			transactionVO.getCardVO().getCustomerVO().setPhoneNumber(request.getParameter("phoneNumber"));
 			
 			initialTime = Calendar.getInstance().getTimeInMillis();
-			transactionVO = transactionFacade.proccesPayment(transactionVO);
+//			transactionVO = transactionFacade.proccesPayment(transactionVO);
+			transactionVO = transactionFacade.proccesPaymentFinal(transactionVO);
 			finalTime = Calendar.getInstance().getTimeInMillis();
 			System.out.println("Tiempo total de procesamiento de la solicitud: " + (finalTime-initialTime) + " ms.");
 			if(transactionVO.getStatus().equalsIgnoreCase("success")){

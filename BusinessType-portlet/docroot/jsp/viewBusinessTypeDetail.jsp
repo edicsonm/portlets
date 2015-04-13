@@ -40,7 +40,7 @@
 						<div id="columna1-2">
 							<dl class="property-list">
 								<dt><fmt:message key="label.description"/></dt>
-					<dd><c:out value="${businessTypeVO.description}"/></dd>
+								<dd><c:out value="${businessTypeVO.description}"/></dd>
 							</dl>
 						</div>
 					</div>
