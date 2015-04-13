@@ -315,11 +315,99 @@ public class FormBasicPayment extends MVCPortlet {
 			transactionVO.getCardVO().getCustomerVO().setPhoneNumber(request.getParameter("phoneNumber"));
 			
 			initialTime = Calendar.getInstance().getTimeInMillis();
+			transactionVO = transactionFacade.proccesPaymentFinal(transactionVO);
+			finalTime = Calendar.getInstance().getTimeInMillis();
+			System.out.println("Tiempo total de procesamiento de la solicitud: " + (finalTime-initialTime) + " ms.");
+			if(transactionVO.getStatus().equalsIgnoreCase("success")) {
+				
+				try {
+					InternetAddress fromAddress = new InternetAddress("noreply@billingbuddy.com"); // from address
+					InternetAddress toAddress = new InternetAddress(transactionVO.getCardVO().getCustomerVO().getEmail());  // to address
+					String body = ContentUtil.get("/templates/paymentProcessed.tmpl", true);  
+					String subject = "subject";
+					body = StringUtil.replace(body, new String []{"[$NAME$]","[$AMOUNT$]","[$DATE$]","[$CARDNUMBER$]","[$NUMBER$]"}, 
+							new String []{transactionVO.getCardVO().getName(), BBUtils.stripeToCurrency(transactionVO.getChargeVO().getAmount(), transactionVO.getChargeVO().getCurrency()),
+							BBUtils.getCurrentDate(3) ,BBUtils.printCardNumber(transactionVO.getCardVO().getNumber()), 
+							transactionVO.getId()}); // replacing the body with our content.
+					MailMessage mailMessage = new MailMessage();
+					mailMessage.setTo(toAddress);
+					mailMessage.setFrom(fromAddress);
+					mailMessage.setSubject(subject);
+					mailMessage.setBody(body);
+					mailMessage.setHTMLFormat(true);
+					MailServiceUtil.sendEmail(mailMessage); // Sending message
+					
+				} catch (AddressException e1) {
+					e1.printStackTrace();
+				}
+				SessionMessages.add(actionRequest, "paymentSuccessful");
+				session.setAttribute("transactionId", transactionVO.getId());
+				session.setAttribute("transactionVO", transactionVO);
+				actionResponse.setRenderParameter("jspPage", "/jsp/sumaryPayment.jsp");
+			}else{
+				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+//				SessionErrors.add(actionRequest, "error");
+				SessionErrors.add(actionRequest,transactionVO.getErrorCode());
+				session.setAttribute("transactionVO", transactionVO);
+//				actionResponse.setRenderParameter("jspPage", "/jsp/errorProcessor.jsp");
+				actionResponse.setRenderParameter("jspPage", "/jsp/error.jsp");
+			}
+		} catch (TransactionFacadeException e) {
+			
+			transactionVO.setStatus("error");
+			transactionVO.setMessage(e.getErrorCode());
+			transactionVO.setData(e.getErrorMenssage());
+			
+			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+			SessionErrors.add(actionRequest, e.getErrorCode());
+			SessionErrors.add(actionRequest,e.getErrorMenssage());
+			
+			System.out.println("e.getMessage(): " + e.getMessage());
+			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
+			System.out.println("e.getErrorCode(): " + e.getErrorCode());
+			
+			session.setAttribute("transactionVO", transactionVO);
+//			actionResponse.setRenderParameter("jspPage", "/jsp/errorProcessor.jsp");
+			actionResponse.setRenderParameter("jspPage", "/jsp/error.jsp");
+		}
+	}
+	
+	public void savePayment_RESPALDO(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+		
+		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
+		HttpServletResponse response = PortalUtil.getHttpServletResponse(actionResponse);
+		HttpSession session = request.getSession();
+		TransactionVO transactionVO = (TransactionVO)session.getAttribute("transactionVO");
+		try {
+			transactionVO.getCardVO().setBin(transactionVO.getCardVO().getNumber().substring(0, 6));
+			/****** Table Card ******/
+			transactionVO.getCardVO().setName(request.getParameter("name"));
+			transactionVO.getCardVO().setNumber(request.getParameter("cardNumber"));
+			transactionVO.getCardVO().setBin(transactionVO.getCardVO().getNumber().substring(0, 6));
+			transactionVO.getCardVO().setExpYear(request.getParameter("expirationYear"));
+			String expirationMonth = new DecimalFormat("00").format(Double.parseDouble(request.getParameter("expirationMonth")));
+			transactionVO.getCardVO().setExpMonth(expirationMonth.substring(expirationMonth.length()-2));
+			transactionVO.getCardVO().setCvv(request.getParameter("securityCode"));
+			
+			transactionVO.setBillingAddressCountry(request.getParameter("country"));
+			transactionVO.setBillingAddressRegion(request.getParameter("region"));
+			transactionVO.setBillingAddressCity(request.getParameter("city"));
+			transactionVO.setBillingAddressPostal(request.getParameter("postalCode"));
+			
+			transactionVO.getCardVO().setCustomerVO(new CustomerVO());
+			transactionVO.getCardVO().getCustomerVO().setEmail(request.getParameter("email"));
+			transactionVO.getCardVO().getCustomerVO().setPhoneNumber(request.getParameter("phoneNumber"));
+			
+			initialTime = Calendar.getInstance().getTimeInMillis();
 //			transactionVO = transactionFacade.proccesPayment(transactionVO);
 			transactionVO = transactionFacade.proccesPaymentFinal(transactionVO);
 			finalTime = Calendar.getInstance().getTimeInMillis();
 			System.out.println("Tiempo total de procesamiento de la solicitud: " + (finalTime-initialTime) + " ms.");
-			if(transactionVO.getStatus().equalsIgnoreCase("success")){
+			if(transactionVO.getStatus().equalsIgnoreCase("success")) {
 				try {
 					InternetAddress fromAddress = new InternetAddress("noreply@billingbuddy.com"); // from address
 					InternetAddress toAddress = new InternetAddress(transactionVO.getCardVO().getCustomerVO().getEmail());  // to address

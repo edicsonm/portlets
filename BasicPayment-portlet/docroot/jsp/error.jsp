@@ -36,6 +36,18 @@
 <liferay-ui:error key="SecurityMDTR.validateSignature.FileNotFoundException" message="error.SecurityMDTR.validateSignature.FileNotFoundException" />
 <liferay-ui:error key="SecurityMDTR.validateSignature.DecoderException" message="error.SecurityMDTR.validateSignature.DecoderException" />
 <liferay-ui:error key="ProcessorMDTR.creditCardFraudDetection.TransactionDAOException" message="error.ProcessorMDTR.creditCardFraudDetection.TransactionDAOException" />
+
+<liferay-ui:error key="ProcessorMDTR.chargePayment.CardException.incorrect_number" message="error.ProcessorMDTR.chargePayment.CardException.incorrect_number" />
+<liferay-ui:error key="ProcessorMDTR.chargePayment.CardException.card_declined" message="error.ProcessorMDTR.chargePayment.CardException.card_declined" />
+<liferay-ui:error key="ProcessorMDTR.chargePayment.CardException.incorrect_cvc" message="error.ProcessorMDTR.chargePayment.CardException.incorrect_cvc" />
+<liferay-ui:error key="ProcessorMDTR.chargePayment.CardException.expired_card" message="error.ProcessorMDTR.chargePayment.CardException.expired_card" />
+<liferay-ui:error key="ProcessorMDTR.chargePayment.CardException.invalid_expiry_month" message="error.ProcessorMDTR.chargePayment.CardException.invalid_expiry_month" />
+<liferay-ui:error key="ProcessorMDTR.chargePayment.CardException.invalid_expiry_year" message="error.ProcessorMDTR.chargePayment.CardException.invalid_expiry_year" />
+<liferay-ui:error key="ProcessorMDTR.chargePayment.CardException.incorrect_zip" message="error.ProcessorMDTR.chargePayment.CardException.incorrect_zip" />
+<liferay-ui:error key="ProcessorMDTR.chargePayment.CardException.missing" message="error.ProcessorMDTR.chargePayment.CardException.missing" />
+<liferay-ui:error key="ProcessorMDTR.chargePayment.CardException.processing_error" message="error.ProcessorMDTR.chargePayment.CardException.processing_error" />
+<liferay-ui:error key="ProcessorMDTR.chargePayment.CardDAOException" message="error.ProcessorMDTR.chargePayment.CardDAOException" />
+
 <liferay-ui:error key="TransactionFacade.2" message="error.TransactionFacade.2" />
 
 <%

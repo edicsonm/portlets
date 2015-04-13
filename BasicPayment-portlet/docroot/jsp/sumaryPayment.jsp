@@ -142,13 +142,13 @@
 						<div id="columna1-2">
 							<dl class="property-list">
 								<dt><fmt:message key="label.currency"/></dt>
-								<dd><c:out value="${transactionVO.chargeVO.currency}"/></dd>
+								<dd><c:out value="${transactionVO.orderCurrency}"/></dd>
 							</dl>
 						</div>
 						<div id="columna1-2">
 							<dl class="property-list">
 								<dt><fmt:message key="label.totalOrderAmount"/></dt>
-								<dd><c:out value="${transactionVO.chargeVO.amount}"/></dd>
+								<dd><c:out value="${transactionVO.orderAmount}"/></dd>
 							</dl>
 						</div>
 					</div>
