@@ -88,7 +88,7 @@ public class FormMerchant extends MVCPortlet {
 		HttpSession session = request.getSession();
 		MerchantVO merchantVO = (MerchantVO)session.getAttribute("merchantVO");
 		if(merchantVO == null) merchantVO = new MerchantVO();
-		if(actionRequest.getParameter("tabs").equalsIgnoreCase("Business")){
+		if(actionRequest.getParameter("tabs").equalsIgnoreCase("Business Information")){
 			merchantVO.setName(actionRequest.getParameter("name"));
 			merchantVO.setCountryNumericMerchant(actionRequest.getParameter("countryBusinessInformation"));
 			merchantVO.setTradingName(actionRequest.getParameter("tradingName"));
@@ -104,7 +104,7 @@ public class FormMerchant extends MVCPortlet {
 			merchantVO.setIssuedPersonalID(actionRequest.getParameter("issuedPersonalID"));
 			merchantVO.setTypeAccountApplication(actionRequest.getParameter("typeAccountApplication"));
 			merchantVO.setEstimatedAnnualSales(actionRequest.getParameter("estimatedAnnualSales"));
-			actionResponse.setRenderParameter("tabs", "Contact");
+			actionResponse.setRenderParameter("tabs", "Contact Information");
 		} else {
 			merchantVO.setFirstName(actionRequest.getParameter("firstName"));
 			merchantVO.setLastName(actionRequest.getParameter("lastName"));
@@ -115,7 +115,7 @@ public class FormMerchant extends MVCPortlet {
 			merchantVO.setCityPersonalInformation(actionRequest.getParameter("cityPersonalInformation"));
 			merchantVO.setPostCodePersonalInformation(actionRequest.getParameter("postCodePersonalInformation"));
 			merchantVO.setCountryNumericPersonalInformation(actionRequest.getParameter("countryPersonalInformation"));
-			actionResponse.setRenderParameter("tabs", "Business");
+			actionResponse.setRenderParameter("tabs", "Business Information");
 		}
 		session.setAttribute("merchantVO", merchantVO);
 		actionResponse.setRenderParameter("jspPage", actionRequest.getParameter("jspPage"));
@@ -166,8 +166,7 @@ public class FormMerchant extends MVCPortlet {
 				} catch (AddressException e1) {
 					e1.printStackTrace();
 				}
-				
-				actionResponse.setRenderParameter("jspPage", "/jsp/view_riginal.jsp");
+				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
 			} else {
 				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;

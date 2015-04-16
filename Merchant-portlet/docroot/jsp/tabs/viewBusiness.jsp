@@ -19,7 +19,7 @@
 	backURL.setParameter("jspPage", "/jsp/view.jsp");
 	
 	PortletURL forwardURL = renderResponse.createRenderURL();
-	forwardURL.setParameter("tabs", "Contact");
+	forwardURL.setParameter("tabs", "Contact Information");
 	forwardURL.setParameter("jspPage", "/jsp/viewMerchant.jsp");
 %>
 

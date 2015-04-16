@@ -14,18 +14,18 @@
 	session.setAttribute("indice", indice);
 	request.setAttribute("merchantVO", merchantVO);
 	
-	String tabs1 = ParamUtil.getString(request,"tabs","Business");
+	String tabs1 = ParamUtil.getString(request,"tabs","Business Information");
 	PortletURL portletURL = renderResponse.createRenderURL();
     portletURL.setParameter("tabs", tabs1);
     portletURL.setParameter("jspPage", "/jsp/viewMerchant.jsp");
 %>
 <aui:form>
-    <liferay-ui:tabs names="Business,Contact" param="tabs" onClick="submitTheForm();" url="<%=portletURL.toString()%>"/>            
+    <liferay-ui:tabs names="Business Information,Contact Information" param="tabs" onClick="submitTheForm();" url="<%=portletURL.toString()%>"/>            
         <c:choose>
-        <c:when test='<%=tabs1.equals("Business")%>'>
+        <c:when test='<%=tabs1.equalsIgnoreCase("Business Information")%>'>
             <%@include file="/jsp/tabs/viewBusiness.jsp" %>
         </c:when>
-        <c:when test='<%=tabs1.equals("Contact")%>'>
+        <c:when test='<%=tabs1.equalsIgnoreCase("Contact Information")%>'>
             <%@include file="/jsp/tabs/viewContact.jsp" %>
         </c:when>
     </c:choose>

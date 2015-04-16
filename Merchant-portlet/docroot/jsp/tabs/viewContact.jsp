@@ -16,7 +16,7 @@
 <fmt:setBundle basename="Language"/>
 <% 
 	PortletURL backURL = renderResponse.createRenderURL();
-	backURL.setParameter("tabs", "Business");
+	backURL.setParameter("tabs", "Business Information");
 	backURL.setParameter("jspPage", "/jsp/viewMerchant.jsp");
 	
 %>

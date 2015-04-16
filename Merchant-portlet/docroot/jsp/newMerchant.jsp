@@ -9,7 +9,7 @@
 <portlet:defineObjects />
 
 <%
-    String tabs1 = ParamUtil.getString(request,"tabs","Business");
+    String tabs1 = ParamUtil.getString(request,"tabs","Business Information");
     PortletURL portletURL = renderResponse.createRenderURL();
     portletURL.setParameter("tabs", tabs1);
     System.out.println("tabs1: " + tabs1);
@@ -37,12 +37,12 @@
 </script>
 
 <aui:form name="myform" id="myform" action="<%= keepInformation %>" method="post">
-    <liferay-ui:tabs names="Business,Contact" refresh="<%=false %>" param="tabs" onClick="submitTheForm();" url=""/>            
+    <liferay-ui:tabs names="Business Information,Contact Information" refresh="<%=false %>" param="tabs" onClick="submitTheForm();" url=""/>            
         <c:choose>
-        <c:when test='<%=tabs1.equals("Business")%>'>
+        <c:when test='<%=tabs1.equalsIgnoreCase("Business Information")%>'>
             <%@include file="/jsp/tabs/business.jsp" %>
         </c:when>
-        <c:when test='<%=tabs1.equals("Contact")%>'>
+        <c:when test='<%=tabs1.equalsIgnoreCase("Contact Information")%>'>
             <%@include file="/jsp/tabs/contact.jsp" %>
         </c:when>
     </c:choose>
