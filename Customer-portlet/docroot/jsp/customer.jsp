@@ -39,7 +39,7 @@
 <portlet:defineObjects />
 
 <aui:script use="aui-node,aui-base,aui-modal">
-window.showDetails = 
+window.showDetailsCard = 
     function(url) {
         var portletURL="<%=themeDisplay.getURLManageSiteMemberships().toString()%>";
         var dialog = new A.Modal(
@@ -48,9 +48,30 @@ window.showDetails =
                 centered: true,
                 modal: true,
                 resizable: false,
-                render: '#modal',
+                render: '#modalCards',
                 width: 450,
                 height: 300
+            }
+        ).plug(
+            A.Plugin.DialogIframe,
+                {
+                    uri: url
+                }
+        ).render();
+    }
+    
+window.showDetailsTransaction = 
+    function(url) {
+        var portletURL="<%=themeDisplay.getURLManageSiteMemberships().toString()%>";
+        var dialog = new A.Modal(
+            {
+            	bodyContent: 'Modal body',
+                centered: true,
+                modal: true,
+                resizable: false,
+                render: '#modalCards',
+                width: 550,
+                height: 500
             }
         ).plug(
             A.Plugin.DialogIframe,
@@ -70,13 +91,32 @@ window.showDetails =
 	<portlet:param name="jspPage" value="/jsp/view.jsp" />
 </portlet:actionURL>
 
-<portlet:renderURL var="popupURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>" >
+<%-- <portlet:renderURL var="popupURLCard" windowState="<%= LiferayWindowState.POP_UP.toString() %>" >
 	<portlet:param name="jspPage" value="/jsp/cardDetails.jsp"/>
 </portlet:renderURL>
 
-<liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLRefunds" />
+
+<portlet:renderURL var="popupURLTransaction" windowState="<%= LiferayWindowState.POP_UP.toString() %>" >
+	<portlet:param name="jspPage" value="/jsp/transactionDetails.jsp"/>
+</portlet:renderURL> --%>
+
+<liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLTransactions">
+	<portlet:param name="accion" value="renderURLTransactionsByDay"/>
+	<portlet:param name="cardNumber" value="<%=cardNumber%>"/>
+	<portlet:param name="brand" value="<%=brand%>"/>
+	<portlet:param name="merchant" value="<%=merchant%>"/>
+	<portlet:param name="countryCard" value="<%=countryCard%>"/>
+	<portlet:param name="currency" value="<%=currency%>"/>
+	<portlet:param name="lastCur" value="<%=ParamUtil.getString(request, \"cur\")%>"/>
+	<portlet:param name="jspPage" value="/jsp/customer.jsp" />
+</liferay-portlet:renderURL>
+
 <%
-	
+	String orderByColTransactions = ParamUtil.getString(request, "orderByColTransactions", "creationTime");
+	String orderByTypeTransactions = ParamUtil.getString(request, "orderByTypeTransactions","desc");
+	pageContext.setAttribute("orderByColTransactions", orderByColTransactions);
+	pageContext.setAttribute("orderByTypeTransactions", orderByTypeTransactions); 
+
 	/* PortletPreferences prefs = renderRequest.getPreferences();
 	String indice = (String)prefs.getValue("indice", "Hello! Welcome to our portal."); */
 	
@@ -126,6 +166,9 @@ window.showDetails =
 	ArrayList<CardVO> listCardsByCustomer = (ArrayList<CardVO>)session.getAttribute("listCardsByCustomer");
 	if(listCardsByCustomer == null) listCardsByCustomer = new ArrayList<CardVO>();
 	
+	ArrayList<TransactionVO> listTransactionsByCustomer = (ArrayList<TransactionVO>)session.getAttribute("listTransactionsByCustomer");
+	if(listTransactionsByCustomer == null) listTransactionsByCustomer = new ArrayList<TransactionVO>();
+	
 	/* ArrayList<RefundVO> listRefunds = (ArrayList<RefundVO>)session.getAttribute("listRefunds");
 	if(listRefunds == null) listRefunds = new ArrayList<RefundVO>();
 	session.setAttribute("orderByColRefunds", orderByColRefunds);
@@ -134,14 +177,17 @@ window.showDetails =
 	pageContext.setAttribute("refunded", refunded); */
 	
 %>
+<liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLCards">
+	<portlet:param name="accion" value="renderURLCards"/>
+	<portlet:param name="jspPage" value="/jsp/customer.jsp" />
+</liferay-portlet:renderURL>
 
-<aui:form action="<%= submitForm %>" method="post">
-	<%-- <a onclick="use()" href="#">${Utils:printCardNumber(cardVO.number)}</a> --%>
-	<!-- <button id="showModal" class="btn btn-primary" onclick="use();" >Show Modal</button> -->
-	<div class="yui3-skin-sam">
-	    <div id="modal"></div>
-	</div>
+<%-- <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLTransactions">
+	<portlet:param name="accion" value="renderURLTransactions"/>
+	<portlet:param name="jspPage" value="/jsp/customer.jsp" />
+</liferay-portlet:renderURL> --%>
 
+<aui:form method="post">
 <fieldset class="fieldset">
 	<legend class="fieldset-legend">
 		<span class="legend"><fmt:message key="label.customer"/> </span>
@@ -166,50 +212,13 @@ window.showDetails =
 					</div>
 				</div>
 			</div>
-				
-				<%-- <div id="contenidos">
-					<div id="columna1-2">
-						<dl class="property-list">
-							<dt><fmt:message key="label.transactionNumber"/></dt>
-							<dd><c:out value="${chargeVO.transactionId}"/></dd>
-						</dl>
-					</div>
-					<div id="columna2-2">
-						<dl class="property-list">
-							<dt><fmt:message key="label.dateOrderPlaced"/></dt>
-							<dd><c:out value="${Utils:formatDate(3,chargeVO.creationTime,7)}"/></dd>
-						</dl>
-					</div>
-				</div>
-				<div id="contenidos">
-					<div id="columna1-2">
-						<dl class="property-list">
-							<dt><fmt:message key="label.currency"/></dt>
-							<dd><c:out value="${Utils:toUpperCase(chargeVO.currency)}"/></dd>
-						</dl>
-					</div>
-					<div id="columna2-2">
-						<dl class="property-list">
-							<dt><fmt:message key="label.transactionAmount"/></dt>
-							<dd><c:out value="${Utils:stripeToCurrency(chargeVO.amount, chargeVO.currency)}"/></dd>
-						</dl>
-					</div>
-				</div>
-			</div> --%>
 			
 			<p id="sub-legend" class="description"><fmt:message key="label.cards"/></p>
-			<!-- <div class="yui3-skin-sam">
-			  <div id="modal"></div>
-			</div> -->
-			<liferay-ui:search-container  emptyResultsMessage="label.empty">
-			   <liferay-ui:search-container-results >
-			      <%
-					total = listCardsByCustomer.size();
-					pageContext.setAttribute("results", listCardsByCustomer);
-					pageContext.setAttribute("total", total);
-					session.setAttribute("results", results);
-			       %>
-				</liferay-ui:search-container-results>
+			<div class="yui3-skin-sam">
+			  <div id="modalCards"></div>
+			</div>
+			<liferay-ui:search-container curParam="Cards" deltaParam="deltaCards" delta="2" iteratorURL="<%=renderURLCards%>" emptyResultsMessage="label.empty">
+			   <liferay-ui:search-container-results resultsVar="resultsCards" totalVar="totalCards" results="<%= new ArrayList(ListUtil.subList(listCardsByCustomer, searchContainer.getStart(), searchContainer.getEnd()))%>" total="<%=listCardsByCustomer.size() %>"/>
 				<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.CardVO" rowVar="posi" indexVar="indice" keyProperty="id" modelVar="cardVO">
 				
 				<portlet:renderURL var="popupURLCardDetails" windowState="<%= LiferayWindowState.POP_UP.toString() %>" >
@@ -218,106 +227,46 @@ window.showDetails =
 					<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
 				</portlet:renderURL>
 				
+				<liferay-ui:search-container-column-text name="label.iterator" value="${cardVO.id}" orderable="false"/>
 				<liferay-ui:search-container-column-text name="label.cardNumber">
-					<a onclick="showDetails('<%= popupURLCardDetails.toString() %>')" href="#">${Utils:printCardNumber(cardVO.number)}</a>
+					<a onclick="showDetailsCard('<%= popupURLCardDetails.toString() %>')" href="#">${Utils:printCardNumber(cardVO.number)}</a>
 				</liferay-ui:search-container-column-text>
-				<%-- <liferay-ui:search-container-column-text name="label.cardNumber" value="${Utils:printCardNumber(cardVO.number)}" orderable="false" target="#"  href="aler('<%= popupURLCardDetails.toString() %>')"/> --%>
 				<liferay-ui:search-container-column-text name="label.brand" value="${Utils:printString(cardVO.brand)}" orderable="false"/>
 				<liferay-ui:search-container-column-text name="label.expire" value="${cardVO.expMonth} - ${cardVO.expYear}"  orderable="false"/>
 			   </liferay-ui:search-container-row>
-			   <liferay-ui:search-iterator searchContainer="<%= searchContainer %>"  paginate="false" />
+			   <liferay-ui:search-iterator />
 			</liferay-ui:search-container>
 			
-			<%-- <div id="contenedor">
-				<div id="contenidos">
-					<div id="columna1-2">
-						<dl class="property-list">
-							<dt><fmt:message key="label.cardType"/></dt>
-							<dd><c:out value="${chargeVO.cardVO.brand}"/></dd>
-						</dl>
-					</div>
-					<div id="columna2-2">
-						<dl class="property-list">
-							<dt><fmt:message key="label.paymentMethod"/></dt>
-							<dd><c:out value="${fn:toUpperCase(fn:substring(chargeVO.cardVO.funding, 0, 1))}${fn:toLowerCase(fn:substring(chargeVO.cardVO.funding, 1,fn:length(chargeVO.cardVO.funding)))}"/></dd>
-						</dl>
-					</div>
-				</div>
-			</div> --%>
+			
+			
+			<p id="sub-legend" class="description"><fmt:message key="label.transactions"/></p>
+			<div class="yui3-skin-sam">
+			  <div id="modalTransactions"></div>
+			</div>
+			<liferay-ui:search-container curParam="Transactions" deltaParam="deltaTransactions" delta="5" iteratorURL="<%=renderURLTransactions%>" emptyResultsMessage="label.empty">
+				<liferay-ui:search-container-results resultsVar="resultsTransactions" totalVar="totalTransactions" results="<%= new ArrayList(ListUtil.subList(listTransactionsByCustomer, searchContainer.getStart(), searchContainer.getEnd()))%>" total="<%=listTransactionsByCustomer.size() %>"/>
+				<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.TransactionVO" rowVar="posiTransaction" indexVar="indiceTransaction" keyProperty="id" modelVar="transactionVO">
+				
+				<portlet:renderURL var="popupURLTransactionDetails" windowState="<%= LiferayWindowState.POP_UP.toString() %>" >
+					<portlet:param name="jspPage" value="/jsp/transactionDetails.jsp"/>
+					<portlet:param name="idTransaction" value="<%=transactionVO.getId()%>"/>
+					<portlet:param name="indiceTransaction" value="<%=String.valueOf(indiceTransaction)%>"/>
+				</portlet:renderURL>
+				
+				<liferay-ui:search-container-column-text name="label.iterator" value="${transactionVO.id}" orderable="false"/>
+				<liferay-ui:search-container-column-text name="label.transactionAmount">
+					<a onclick="showDetailsTransaction('<%= popupURLTransactionDetails.toString() %>')" href="#">${Utils:stripeToCurrency(transactionVO.chargeVO.amount, transactionVO.chargeVO.currency)}</a>
+				</liferay-ui:search-container-column-text>
+				<liferay-ui:search-container-column-text name="label.date" value="${Utils:formatDate(3,transactionVO.creationTime,7)}" orderable="true" orderableProperty="creationTime"/>
+				<liferay-ui:search-container-column-text name="label.cardNumber" value="${Utils:printCardNumber(transactionVO.cardVO.number)}" orderable="false"/>
+			   </liferay-ui:search-container-row>
+			   <liferay-ui:search-iterator/>
+			</liferay-ui:search-container>
 			
 			<p id="sub-legend" class="description"><fmt:message key="label.refoundDetails"/></p>
-			<%-- <div id="contenedor">
-				<div id="contenidos">
-					<div id="columna1-3">
-						<div class="control-group">
-							<aui:input label="label.reason" type="textarea" showRequiredLabel="false" required="true" name="reason" value="${chargeVO.refundVO.reason}"/>
-						</div>
-					</div>
-					<div id="columna2-3">
-						<dl class="property-list">
-							<dt><fmt:message key="label.currency"/></dt>
-							<dd><c:out value="${Utils:toUpperCase(chargeVO.currency)}"/></dd>
-						</dl>
-					</div>
-					<div id="columna3-3">
-						<div class="control-group">
-							<aui:input label="label.refundAmount" showRequiredLabel="false" required="true" id="refundAmount" name="refundAmount" disabled="false" value="${Utils:stripeToCurrency(refunded, chargeVO.currency)}">
-								<aui:validator name="custom" errorMessage="error.decimalNumber">
-									function (val, fieldNode, ruleValue) {
-										var result = ( /^(\d+|\d+.\d{1,2})$/.test(val));
-										return result;
-									}
-								</aui:validator>
-							</aui:input>
-						</div>
-					</div>
-					
-				</div>
-				<div id="contenidos">
-					<div id="columna1-2">
-						<dl class="property-list">
-							<dt><fmt:message key="label.currency"/></dt>
-							<dd><c:out value="${Utils:toUpperCase(chargeVO.currency)}"/></dd>
-						</dl>
-					</div>
-					<div id="columna2-2">
-						<dl class="property-list">
-							<dt><fmt:message key="label.refunded"/></dt>
-							<dd><c:out value="${Utils:stripeToCurrency(chargeVO.amountRefunded, chargeVO.currency)}"/></dd>
-						</dl>
-					</div>
-				</div> --%>
 			</div>
 			
 			<p id="sub-legend" class="description"><fmt:message key="label.refoundHistory"/></p>
-			<%-- <liferay-ui:search-container emptyResultsMessage="label.empty" delta="<%= listRefunds.size() %>">
-			
-			<liferay-ui:search-container delta="<%= listRefunds.size() %>" emptyResultsMessage="label.empty">
-			   <liferay-ui:search-container-results>
-			      <%
-			      results= ListUtil.subList(listRefunds, searchContainer.getStart(), searchContainer.getEnd());
-			      total= listRefunds.size();
-			      pageContext.setAttribute("results", results);
-			      pageContext.setAttribute("total", total);	
-			      
-			      /* listRefunds = Methods.orderRefunds(listRefunds,orderByColRefunds,orderByTypeRefunds);
-					results = ListUtil.subList(listRefunds, searchContainer.getStart(), searchContainer.getEnd());
-					total = listRefunds.size();
-					pageContext.setAttribute("results", results);
-					pageContext.setAttribute("total", total); */
-			       %>
-				</liferay-ui:search-container-results>
-				<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.RefundVO" rowVar="posi" indexVar="indiceTable" keyProperty="id" modelVar="refundVO">
-				<liferay-ui:search-container-column-text name="label.currency" value="${Utils:toUpperCase(refundVO.currency)}" orderable="false" orderableProperty="currency" />
-				<liferay-ui:search-container-column-text name="label.refundAmount" value="${Utils:stripeToCurrency(refundVO.amount, refundVO.currency)}" orderable="false" orderableProperty="amount" />
-				<liferay-ui:search-container-column-text name="label.dateRefund" value="${Utils:formatDate(3,refundVO.creationTime,7)}"  orderable="false" orderableProperty="creationTime" />
-				<liferay-ui:search-container-column-text name="Reason" property="reason" orderable="false" orderableProperty="reason" />
-			   </liferay-ui:search-container-row>
-			   <liferay-ui:search-iterator paginate="false" />
-			</liferay-ui:search-container> --%>
-			
-			<input type="button" id="addSystemSection" onclick="showDetails('<%= popupURL.toString() %>')" value="new-section"/>
-			
 			<a href="<%= goBack %>"><fmt:message key="label.goBack"/></a>
 			<aui:button type="submit" name="processRefund" value="label.processRefund" />
 	</div>

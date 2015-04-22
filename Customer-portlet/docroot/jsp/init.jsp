@@ -43,14 +43,19 @@
 <%@ page import="au.com.billingbuddy.vo.objects.RefundVO" %>
 <%@ page import="au.com.billingbuddy.vo.objects.MerchantCustomerVO" %>
 
-
 <%@ page import="au.com.billingbuddy.vo.objects.CardVO" %>
 <%@ page import="au.com.billingbuddy.vo.objects.CountryVO" %>
 <%@ page import="au.com.billingbuddy.vo.objects.CurrencyVO" %>
+<%@ page import="au.com.billingbuddy.vo.objects.TransactionVO" %>
 
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 
 <%
 	String email = (String)renderRequest.getParameter("email");
+	String cardNumber = (String)renderRequest.getParameter("cardNumber");
+	String brand = (String)renderRequest.getParameter("brand");
+	String merchant = (String)renderRequest.getParameter("merchant");
+	String countryCard = (String)renderRequest.getParameter("countryCard");
+	String currency = (String)renderRequest.getParameter("currency");
 %>

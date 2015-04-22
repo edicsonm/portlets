@@ -62,9 +62,9 @@ public class FormCustomer extends MVCPortlet {
 			try {
 				MerchantCustomerVO merchantCustomerVO = new MerchantCustomerVO(String.valueOf(PortalUtil.getUserId(request)));
 				merchantCustomerVO.setMerchantId(null);
-				System.out.println("merchantCustomerVO.getUserId(): " + merchantCustomerVO.getUserId());
 				ArrayList<MerchantCustomerVO> listCustomersMerchant = procesorFacade.listCustomersMerchant(merchantCustomerVO);
 				session.setAttribute("listCustomersMerchant", listCustomersMerchant);
+				
 			} catch (ProcesorFacadeException e) {
 				e.printStackTrace();
 				PortletConfig portletConfig = (PortletConfig)renderRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
@@ -72,6 +72,8 @@ public class FormCustomer extends MVCPortlet {
 				SessionMessages.add(renderRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 				SessionErrors.add(renderRequest,e.getErrorCode());
 			}
+		} else  if(request.getParameter("accion") != null && request.getParameter("accion").equalsIgnoreCase("renderURLCards")) {
+			System.out.println("Entra por aca ... ");
 		} else  if(request.getParameter("accion") != null && request.getParameter("accion").equalsIgnoreCase("renderURLCustomers")) {
 			ArrayList<MerchantCustomerVO> listCustomersMerchant = (ArrayList)session.getAttribute("listCustomersMerchant");
 			if(listCustomersMerchant == null) listCustomersMerchant = new ArrayList<MerchantCustomerVO>();
@@ -105,7 +107,6 @@ public class FormCustomer extends MVCPortlet {
 		ArrayList<MerchantCustomerVO> resultsListCharge = (ArrayList<MerchantCustomerVO>)session.getAttribute("results");
 		MerchantCustomerVO merchantCustomerVO = (MerchantCustomerVO)resultsListCharge.get(Integer.parseInt(indice));
 		
-		System.out.println("merchantCustomerVO.getId(): " + merchantCustomerVO.getId());
 		session.setAttribute("merchantCustomerVO", merchantCustomerVO);
 		
 		
@@ -113,8 +114,19 @@ public class FormCustomer extends MVCPortlet {
 		cardVO.setCustomerId(merchantCustomerVO.getCustomerId());
 		
 		try {
+			
 			ArrayList<CardVO> listCardsByCustomer = procesorFacade.listCardsByCustomer(cardVO);
 			session.setAttribute("listCardsByCustomer", listCardsByCustomer);
+			
+			TransactionVO transactionVO = new TransactionVO(String.valueOf(PortalUtil.getUserId(request)));
+			transactionVO.setMerchantId(null);
+			transactionVO.setChargeVO(new ChargeVO());
+			transactionVO.getChargeVO().setCardVO(new CardVO());
+			transactionVO.getChargeVO().getCardVO().setCustomerId(merchantCustomerVO.getCustomerId());
+			ArrayList<TransactionVO> listTransactionsByCustomer = procesorFacade.searchTransactionsByCustomer(transactionVO);
+			session.setAttribute("listTransactionsByCustomer", listTransactionsByCustomer);
+			
+			
 		} catch (ProcesorFacadeException e) {
 			e.printStackTrace();
 			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
