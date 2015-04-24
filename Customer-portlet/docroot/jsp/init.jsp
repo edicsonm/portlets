@@ -47,6 +47,8 @@
 <%@ page import="au.com.billingbuddy.vo.objects.CountryVO" %>
 <%@ page import="au.com.billingbuddy.vo.objects.CurrencyVO" %>
 <%@ page import="au.com.billingbuddy.vo.objects.TransactionVO" %>
+<%@ page import="au.com.billingbuddy.vo.objects.SubscriptionVO" %>
+<%@ page import="au.com.billingbuddy.vo.objects.PlanVO" %>
 
 <portlet:defineObjects />
 <liferay-theme:defineObjects />

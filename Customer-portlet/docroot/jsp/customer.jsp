@@ -1,4 +1,5 @@
-<%@page import="com.sun.org.apache.xalan.internal.xsltc.compiler.sym"%>
+<%-- <%@page import="com.sun.org.apache.xalan.internal.xsltc.compiler.sym"%> --%>
+<%@page import="au.com.billingbuddy.vo.objects.SubscriptionVO"%>
 <%
 /**
  * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
@@ -29,76 +30,7 @@
 <fmt:setBundle basename="Language"/>
 <liferay-ui:success key="refundSuccessful" message="label.success" />
 
-<%-- <liferay-ui:error key="ProcessorMDTR.processRefound.InvalidRequestException" message="error.ProcessorMDTR.processRefound.InvalidRequestException" />
-<liferay-ui:error key="ProcessorMDTR.processRefound.InvalidRequestException.1" message="error.ProcessorMDTR.processRefound.InvalidRequestException.1" />
-<liferay-ui:error key="ProcessorMDTR.processRefound.InvalidRequestException.2" message="error.ProcessorMDTR.processRefound.InvalidRequestException.2" />
-<liferay-ui:error key="ProcessorMDTR.processRefound.InvalidRequestException.3" message="error.ProcessorMDTR.processRefound.InvalidRequestException.3" />
-<liferay-ui:error key="ProcessorMDTR.processRefound.InvalidRequestException.4" message="error.ProcessorMDTR.processRefound.InvalidRequestException.4" />
-<liferay-ui:error key="ProcessorMDTR.processRefound.RefundDAOException" message="error.ProcessorMDTR.processRefound.RefundDAOException" /> --%>
-
 <portlet:defineObjects />
-
-<aui:script use="aui-node,aui-base,aui-modal">
-window.showDetailsCard = 
-    function(url) {
-        var portletURL="<%=themeDisplay.getURLManageSiteMemberships().toString()%>";
-        var dialog = new A.Modal(
-            {
-            	bodyContent: 'Modal body',
-                centered: true,
-                modal: true,
-                resizable: false,
-                render: '#modalCards',
-                width: 450,
-                height: 300
-            }
-        ).plug(
-            A.Plugin.DialogIframe,
-                {
-                    uri: url
-                }
-        ).render();
-    }
-    
-window.showDetailsTransaction = 
-    function(url) {
-        var portletURL="<%=themeDisplay.getURLManageSiteMemberships().toString()%>";
-        var dialog = new A.Modal(
-            {
-            	bodyContent: 'Modal body',
-                centered: true,
-                modal: true,
-                resizable: false,
-                render: '#modalCards',
-                width: 550,
-                height: 500
-            }
-        ).plug(
-            A.Plugin.DialogIframe,
-                {
-                    uri: url
-                }
-        ).render();
-    }
-    
-</aui:script>
-
-<portlet:renderURL var="goBack">
-	<portlet:param name="jspPage" value="/jsp/view.jsp" />
-</portlet:renderURL>
-
-<portlet:actionURL name="processRefund" var="submitForm">
-	<portlet:param name="jspPage" value="/jsp/view.jsp" />
-</portlet:actionURL>
-
-<%-- <portlet:renderURL var="popupURLCard" windowState="<%= LiferayWindowState.POP_UP.toString() %>" >
-	<portlet:param name="jspPage" value="/jsp/cardDetails.jsp"/>
-</portlet:renderURL>
-
-
-<portlet:renderURL var="popupURLTransaction" windowState="<%= LiferayWindowState.POP_UP.toString() %>" >
-	<portlet:param name="jspPage" value="/jsp/transactionDetails.jsp"/>
-</portlet:renderURL> --%>
 
 <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLTransactions">
 	<portlet:param name="accion" value="renderURLTransactionsByDay"/>
@@ -111,28 +43,198 @@ window.showDetailsTransaction =
 	<portlet:param name="jspPage" value="/jsp/customer.jsp" />
 </liferay-portlet:renderURL>
 
+<liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLCards">
+	<portlet:param name="accion" value="renderURLCards"/>
+	<portlet:param name="jspPage" value="/jsp/customer.jsp" />
+</liferay-portlet:renderURL>
+
+<liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLRefunds">
+	<portlet:param name="accion" value="renderURLRefunds"/>
+	<portlet:param name="jspPage" value="/jsp/customer.jsp" />
+</liferay-portlet:renderURL>
+
+<liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLSubscriptions">
+	<portlet:param name="accion" value="renderURLSubscriptions"/>
+	<portlet:param name="jspPage" value="/jsp/customer.jsp" />
+</liferay-portlet:renderURL>
+
+<portlet:renderURL var="addSubscription" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+	<portlet:param name="jspPage" value="/jsp/newSubscription.jsp" />
+	<portlet:param name="accion" value="addSubscription"/>
+	<%-- <portlet:param name="redirect" value="<%= currentURL %>" /> --%>
+</portlet:renderURL>
+
+<%-- <aui:script>
+	YUI().use(
+		  'aui-toggler',
+		  function(Y) {
+		    new Y.TogglerDelegate(
+		      {
+		        animated: true,
+		        closeAllOnExpand: true,
+		        container: '#myToggler',
+		        content: '.content',
+		        expanded: false,
+		        header: '.header',
+		        transition: {
+		          duration: 0.2,
+		          easing: 'cubic-bezier(0, 0.1, 0, 1)'
+		        }
+		      }
+		    );
+		  }
+		);
+</aui:script> --%>
+
+<aui:script>
+	Liferay.provide(
+		window,
+		'showDetailsCard',
+		function(atr) {
+			var instance = this;
+			var url=atr;
+				Liferay.Util.openWindow(
+					{
+						cache: false,
+						dialog: {
+							align: Liferay.Util.Window.ALIGN_CENTER,
+							after: {
+								render: function(event) {
+									this.set('y', this.get('y') + 50);
+								}
+							},
+							resizable: false,
+							width: 450,
+							height: 340
+						},
+						dialogIframe: {
+							id: 'addCardIframe',
+							uri: url
+						},
+						title: '<fmt:message key="label.cardDetails"/>',
+						uri: url
+					}
+				);
+		},
+		['liferay-util-window']
+	);
+</aui:script>
+
+<aui:script>
+Liferay.provide(
+	window,
+	'showDetailsTransaction',
+	function(atr) {
+		var instance = this;
+		var url=atr;
+			Liferay.Util.openWindow(
+				{
+					cache: false,
+					dialog: {
+						align: Liferay.Util.Window.ALIGN_CENTER,
+						after: {
+							render: function(event) {
+								this.set('y', this.get('y') + 50);
+							}
+						},
+						resizable: false,
+						width: 550,
+						height: 500
+					},
+					dialogIframe: {
+						id: 'addTransactionIframe',
+						uri: url
+					},
+					title: '<fmt:message key="label.paymentDetails"/>',
+					uri: url
+				}
+			);
+	},
+	['liferay-util-window']
+);
+</aui:script>
+
+<aui:script>
+Liferay.provide(
+	window,
+	'showDetailsRefund',
+	function(atr) {
+		var instance = this;
+		var url=atr;
+			Liferay.Util.openWindow(
+				{
+					cache: false,
+					dialog: {
+						align: Liferay.Util.Window.ALIGN_CENTER,
+						after: {
+							render: function(event) {
+								this.set('y', this.get('y') + 50);
+							}
+						},
+						resizable: false,
+						width: 550,
+						height: 500
+					},
+					dialogIframe: {
+						id: 'addRefundIframe',
+						uri: url
+					},
+					title: '<fmt:message key="label.refoundDetails"/>',
+					uri: url
+				}
+			);
+	},
+	['liferay-util-window']
+);
+</aui:script>
+
+<aui:script>
+Liferay.provide(
+	window,
+	'addSubscription',
+	function() {
+		alert('ejecuta addSubscription 2');
+		var instance = this;
+		var url='<%=  addSubscription.toString() %>';
+			Liferay.Util.openWindow(
+				{
+					cache: false,
+					dialog: {
+						align: Liferay.Util.Window.ALIGN_CENTER,
+						after: {
+							render: function(event) {
+								this.set('y', this.get('y') + 50);
+							}
+						},
+						width: 820
+					},
+					dialogIframe: {
+						id: 'addDocumentIframe',
+						uri: url
+					},
+					title: '<liferay-ui:message key="label.attachDocument"/>',
+					uri: url
+				}
+			);
+	},
+	['liferay-util-window']
+);
+</aui:script>
+
+<portlet:renderURL var="goBack">
+	<portlet:param name="jspPage" value="/jsp/view.jsp" />
+</portlet:renderURL>
+
+<portlet:actionURL name="processRefund" var="submitForm">
+	<portlet:param name="jspPage" value="/jsp/view.jsp" />
+</portlet:actionURL>
+
 <%
+	
 	String orderByColTransactions = ParamUtil.getString(request, "orderByColTransactions", "creationTime");
 	String orderByTypeTransactions = ParamUtil.getString(request, "orderByTypeTransactions","desc");
 	pageContext.setAttribute("orderByColTransactions", orderByColTransactions);
 	pageContext.setAttribute("orderByTypeTransactions", orderByTypeTransactions); 
-
-	/* PortletPreferences prefs = renderRequest.getPreferences();
-	String indice = (String)prefs.getValue("indice", "Hello! Welcome to our portal."); */
-	
-	/* String indice = ParamUtil.getString(request, "indice");
-	System.out.println("indice: " + indice);
-	
-	String orderNumber = ParamUtil.getString(request, "orderNumber");
-	session.setAttribute("orderNumber", orderNumber);
-	System.out.println("orderNumber en jsp: " + orderNumber);
-	
-	
-	ArrayList<ChargeVO> resultsListCharge = (ArrayList<ChargeVO>)session.getAttribute("results");
-	ChargeVO chargeVO = (ChargeVO)resultsListCharge.get(Integer.parseInt(indice));
-	pageContext.setAttribute("chargeVO", chargeVO);
-	session.setAttribute("chargeVO", chargeVO);
-	session.setAttribute("indice", indice); */
 	
 	MerchantCustomerVO merchantCustomerVO = (MerchantCustomerVO)session.getAttribute("merchantCustomerVO");
 	
@@ -169,25 +271,49 @@ window.showDetailsTransaction =
 	ArrayList<TransactionVO> listTransactionsByCustomer = (ArrayList<TransactionVO>)session.getAttribute("listTransactionsByCustomer");
 	if(listTransactionsByCustomer == null) listTransactionsByCustomer = new ArrayList<TransactionVO>();
 	
-	/* ArrayList<RefundVO> listRefunds = (ArrayList<RefundVO>)session.getAttribute("listRefunds");
-	if(listRefunds == null) listRefunds = new ArrayList<RefundVO>();
-	session.setAttribute("orderByColRefunds", orderByColRefunds);
-	session.setAttribute("orderByTypeRefunds", orderByTypeRefunds);
-	int refunded = Integer.parseInt(chargeVO.getAmount()) - Integer.parseInt(chargeVO.getAmountRefunded());
-	pageContext.setAttribute("refunded", refunded); */
+	ArrayList<ChargeVO> listChargesRefundedByCustomer = (ArrayList<ChargeVO>)session.getAttribute("listChargesRefundedByCustomer");
+	if(listChargesRefundedByCustomer == null) listChargesRefundedByCustomer = new ArrayList<ChargeVO>();
+	
+	ArrayList<SubscriptionVO> listSubscriptionsByCustomer = (ArrayList<SubscriptionVO>)session.getAttribute("listSubscriptionsByCustomer");
+	if(listSubscriptionsByCustomer == null) listSubscriptionsByCustomer = new ArrayList<SubscriptionVO>();
 	
 %>
-<liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLCards">
-	<portlet:param name="accion" value="renderURLCards"/>
-	<portlet:param name="jspPage" value="/jsp/customer.jsp" />
-</liferay-portlet:renderURL>
-
-<%-- <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLTransactions">
-	<portlet:param name="accion" value="renderURLTransactions"/>
-	<portlet:param name="jspPage" value="/jsp/customer.jsp" />
-</liferay-portlet:renderURL> --%>
 
 <aui:form method="post">
+
+<%-- <div id="myToggler">
+  <h4 class="header toggler-header-collapsed"><p id="sub-legend" class="description"><fmt:message key="label.cards"/></p></h4>
+  	<div class="content toggler-content-collapsed">
+  			<liferay-ui:search-container curParam="Cards" deltaConfigurable="true" totalVar="totalVarCards" deltaParam="deltaCards" delta="2" iteratorURL="<%=renderURLCards%>" emptyResultsMessage="label.empty">
+			   <liferay-ui:search-container-results resultsVar="resultsCards" totalVar="totalCards" results="<%= new ArrayList(ListUtil.subList(listCardsByCustomer, searchContainer.getStart(), searchContainer.getEnd()))%>" total="<%=listCardsByCustomer.size() %>"/>
+				<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.CardVO" rowVar="posi" indexVar="indice" keyProperty="id" modelVar="cardVO">
+				
+				<portlet:renderURL var="popupURLCardDetails" windowState="<%= LiferayWindowState.POP_UP.toString() %>" >
+					<portlet:param name="jspPage" value="/jsp/cardDetails.jsp"/>
+					<portlet:param name="idCard" value="<%=cardVO.getId()%>"/>
+					<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
+				</portlet:renderURL>
+				
+				<liferay-ui:search-container-column-text name="label.iterator" value="${cardVO.id}" orderable="false"/>
+				<liferay-ui:search-container-column-text name="label.cardNumber">
+					<a onclick="showDetailsCard('<%= popupURLCardDetails.toString() %>')" href="#">${Utils:printCardNumber(cardVO.number)}</a>
+				</liferay-ui:search-container-column-text>
+				<liferay-ui:search-container-column-text name="label.brand" value="${Utils:printString(cardVO.brand)}" orderable="false"/>
+				<liferay-ui:search-container-column-text name="label.expire" value="${cardVO.expMonth} - ${cardVO.expYear}"  orderable="false"/>
+			   </liferay-ui:search-container-row>
+			   <liferay-ui:search-iterator />
+			</liferay-ui:search-container>
+  	</div>
+  	
+  <h4 class="header toggler-header-collapsed"><span>Animated</span> Option</h4>
+  <p class="content toggler-content-collapsed">This option has been set to <span>true</span> so that toggle transitions will animate.</p>
+  <h4 class="header toggler-header-collapsed"><span>Transition</span> Option</h4>
+  <p class="content toggler-content-collapsed">This option controls duration of transition, easing type, as well as callback functions.</p>
+  <h4 class="header toggler-header-collapsed"><span>closeAllOnExpand</span> Option</h4>
+  <p class="content toggler-content-collapsed">This option has been set to <span>true</span> so that all other toggle switches will be set to off when one switch is toggled on.</p>
+</div> --%>
+
+
 <fieldset class="fieldset">
 	<legend class="fieldset-legend">
 		<span class="legend"><fmt:message key="label.customer"/> </span>
@@ -214,10 +340,7 @@ window.showDetailsTransaction =
 			</div>
 			
 			<p id="sub-legend" class="description"><fmt:message key="label.cards"/></p>
-			<div class="yui3-skin-sam">
-			  <div id="modalCards"></div>
-			</div>
-			<liferay-ui:search-container curParam="Cards" deltaParam="deltaCards" delta="2" iteratorURL="<%=renderURLCards%>" emptyResultsMessage="label.empty">
+			<liferay-ui:search-container curParam="Cards" deltaConfigurable="true" totalVar="totalVarCards" deltaParam="deltaCards" delta="2" iteratorURL="<%=renderURLCards%>" emptyResultsMessage="label.empty">
 			   <liferay-ui:search-container-results resultsVar="resultsCards" totalVar="totalCards" results="<%= new ArrayList(ListUtil.subList(listCardsByCustomer, searchContainer.getStart(), searchContainer.getEnd()))%>" total="<%=listCardsByCustomer.size() %>"/>
 				<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.CardVO" rowVar="posi" indexVar="indice" keyProperty="id" modelVar="cardVO">
 				
@@ -237,13 +360,8 @@ window.showDetailsTransaction =
 			   <liferay-ui:search-iterator />
 			</liferay-ui:search-container>
 			
-			
-			
 			<p id="sub-legend" class="description"><fmt:message key="label.transactions"/></p>
-			<div class="yui3-skin-sam">
-			  <div id="modalTransactions"></div>
-			</div>
-			<liferay-ui:search-container curParam="Transactions" deltaParam="deltaTransactions" delta="5" iteratorURL="<%=renderURLTransactions%>" emptyResultsMessage="label.empty">
+			<liferay-ui:search-container curParam="Transactions" deltaConfigurable="true" totalVar="totalVarTransactions" deltaParam="deltaTransactions" delta="5" iteratorURL="<%=renderURLTransactions%>" emptyResultsMessage="label.empty">
 				<liferay-ui:search-container-results resultsVar="resultsTransactions" totalVar="totalTransactions" results="<%= new ArrayList(ListUtil.subList(listTransactionsByCustomer, searchContainer.getStart(), searchContainer.getEnd()))%>" total="<%=listTransactionsByCustomer.size() %>"/>
 				<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.TransactionVO" rowVar="posiTransaction" indexVar="indiceTransaction" keyProperty="id" modelVar="transactionVO">
 				
@@ -259,6 +377,57 @@ window.showDetailsTransaction =
 				</liferay-ui:search-container-column-text>
 				<liferay-ui:search-container-column-text name="label.date" value="${Utils:formatDate(3,transactionVO.creationTime,7)}" orderable="true" orderableProperty="creationTime"/>
 				<liferay-ui:search-container-column-text name="label.cardNumber" value="${Utils:printCardNumber(transactionVO.cardVO.number)}" orderable="false"/>
+			   </liferay-ui:search-container-row>
+			   <liferay-ui:search-iterator/>
+			</liferay-ui:search-container>
+			
+			<p id="sub-legend" class="description"><fmt:message key="label.subscriptions"/></p>
+			<liferay-ui:search-container curParam="Subscriptions" deltaConfigurable="true" totalVar="totalVarSubscriptions" deltaParam="deltaSubscriptions" delta="2" iteratorURL="<%=renderURLSubscriptions%>" emptyResultsMessage="label.empty">
+			   <liferay-ui:search-container-results resultsVar="resultsSubscriptions" totalVar="totalSubscriptions" results="<%= new ArrayList(ListUtil.subList(listSubscriptionsByCustomer, searchContainer.getStart(), searchContainer.getEnd()))%>" total="<%=listSubscriptionsByCustomer.size() %>"/>
+				<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.CardVO" rowVar="posi" indexVar="indice" keyProperty="id" modelVar="cardVO">
+				
+				<portlet:renderURL var="popupURLSubscriptionsDetails" windowState="<%= LiferayWindowState.POP_UP.toString() %>" >
+					<portlet:param name="jspPage" value="/jsp/subscriptionsDetails.jsp"/>
+					<portlet:param name="idCard" value="<%=cardVO.getId()%>"/>
+					<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
+				</portlet:renderURL>
+				
+				<liferay-ui:search-container-column-text name="label.iterator" value="${cardVO.id}" orderable="false"/>
+				<liferay-ui:search-container-column-text name="label.cardNumber">
+					<a onclick="showDetailsSubscriptions('<%= popupURLSubscriptionsDetails.toString() %>')" href="#">${Utils:printCardNumber(cardVO.number)}</a>
+				</liferay-ui:search-container-column-text>
+				<liferay-ui:search-container-column-text name="label.brand" value="${Utils:printString(cardVO.brand)}" orderable="false"/>
+				<liferay-ui:search-container-column-text name="label.expire" value="${cardVO.expMonth} - ${cardVO.expYear}"  orderable="false"/>
+			   </liferay-ui:search-container-row>
+			   <liferay-ui:search-iterator />
+			</liferay-ui:search-container>
+			
+			<%-- <aui:button type="button" onClick="addSubscription();" name="createSubscription" value="label.createSubscription" /> --%>
+			<button type="button" onclick="addSubscription();" class="btn btn-primary"><liferay-ui:message key="label.createSubscription"/></button>
+			
+			<p id="sub-legend" class="description"><fmt:message key="label.refunds"/></p>
+			<liferay-ui:search-container curParam="Refunds" deltaConfigurable="true" totalVar="totalVarRefunds" deltaParam="deltaRefunds" delta="5" iteratorURL="<%=renderURLRefunds%>" emptyResultsMessage="label.empty">
+				<liferay-ui:search-container-results resultsVar="resultsRefunds" totalVar="totalRefunds" results="<%= new ArrayList(ListUtil.subList(listChargesRefundedByCustomer, searchContainer.getStart(), searchContainer.getEnd()))%>" total="<%=listChargesRefundedByCustomer.size() %>"/>
+				<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.ChargeVO" rowVar="posiRefund" indexVar="indiceRefund" keyProperty="id" modelVar="chargeVO">
+				
+				<portlet:renderURL var="popupURLRefundDetails" windowState="<%= LiferayWindowState.POP_UP.toString() %>" >
+					<portlet:param name="jspPage" value="/jsp/refundDetails.jsp"/>
+					<portlet:param name="idCharge" value="<%=chargeVO.getId()%>"/>
+					<portlet:param name="indiceRefund" value="<%=String.valueOf(indiceRefund)%>"/>
+					<portlet:param name="accion" value="refundDetails"/>
+					
+				</portlet:renderURL>
+				
+				<liferay-ui:search-container-column-text name="label.iterator" value="${chargeVO.id}" orderable="false"/>
+				<liferay-ui:search-container-column-text name="label.iterator" value="${chargeVO.transactionId}" orderable="false"/>
+				<liferay-ui:search-container-column-text name="label.transactionAmount">
+					<a onclick="showDetailsRefund('<%= popupURLRefundDetails.toString() %>')" href="#">${Utils:stripeToCurrency(chargeVO.amount, chargeVO.currency)}</a>
+				</liferay-ui:search-container-column-text>
+				
+				<liferay-ui:search-container-column-text name="label.amountRefund" value="${Utils:stripeToCurrency(chargeVO.amountRefunded, chargeVO.currency)}" orderable="true" orderableProperty="amountRefunded"/>
+				
+				<liferay-ui:search-container-column-text name="label.date" value="${Utils:formatDate(3,chargeVO.creationTime,7)}" orderable="true" orderableProperty="creationTime"/>
+				<liferay-ui:search-container-column-text name="label.cardNumber" value="${Utils:printCardNumber(chargeVO.cardVO.number)}" orderable="false"/>
 			   </liferay-ui:search-container-row>
 			   <liferay-ui:search-iterator/>
 			</liferay-ui:search-container>

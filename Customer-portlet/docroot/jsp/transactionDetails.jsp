@@ -21,9 +21,6 @@
 	pageContext.setAttribute("transactionVO", transactionVO);
 %>
 <fieldset class="fieldset">
-		<legend class="fieldset-legend">
-			<span class="legend"><fmt:message key="label.paymentDetails"/> </span>
-		</legend>
 		<div class="">
 			<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
 			<div class="details">
