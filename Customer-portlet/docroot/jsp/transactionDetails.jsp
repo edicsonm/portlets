@@ -15,9 +15,14 @@
 <fmt:setBundle basename="Language"/>
 <%
 	
-	String indiceTransaction = (String)request.getParameter("indiceTransaction");
+	String idTransaction = (String)request.getParameter("idTransaction");
+	TransactionVO transactionVO = new TransactionVO();
+	transactionVO.setId(idTransaction);
+	
 	ArrayList<TransactionVO> listTransactionsByCustomer = (ArrayList<TransactionVO>)session.getAttribute("listTransactionsByCustomer");
-	TransactionVO transactionVO =(TransactionVO)listTransactionsByCustomer.get(Integer.parseInt(indiceTransaction));
+	int indiceTransaction = listTransactionsByCustomer.indexOf(transactionVO);
+	
+	transactionVO =(TransactionVO)listTransactionsByCustomer.get(indiceTransaction);
 	pageContext.setAttribute("transactionVO", transactionVO);
 %>
 <fieldset class="fieldset">

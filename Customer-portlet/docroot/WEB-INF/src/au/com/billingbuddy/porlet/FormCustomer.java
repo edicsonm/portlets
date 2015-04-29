@@ -38,6 +38,7 @@ import au.com.billingbuddy.vo.objects.MerchantCustomerVO;
 import au.com.billingbuddy.vo.objects.MerchantVO;
 import au.com.billingbuddy.vo.objects.PlanVO;
 import au.com.billingbuddy.vo.objects.RefundVO;
+import au.com.billingbuddy.vo.objects.SubscriptionVO;
 import au.com.billingbuddy.vo.objects.TransactionVO;
 
 import com.liferay.mail.service.MailServiceUtil;
@@ -54,6 +55,7 @@ import com.liferay.util.ContentUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
 
 public class FormCustomer extends MVCPortlet {
+	
 	private ProcesorFacade procesorFacade = ProcesorFacade.getInstance();
 	
 	@Override
@@ -75,7 +77,9 @@ public class FormCustomer extends MVCPortlet {
 				SessionErrors.add(renderRequest,e.getErrorCode());
 			}
 		} else  if(request.getParameter("accion") != null && request.getParameter("accion").equalsIgnoreCase("renderURLCards")) {
+			
 			System.out.println("Entra por aca ... ");
+			
 		} else  if(request.getParameter("accion") != null && request.getParameter("accion").equalsIgnoreCase("renderURLCustomers")) {
 			ArrayList<MerchantCustomerVO> listCustomersMerchant = (ArrayList)session.getAttribute("listCustomersMerchant");
 			if(listCustomersMerchant == null) listCustomersMerchant = new ArrayList<MerchantCustomerVO>();
@@ -119,15 +123,17 @@ public class FormCustomer extends MVCPortlet {
 			ArrayList<ChargeVO> listChargesRefundedByCustomer = procesorFacade.listChargesRefundedByCustomer(chargeVO);
 			session.setAttribute("listChargesRefundedByCustomer", listChargesRefundedByCustomer);
 			
+			SubscriptionVO subscriptionVO = new SubscriptionVO();
+			subscriptionVO.setCustomerId(merchantCustomerVO.getCustomerId());
+			ArrayList<SubscriptionVO> listSubscriptions = procesorFacade.listSubscriptions(subscriptionVO);
+			session.setAttribute("listSubscriptionsByCustomer", listSubscriptions);
+			
 		} catch (ProcesorFacadeException e) {
 			e.printStackTrace();
 			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 			SessionErrors.add(actionRequest,e.getErrorCode());
-			System.out.println("e.getMessage(): " + e.getMessage());
-			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
-			System.out.println("e.getErrorCode(): " + e.getErrorCode());
 		}
 		actionResponse.setRenderParameter("jspPage", "/jsp/customer.jsp");
 	}
@@ -156,18 +162,49 @@ public class FormCustomer extends MVCPortlet {
 		super.doPrint(renderRequest, renderResponse);
 	}
 
-	@Override
-	public void processAction(ActionRequest actionRequest,
-			ActionResponse actionResponse) throws IOException, PortletException {
-		System.out.println("Ejecuta processAction");
-		super.processAction(actionRequest, actionResponse);
+	public void cancelSubscription(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+//		System.out.println("Ejecuta cancelSubscription: " + actionRequest.getParameter("idSubscription"));
+		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
+		HttpSession session = request.getSession();
+		
+		String idSubscription = (String)actionRequest.getParameter("idSubscription");
+		SubscriptionVO subscriptionVO = new SubscriptionVO();
+		subscriptionVO.setId(idSubscription);
+		ArrayList<SubscriptionVO> listSubscriptionsByCustomer = (ArrayList<SubscriptionVO>)session.getAttribute("listSubscriptionsByCustomer");
+		int indiceSubscription = listSubscriptionsByCustomer.indexOf(subscriptionVO);
+		subscriptionVO = (SubscriptionVO)listSubscriptionsByCustomer.get(indiceSubscription);
+		
+		try {
+			procesorFacade.cancelSubscription(subscriptionVO);
+			if(subscriptionVO.getStatus().equalsIgnoreCase("success")) {
+				ArrayList<SubscriptionVO> listSubscriptions = procesorFacade.listSubscriptions(subscriptionVO);
+				session.setAttribute("listSubscriptionsByCustomer", listSubscriptions);
+				SessionMessages.add(actionRequest, "subscriptionCanceledSuccessfully");
+				session.removeAttribute("subscriptionVO");
+			} else {
+				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+				SessionErrors.add(actionRequest, "error");
+				SessionErrors.add(actionRequest,subscriptionVO.getMessage());
+				session.setAttribute("subscriptionVO", subscriptionVO);
+			}
+		} catch (ProcesorFacadeException e) {
+			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+			SessionErrors.add(actionRequest,e.getErrorCode());
+			session.setAttribute("subscriptionVO", subscriptionVO);
+		}
+		actionResponse.setRenderParameter("jspPage", "/jsp/customer.jsp");
 	}
 
 	@Override
-	public void render(RenderRequest renderRequest, RenderResponse response) throws PortletException, IOException {
+	public void render(RenderRequest renderRequest, RenderResponse renderResponse) throws PortletException, IOException {
+//		System.out.println("Ejecuta render");
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
 		HttpSession session = request.getSession();
-		
+//		System.out.println("accion: " + request.getParameter("accion"));
 		if(request.getParameter("accion") != null && request.getParameter("accion").equalsIgnoreCase("refundDetails")) {
 			
 			String idCharge = request.getParameter("idCharge");
@@ -204,14 +241,105 @@ public class FormCustomer extends MVCPortlet {
 				SessionMessages.add(renderRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 				SessionErrors.add(renderRequest,e.getErrorCode());
 			}
+		}else if(request.getParameter("accion") != null && request.getParameter("accion").equalsIgnoreCase("savedSubscription")){
+			 include("/jsp/newSubscription.jsp", renderRequest, renderResponse);
 		}
-		super.render(renderRequest, response);
+		super.render(renderRequest, renderResponse);
+	}
+	
+	public void saveSubscription(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+//		System.out.println("Ejecuta saveSubscription: " + actionRequest.getParameter("parametro"));
+		
+		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
+		HttpSession session = request.getSession();
+		
+		MerchantCustomerVO merchantCustomerVO = (MerchantCustomerVO)session.getAttribute("merchantCustomerVO");
+		SubscriptionVO subscriptionVO = new SubscriptionVO();
+		subscriptionVO.setCustomerId(merchantCustomerVO.getCustomerId());
+		subscriptionVO.setPlanId(actionRequest.getParameter("plan"));
+		subscriptionVO.setQuantity(actionRequest.getParameter("quantity"));
+		subscriptionVO.setCancelAtPeriodEnd(actionRequest.getParameter("cancelAtPeriodEnd"));
+		subscriptionVO.setStatus(actionRequest.getParameter("status"));
+		subscriptionVO.setApplicationFeePercent(actionRequest.getParameter("applicationFeePercent"));
+		subscriptionVO.setStart(actionRequest.getParameter("start"));
+		Date date;
+		
+		try {
+			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("trialStartDay"));
+			subscriptionVO.setTrialStart(Utilities.getDateFormat(5).format(date));
+			
+			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("trialEndDay"));
+			subscriptionVO.setTrialEnd(Utilities.getDateFormat(5).format(date));
+			
+			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("startAt"));
+			subscriptionVO.setStart(Utilities.getDateFormat(5).format(date));
+			
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		if(Utilities.isNullOrEmpty(actionRequest.getParameter("taxPercent"))){
+			subscriptionVO.setTaxPercent("0");
+		} else {
+			subscriptionVO.setTaxPercent(actionRequest.getParameter("taxPercent"));
+		}
+		session.setAttribute("subscriptionVO", subscriptionVO);
+		try {
+			procesorFacade.saveSubscription(subscriptionVO);
+			if(subscriptionVO.getStatus().equalsIgnoreCase("success")) {
+				ArrayList<SubscriptionVO> listSubscriptions = procesorFacade.listSubscriptions(subscriptionVO);
+				session.setAttribute("listSubscriptionsByCustomer", listSubscriptions);
+				SessionMessages.add(actionRequest, "subscriptionSavedSuccessfully");
+				session.removeAttribute("subscriptionVO");
+				actionResponse.setRenderParameter("jspPage", "/jsp/customer.jsp");
+			} else {
+				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+				SessionErrors.add(actionRequest, "error");
+				SessionErrors.add(actionRequest,subscriptionVO.getMessage());
+				session.setAttribute("subscriptionVO", subscriptionVO);
+				actionResponse.setRenderParameter("jspPage", "/jsp/newSubscription.jsp");
+			}
+		} catch (ProcesorFacadeException e) {
+			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+			SessionErrors.add(actionRequest,e.getErrorCode());
+			session.setAttribute("subscriptionVO", subscriptionVO);
+			actionResponse.setRenderParameter("jspPage", "/jsp/newSubscription.jsp");
+		}
+	}
+	
+	public void processForm(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
+		HttpSession session = request.getSession();
+		if(request.getParameter("accion") != null && request.getParameter("accion").equalsIgnoreCase("addSubscription")) {
+			try {
+				ArrayList<PlanVO> listPlans = procesorFacade.listPlans(new PlanVO());
+				session.setAttribute("listPlans", listPlans);
+				session.removeAttribute("subscriptionVO");
+				actionResponse.setRenderParameter("jspPage", "/jsp/newSubscription.jsp");
+			} catch (ProcesorFacadeException e) {
+				e.printStackTrace();
+				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+				SessionErrors.add(actionRequest,e.getErrorCode());
+				actionResponse.setRenderParameter("jspPage", "/jsp/customer.jsp");
+			}
+		}
+		/*super.processAction(actionRequest, actionResponse);*/
 	}
 	
 	
-	public void saveSubscription(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
-		System.out.println("Ejecuta saveSubscription");
-//		super.processAction(actionRequest, actionResponse);
+
+	@Override
+	public void serveResource(ResourceRequest resourceRequest, ResourceResponse resourceResponse) throws IOException, PortletException {
+		System.out.println("Ejecuta serveResource");
+		/*super.serveResource(resourceRequest, resourceResponse);*/
 	}
 	
 }

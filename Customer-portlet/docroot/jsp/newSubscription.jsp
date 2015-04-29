@@ -34,7 +34,6 @@
 	ArrayList<PlanVO> listPlans = (ArrayList<PlanVO>)session.getAttribute("listPlans");
 %>
 
-
 <portlet:resourceURL var="viewContentURL">
 	<portlet:param name="action" value="trialStartDate"/>
 </portlet:resourceURL>
@@ -174,14 +173,14 @@
 </portlet:actionURL>
 
 <portlet:renderURL var="goBackSubscription">
-	<portlet:param name="jspPage" value="/jsp/view.jsp" />
+	<portlet:param name="jspPage" value="/jsp/customer.jsp" />
 </portlet:renderURL>
 
 <aui:form  action="<%= submitFormSubscription %>" method="post">
 <fieldset class="fieldset">
-	<legend class="fieldset-legend">
+	<%-- <legend class="fieldset-legend">
 		<span class="legend"><fmt:message key="label.informationSubscription"/></span>
-	</legend>
+	</legend> --%>
 	<div class="">
 		<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
 		
@@ -291,7 +290,7 @@
 				</aui:validator>
 			</aui:input>
 		</div>
-		<%-- <a href="<%= goBackSubscription %>"><fmt:message key="label.goBack"/></a> --%>
+		<a href="<%= goBackSubscription %>"><fmt:message key="label.goBack"/></a>
 		<aui:button type="submit" name="save" value="label.save" />
 	</div>
 </fieldset>

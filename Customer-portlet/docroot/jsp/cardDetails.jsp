@@ -15,9 +15,14 @@
 <fmt:setBundle basename="Language"/>
 <%
 	
-	String indice = (String)request.getParameter("indice");
+	String idCard = (String)request.getParameter("idCard");
+	CardVO cardVO = new CardVO();
+	cardVO.setId(idCard);
+
 	ArrayList<CardVO> listCardsByCustomer = (ArrayList<CardVO>)session.getAttribute("listCardsByCustomer");
-	CardVO cardVO =(CardVO)listCardsByCustomer.get(Integer.parseInt(indice));
+	int indiceSubscription = listCardsByCustomer.indexOf(cardVO);
+	
+	cardVO = (CardVO)listCardsByCustomer.get(indiceSubscription);
 	pageContext.setAttribute("cardVO", cardVO);
 	
 %>
