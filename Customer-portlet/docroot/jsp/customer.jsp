@@ -481,7 +481,7 @@ Liferay.provide(
 			</liferay-ui:search-container>
 			
 			<a href="<%= goBack %>"><fmt:message key="label.goBack"/></a>
-			<aui:button type="submit" name="processRefund" value="label.processRefund" />
+			<%-- <aui:button type="submit" name="processRefund" value="label.processRefund" /> --%>
 	</div>
 </fieldset>
 </aui:form>
