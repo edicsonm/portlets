@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE liferay-portlet-app PUBLIC "-//Liferay//DTD Portlet Application 6.2.0//EN" "http://www.liferay.com/dtd/liferay-portlet-app_6_2_0.dtd">
+
+<liferay-portlet-app>
+	<portlet>
+		<portlet-name>SchedulerJobs</portlet-name>
+		<icon>/icon.png</icon>
+        
+        <!-- <scheduler-entry>
+            <scheduler-description>Scheduler Subscriptions</scheduler-description>
+            <scheduler-event-listener-class>au.com.billingbuddy.jobs.MessageListenerDemo</scheduler-event-listener-class>
+            <trigger>
+                <simple>
+                    <simple-trigger-value>5</simple-trigger-value>
+                    <time-unit>second</time-unit>
+                </simple>
+            </trigger>
+        </scheduler-entry> -->
+        
+        <friendly-url-mapper-class>com.liferay.portal.kernel.portlet.DefaultFriendlyURLMapper</friendly-url-mapper-class>
+		<friendly-url-mapping>SchedulerJobs</friendly-url-mapping>
+		<friendly-url-routes>au/com/billingbuddy/porlet/urlRoutes/friendly-url-routes.xml</friendly-url-routes>
+		<show-portlet-access-denied>false</show-portlet-access-denied>
+		<action-url-redirect>true</action-url-redirect>
+        
+		<header-portlet-css>/css/main.css</header-portlet-css>
+		<footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
+		<css-class-wrapper>SchedulerJobs-portlet</css-class-wrapper>
+	</portlet>
+	<role-mapper>
+		<role-name>administrator</role-name>
+		<role-link>Administrator</role-link>
+	</role-mapper>
+	<role-mapper>
+		<role-name>guest</role-name>
+		<role-link>Guest</role-link>
+	</role-mapper>
+	<role-mapper>
+		<role-name>power-user</role-name>
+		<role-link>Power User</role-link>
+	</role-mapper>
+	<role-mapper>
+		<role-name>user</role-name>
+		<role-link>User</role-link>
+	</role-mapper>
+</liferay-portlet-app>

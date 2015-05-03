@@ -75,19 +75,12 @@
 				<liferay-ui:search-container-results>
 					<%
 						DisplayTerms displayTerms =searchContainer.getDisplayTerms();
-						System.out.println("displayTerms.isAndOperator()? ... " + displayTerms.isAndOperator());
-						System.out.println("displayTerms.isAdvancedSearch()? ... " + displayTerms.isAdvancedSearch());
 						/* Methods.searchBusiness(listBusinessTypes, orderByCol, orderByType); */
 						if (displayTerms.isAdvancedSearch()) {
-							System.out.println("businessName ... " + businessName);
 						}else{
 							String searchkeywords = displayTerms.getKeywords();
-							System.out.println("searchkeywords: " + searchkeywords);
 							String numbesearchkeywords = Validator.isNumber(searchkeywords) ? searchkeywords : String.valueOf(0);
-							System.out.println("numbesearchkeywords: " + numbesearchkeywords);
-							System.out.println("businessName ... " + businessName);
 						}
-						System.out.println("\n\n\n\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ... ");
 /* 						total = StudentLocalServiceUtil.getSearchStudentsCount(firstName,lastName, studentAge, studentGender, studentAddress,displayTerms.isAndOperator());
 						searchContainer.setResults(StudentLocalServiceUtil.getSerachStudents(searchkeywords,searchkeywords,Integer.parseInt(numbesearchkeywords),Integer.parseInt(numbesearchkeywords), searchkeywords,false, searchContainer.getStart(), searchContainer.getEnd(), new StudentNameComparator()));
  */					

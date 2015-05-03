@@ -41,9 +41,6 @@ public class FormBusinessType extends MVCPortlet {
 			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 			SessionMessages.add(renderRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 			SessionErrors.add(renderRequest,e.getErrorCode());
-			System.out.println("e.getMessage(): " + e.getMessage());
-			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
-			System.out.println("e.getErrorCode(): " + e.getErrorCode());
 		}
 		super.doView(renderRequest, renderResponse);
 	}
@@ -74,9 +71,6 @@ public class FormBusinessType extends MVCPortlet {
 			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 			SessionErrors.add(actionRequest,e.getErrorCode());
-			System.out.println("e.getMessage(): " + e.getMessage());
-			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
-			System.out.println("e.getErrorCode(): " + e.getErrorCode());
 			session.setAttribute("businessTypeVO", businessTypeVO);
 			actionResponse.setRenderParameter("jspPage", "/jsp/newBusinessType.jsp");
 		}
@@ -109,9 +103,6 @@ public class FormBusinessType extends MVCPortlet {
 			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 			SessionErrors.add(actionRequest,e.getErrorCode());
-			System.out.println("e.getMessage(): " + e.getMessage());
-			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
-			System.out.println("e.getErrorCode(): " + e.getErrorCode());
 			session.setAttribute("businessTypeVO", businessTypeVO);
 			actionResponse.setRenderParameter("jspPage", "/jsp/editBusinessType.jsp");
 			actionResponse.setRenderParameter("indiceBusinessType", (String)session.getAttribute("indiceBusinessType"));
@@ -152,9 +143,6 @@ public class FormBusinessType extends MVCPortlet {
 			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 			SessionErrors.add(actionRequest,e.getErrorCode());
-			System.out.println("e.getMessage(): " + e.getMessage());
-			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
-			System.out.println("e.getErrorCode(): " + e.getErrorCode());
 			session.setAttribute("businessTypeVO", businessTypeVO);
 			actionResponse.setRenderParameter("jspPage", "/jsp/viewBusinessType.jsp");
 		}

@@ -12,7 +12,7 @@
 		<action-url-redirect>true</action-url-redirect>
 		<header-portlet-css>/css/main.css</header-portlet-css>
 		<!-- <header-portlet-javascript>https://code.jquery.com/jquery-1.8.2.js</header-portlet-javascript> -->
-<header-portlet-javascript>/js/jquery-1.8.2.js</header-portlet-javascript>
+		<header-portlet-javascript>/js/jquery-1.8.2.js</header-portlet-javascript>
 		<footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
 		<css-class-wrapper>RestrictionbyMerchant-portlet</css-class-wrapper>
 	</portlet>
