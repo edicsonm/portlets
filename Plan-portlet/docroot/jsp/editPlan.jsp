@@ -77,11 +77,12 @@
 					<aui:option value="Year" label="label.year" selected="${planVO.interval=='Year'}"/>
 				</aui:select>
 			</div>
-			<%-- <div class="control-group">
+			
+			<div class="control-group">
 				<aui:input label="label.intervalCount" helpMessage="help.intervalCount" showRequiredLabel="false" type="text" required="false" name="intervalCount" value="${planVO.intervalCount}">
 					<aui:validator name="digits"/>
 				</aui:input>
-			</div> --%>
+			</div>
 			
 			<div class="control-group">
 				<aui:input label="label.trialPeriodDays"  helpMessage="help.trialPeriodDays" showRequiredLabel="false" type="text" required="false" name="trialPeriodDays" value="${planVO.trialPeriodDays}">

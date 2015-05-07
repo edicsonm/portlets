@@ -13,14 +13,37 @@
  * details.
  */
 %>
-<%@ include file="init.jsp" %>
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
+<%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %>
+<%@ taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %>
+<%@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
+<%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="co"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
+<%@ taglib uri="http://www.billingbuddy.com/.com/bbtlds" prefix="Utils" %>
+
+<%@ page import="com.liferay.portal.service.RoleServiceUtil" %>
+<%@page import="com.liferay.portal.kernel.dao.search.DisplayTerms" %>
+
+<%@page import="com.liferay.portal.kernel.portlet.LiferayWindowState" %>
+
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.Calendar"%>
+<%@ page import="java.util.GregorianCalendar"%>
+<%@ page import="java.util.Locale"%>
+<%@ page import="com.liferay.portal.kernel.util.CalendarFactoryUtil" %>
+<%@ page import="com.liferay.portal.kernel.dao.search.SearchContainer"%>
+<%@ page import="au.com.billingbuddy.porlet.utilities.Methods" %>
+
+<%@ page import="au.com.billingbuddy.vo.objects.SubscriptionVO" %>
+<%@ page import="au.com.billingbuddy.vo.objects.PlanVO" %>
 
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="com.liferay.portal.theme.ThemeDisplay" %>
 <%@ page import="com.liferay.portal.kernel.util.WebKeys" %>
-<%@taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
 
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
@@ -51,7 +74,6 @@
 	    	<portlet:namespace/>trialEndDay: $("#<portlet:namespace />plan").find('option:selected').attr('value')},
 	    success : function(data){
 	    	$("#<portlet:namespace />trialEndDay").val(data.trialEnd);
-            $("#<portlet:namespace />startAt").val(data.start)
 	    },error : function(XMLHttpRequest, textStatus, errorThrown){
 	    	alert('failure');
 	    	alert("XMLHttpRequest..." + XMLHttpRequest);
@@ -63,89 +85,9 @@
 </script>
 
 	
-<aui:script>
-
-	function GetContent() {
-	    var url='<%=viewContentURL %>';
-	    AUI().io.request(
-	        url,
-	        {
-	            method: 'POST',
-	            data: {
-	                    <portlet:namespace/>planId: $("#<portlet:namespace />plan").find('option:selected').attr('value'),
-	                    <portlet:namespace/>trialEndDay: $("#<portlet:namespace />trialEndDay").val()
-	                  },
-	            on: {
-	                failure: function() {
-	                            alert('failure');
-	                         },
-	                success: function(event, id, obj) {
-	                            var instance = this;
-	                            var message = instance.get('responseData');
-	                            alert("message: " + message);
-	                            $("#<portlet:namespace />trialEndDay").val(message)
-	                         }
-	            }
-	        }
-	    );
-	}
+<aui:script> 
   
-  YUI().use('aui-datepicker', function(Y) {
-	    new Y.DatePicker({
-	        trigger: '#<portlet:namespace />startAt' ,
-	        popover: {
-	          zIndex: 1
-	        } 
-	      })
-	  }
-	);
-
-
-  YUI().use('aui-datepicker', function(Y) {
-	    new Y.DatePicker(
-	    	{
-	        trigger: '#<portlet:namespace />endedAt',
-	        popover: {
-	          zIndex: 1
-	        }
-	      });
-	  }
-	); 
-
-  YUI().use('aui-datepicker', function(Y) {
-	    new Y.DatePicker(
-	    	{
-	        trigger: '#<portlet:namespace />canceledAt',
-	        popover: {
-	          zIndex: 1
-	        }
-	      });
-	  }
-	); 
-
-  YUI().use('aui-datepicker', function(Y) {
-	    new Y.DatePicker(
-	    	{
-	        trigger: '#<portlet:namespace />currentPeriodStart',
-	        popover: {
-	          zIndex: 1
-	        }
-	      });
-	  }
-	); 
-  
-  YUI().use('aui-datepicker', function(Y) {
-	    new Y.DatePicker(
-	    	{
-	        trigger: '#<portlet:namespace />currentPeriodEnd',
-	        popover: {
-	          zIndex: 1
-	        }
-	      });
-	  }
-	);
-  
-  YUI().use('aui-datepicker', function(Y) {
+   YUI().use('aui-datepicker', function(Y) {
 	    new Y.DatePicker(
 	    	{
 	        trigger: '#<portlet:namespace />trialStartDay',
@@ -154,9 +96,9 @@
 	        }
 	      });
 	  }
-	);
-  
-  YUI().use('aui-datepicker', function(Y) {
+	);	
+	
+	YUI().use('aui-datepicker', function(Y) {
 	    new Y.DatePicker(
 	    	{
 	        trigger: '#<portlet:namespace />trialEndDay',
@@ -165,11 +107,11 @@
 	        }
 	      });
 	  }
-	); 
+	);
+	
 </aui:script>
 
 <portlet:actionURL name="saveSubscription" var="submitFormSubscription">
-	<%-- <portlet:param name="jspPage" value="/jsp/view.jsp" /> --%>
 </portlet:actionURL>
 
 <portlet:renderURL var="goBackSubscription">
@@ -178,12 +120,9 @@
 
 <aui:form  action="<%= submitFormSubscription %>" method="post">
 <fieldset class="fieldset">
-	<%-- <legend class="fieldset-legend">
-		<span class="legend"><fmt:message key="label.informationSubscription"/></span>
-	</legend> --%>
 	<div class="">
 		<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
-		
+	
 		<div class="control-group">
 			<aui:select name="plan" onChange="trialEnd();" helpMessage="help.plan"  label="label.plan" id="plan">
 				<c:forEach var="planVO" items="${listPlans}">
@@ -200,7 +139,7 @@
 		
 		<div class="control-group">
 			<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace />trialStartPicker">
-				<aui:input onkeypress="return false;" value="${Utils:formatDateDefaultValue(3,subscriptionVO.trialStart,6,0)}" label="label.trialStart" helpMessage="help.trialStart" showRequiredLabel="false" size="10" type="text" required="true" name="trialStartDay">
+				<aui:input onkeypress="return false;" value="${Utils:formatDateDefaultValue(6,subscriptionVO.trialStart,6,0)}" label="label.trialStart" helpMessage="help.trialStart" showRequiredLabel="false" size="10" type="text" required="true" name="trialStartDay">
 					 <aui:validator name="date" />
 				</aui:input>
 			</div>
@@ -208,77 +147,31 @@
 		
 		<div class="control-group">
 			<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace />trialEndPicker">
-				<%-- <div id="<portlet:namespace/>contentview"></div> --%>
-				<aui:input onkeypress="return false;" value="${Utils:formatDate(3,subscriptionVO.trialEnd,6)}"  label="label.trialEnd" helpMessage="help.trialEnd" showRequiredLabel="false" size="10" type="text" required="true" name="trialEndDay">
+				<aui:input onkeypress="return false;" value="${Utils:formatDateDefaultValue(6,subscriptionVO.trialEnd,6,0)}" label="label.trialEnd" helpMessage="help.trialEnd" showRequiredLabel="false" size="10" type="text" required="true" name="trialEndDay">
 					 <aui:validator name="date" />
+					 <aui:validator name="custom" errorMessage="error.invalidDate">
+						function (val, fieldNode, ruleValue) {
+							var startDateObj = document.getElementById("<portlet:namespace />trialStartDay");
+							var startDate;
+                            var result=false;
+							if(val == ""){ return true;}
+							if(startDateObj) {
+                                startDate = new Date(startDateObj.value);
+                            }else{
+                                result = false;
+                            }
+                            var endDate = new Date(val);
+                            if(startDate && endDate){
+                                result = endDate.getTime()>=startDate.getTime();
+                            }else{
+                                result = false;
+                            }
+                            return result;
+						}
+					</aui:validator>
 				</aui:input>
 			</div>
 		</div>
-		<!-- planVO.setTrialPeriodDays -->
-		
-		<%-- <div class="control-group">
-			<aui:select label="label.cancelAtPeriodEnd" name="cancelAtPeriodEnd" helpMessage="help.cancelAtPeriodEnd" id="cancelAtPeriodEnd">
-				<aui:option value="0" label="True" selected="${subscriptionVO.cancelAtPeriodEnd=='0'}"/>
-				<aui:option value="1" label="False" selected="${subscriptionVO.cancelAtPeriodEnd=='1'}"/>
-			</aui:select>
-		</div> --%>
-		
-		<%-- <div class="control-group">
-			<aui:select label="label.status" name="status" helpMessage="help.status" id="status">
-					<aui:option value="Trialing" label="Trialing" selected="${subscriptionVO.status=='Trialing'}"/>
-					<aui:option value="Active" label="Active" selected="${subscriptionVO.status=='Active'}"/>
-					<aui:option value="Past_due" label="Past_due" selected="${subscriptionVO.status=='Past_due'}"/>
-					<aui:option value="Canceled" label="Canceled" selected="${subscriptionVO.status=='Canceled'}"/>
-					<aui:option value="Unpaid" label="Unpaid" selected="${subscriptionVO.status=='Unpaid'}"/>
-			</aui:select>
-		</div> --%>
-		
-		<%-- <div class="control-group">
-			<aui:input label="label.applicationFeePercent" helpMessage="help.applicationFeePercent" showRequiredLabel="false" type="text" required="true" name="applicationFeePercent" value="${subscriptionVO.applicationFeePercent}">
-				<aui:validator name="custom" errorMessage="error.decimalNumber">
-					function (val, fieldNode, ruleValue) {
-						var result = ( /^(\d+|\d+.\d{1,2})$/.test(val));
-						return result;
-					}
-				</aui:validator>
-			</aui:input>
-		</div> --%>
-		
-		<div class="control-group">
-			<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace />startPicker">
-				<aui:input onkeypress="return false;" value="${Utils:formatDateDefaultValue(3,subscriptionVO.start,6,0)}"  label="label.start" helpMessage="help.start" showRequiredLabel="false" size="10" type="text" required="true" name="startAt">
-					 <aui:validator name="date" />
-				</aui:input>
-			</div>
-		</div>
-		<%-- <div class="control-group">
-			<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace />endedAtPicker">
-				<aui:input onkeypress="return false;" value="${Utils:formatDate(3,subscriptionVO.endedAt,6)}"  label="label.endedAt" helpMessage="help.endedAt" showRequiredLabel="false" size="10" type="text" required="true" name="endedAt">
-					 <aui:validator name="date" />
-				</aui:input>
-			</div>
-		</div> --%>
-		<%-- <div class="control-group">
-			<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace />canceledAtPicker">
-				<aui:input onkeypress="return false;" value="${Utils:formatDate(3,subscriptionVO.canceledAt,6)}" label="label.canceledAt" helpMessage="help.canceledAt" showRequiredLabel="false" size="10" type="text" required="true" name="canceledAt">
-					 <aui:validator name="date" />
-				</aui:input>
-			</div>
-		</div> --%>
-	<%-- 	<div class="control-group">
-			<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace />currentPeriodStartPicker">
-				<aui:input onkeypress="return false;" value="${Utils:formatDate(3,subscriptionVO.currentPeriodStart,6)}" label="label.currentPeriodStart" helpMessage="help.currentPeriodStart" showRequiredLabel="false" size="10" type="text" required="true" name="currentPeriodStart">
-					 <aui:validator name="date" />
-				</aui:input>
-			</div>
-		</div>
-		<div class="control-group">
-			<div class="aui-datepicker aui-helper-clearfix" id="#<portlet:namespace />currentPeriodEndPicker">
-				<aui:input onkeypress="return false;" value="${Utils:formatDate(3,subscriptionVO.currentPeriodEnd,6)}" label="label.currentPeriodEnd" helpMessage="help.currentPeriodEnd" showRequiredLabel="false" size="10" type="text" required="true" name="currentPeriodEnd">
-					 <aui:validator name="date" />
-				</aui:input>
-			</div>
-		</div> --%>
 		
 		<div class="control-group">
 			<aui:input label="label.taxPercent" helpMessage="help.taxPercent" showRequiredLabel="false" type="text" required="false" name="taxPercent" value="${subscriptionVO.taxPercent}">
@@ -290,6 +183,7 @@
 				</aui:validator>
 			</aui:input>
 		</div>
+		
 		<a href="<%= goBackSubscription %>"><fmt:message key="label.goBack"/></a>
 		<aui:button type="submit" name="save" value="label.save" />
 	</div>
@@ -298,3 +192,7 @@
 <script>
 	trialEnd();
 </script>
+<%-- <aui:script use ="CustomerUtil">
+	A.CustomerUtil.setPortletNamespace('<portlet:namespace/>');
+	A.all('#<portlet:namespace/>trialOptionCheckbox').on('click',A.CustomerUtil.hideTrialOptions);
+</aui:script> --%>

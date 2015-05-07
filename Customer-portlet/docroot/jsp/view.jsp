@@ -49,6 +49,7 @@
 </portlet:actionURL>
 
 <aui:form action="<%=listRefunds %>" method="post">
+	
 	<div class="tabla">
 			<div class="fila">
 				<liferay-ui:search-container orderByType="<%=orderByType %>" orderByCol="<%=orderByCol %>"  displayTerms="<%= new DisplayTerms(renderRequest) %>" emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURLCharges%>">
@@ -81,3 +82,4 @@
 		</div>
 	</div>
 </aui:form>
+

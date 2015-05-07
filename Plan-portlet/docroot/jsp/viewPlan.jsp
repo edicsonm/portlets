@@ -73,9 +73,19 @@
 					</div>
 					<div id="columna2-2">
 						<dl class="property-list">
+							<dt><fmt:message key="label.intervalCount"/></dt>
+							<dd><c:out value="${planVO.intervalCount}"/></dd>
+						</dl>
+					</div>
+				</div>
+				<div id="contenidos">
+					<div id="columna1-2">
+						<dl class="property-list">
 							<dt><fmt:message key="label.trialPeriodDays"/></dt>
 							<dd><c:out value="${planVO.trialPeriodDays}"/></dd>
 						</dl>
+					</div>
+					<div id="columna2-2">
 					</div>
 				</div>
 			</div>

@@ -35,19 +35,14 @@
 <liferay-ui:success key="subscriptionSavedSuccessfully" message="label.subscriptionSavedSuccessfully" />
 <liferay-ui:success key="subscriptionCanceledSuccessfully" message="label.subscriptionCanceledSuccessfully" />
 
-<liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLTransactions">
-	<portlet:param name="accion" value="renderURLTransactionsByDay"/>
-	<portlet:param name="cardNumber" value="<%=cardNumber%>"/>
-	<portlet:param name="brand" value="<%=brand%>"/>
-	<portlet:param name="merchant" value="<%=merchant%>"/>
-	<portlet:param name="countryCard" value="<%=countryCard%>"/>
-	<portlet:param name="currency" value="<%=currency%>"/>
-	<portlet:param name="lastCur" value="<%=ParamUtil.getString(request, \"cur\")%>"/>
+<liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLCards">
+	<portlet:param name="accion" value="renderURLCards"/>
 	<portlet:param name="jspPage" value="/jsp/customer.jsp" />
 </liferay-portlet:renderURL>
 
-<liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLCards">
-	<portlet:param name="accion" value="renderURLCards"/>
+<liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLTransactions">
+	<portlet:param name="accion" value="renderURLTransactionsByDay"/>
+	<portlet:param name="lastCur" value="<%=ParamUtil.getString(request, \"cur\")%>"/>
 	<portlet:param name="jspPage" value="/jsp/customer.jsp" />
 </liferay-portlet:renderURL>
 
@@ -61,16 +56,22 @@
 	<portlet:param name="jspPage" value="/jsp/customer.jsp" />
 </liferay-portlet:renderURL>
 
-<portlet:renderURL var="prueba" windowState="<%= LiferayWindowState.POP_UP.toString() %>" >
-	<portlet:param name="jspPage" value="/jsp/prueba.jsp"/>
-	<portlet:param name="accion" value="prueba"/>
-	
-</portlet:renderURL>
-
 <portlet:renderURL var="addSubscription" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 	<portlet:param name="jspPage" value="/jsp/prueba.jsp" />
 	<%-- <portlet:param name="jspPage" value="/jsp/newSubscription.jsp" /> --%>
 	<portlet:param name="accion" value="addSubscription"/>
+</portlet:renderURL>
+
+<portlet:renderURL var="goBack">
+	<portlet:param name="jspPage" value="/jsp/view.jsp" />
+</portlet:renderURL>
+
+<portlet:actionURL name="processForm" var="submitForm">
+	<portlet:param name="accion" value="addSubscription" />
+</portlet:actionURL>
+
+<portlet:renderURL var="addCard" windowState="<%=LiferayWindowState.POP_UP.toString()%>">
+<portlet:param name="mvcPath" value="/jsp/addCard.jsp" />
 </portlet:renderURL>
 
 <aui:script>
@@ -241,15 +242,40 @@ Liferay.provide(
 	['liferay-util-window']
 );
 </aui:script>
+<aui:script>
+AUI().use(
+		'aui-base',
+		'aui-io-plugin-deprecated',
+		'liferay-util-window',
+		'aui-dialog-iframe-deprecated',
+		function(A) {A.one('#<portlet:namespace />addCard').on('click',
+					function(event) {
+						var popUpWindow = Liferay.Util.Window
+								.getWindow(
+										{
+											dialog : {
+												centered : true,
+												constrain2view : true,
+												//cssClass: 'yourCSSclassName',
+												modal : true,
+												resizable : false,
+												width : 500
+											}
+										})
+								.plug(
+										A.Plugin.DialogIframe,
+										{
+											autoLoad : true,
+											iframeCssClass : 'dialog-iframe',
+											uri : '<%=addCard.toString()%>'
+										}).render();
+						popUpWindow.show();
+						popUpWindow.titleNode.html('<fmt:message key="label.createCard"/>');
+						popUpWindow.io.start();
 
-<portlet:renderURL var="goBack">
-	<portlet:param name="jspPage" value="/jsp/view.jsp" />
-</portlet:renderURL>
-
-<portlet:actionURL name="processForm" var="submitForm">
-	<portlet:param name="accion" value="addSubscription" />
-</portlet:actionURL>
-
+					});
+				});
+</aui:script>
 <%
 	
 	String orderByColTransactions = ParamUtil.getString(request, "orderByColTransactions", "creationTime");
@@ -301,7 +327,11 @@ Liferay.provide(
 %>
 
 <aui:form action="<%=submitForm %>" method="post">
-
+<div id="time">
+	<%
+		out.print(Calendar.getInstance().getTime());
+	%>
+</div>
 <%-- <div id="myToggler">
   <h4 class="header toggler-header-collapsed"><p id="sub-legend" class="description"><fmt:message key="label.cards"/></p></h4>
   	<div class="content toggler-content-collapsed">
@@ -380,6 +410,8 @@ Liferay.provide(
 			   <liferay-ui:search-iterator />
 			</liferay-ui:search-container>
 			
+			<button type="button" name="<portlet:namespace />addCard" id="<portlet:namespace />addCard" class="btn btn-primary"><liferay-ui:message key="label.addCard"/></button>
+			
 			<p id="sub-legend" class="description"><fmt:message key="label.transactions"/></p>
 			<liferay-ui:search-container curParam="Transactions" deltaConfigurable="true" totalVar="totalVarTransactions" deltaParam="deltaTransactions" delta="5" iteratorURL="<%=renderURLTransactions%>" emptyResultsMessage="label.empty">
 				<liferay-ui:search-container-results resultsVar="resultsTransactions" totalVar="totalTransactions" results="<%= new ArrayList(ListUtil.subList(listTransactionsByCustomer, searchContainer.getStart(), searchContainer.getEnd()))%>" total="<%=listTransactionsByCustomer.size() %>"/>
@@ -410,21 +442,27 @@ Liferay.provide(
 					<portlet:param name="jspPage" value="/jsp/subscriptionDetails.jsp"/>
 					<portlet:param name="idSubscription" value="<%=subscriptionVO.getId()%>"/>
 				</portlet:renderURL>
-				
 				<liferay-ui:search-container-column-text name="label.iterator" value="${subscriptionVO.id}" orderable="false"/>
 				<liferay-ui:search-container-column-text name="label.plan">
-					<a onclick="showDetailsSubscriptions('<%= popupURLSubscriptionsDetails.toString() %>')" href="#">${Utils:printCardNumber(subscriptionVO.planVO.name)}</a>
+					<a onclick="showDetailsSubscriptions('<%= popupURLSubscriptionsDetails.toString() %>')" href="#">${subscriptionVO.planVO.name}</a>
 				</liferay-ui:search-container-column-text>
-				<liferay-ui:search-container-column-text name="label.start" value="${Utils:formatDate(3,subscriptionVO.start,5)}" orderable="false"/>
+				<liferay-ui:search-container-column-text name="label.start" value="${Utils:formatDate(2,subscriptionVO.start,5)}" orderable="false"/>
 				<liferay-ui:search-container-column-text name="label.quantity" property="quantity" orderable="false"/>
-				<% if(subscriptionVO.getStatus().equalsIgnoreCase("Canceled")){
+				
+				
+				<liferay-ui:search-container-column-text name="label.status" orderable="false">
+					<fmt:message key="label.${subscriptionVO.status}"/>
+				</liferay-ui:search-container-column-text>
+				
+				
+				<%-- <% if(subscriptionVO.getStatus().equalsIgnoreCase("Canceled")){
 					%>
-						<liferay-ui:search-container-column-text name="label.status" orderable="false"><fmt:message key="label.canceled"/></liferay-ui:search-container-column-text>
+						<liferay-ui:search-container-column-text name="label.<%=subscriptionVO.getStatus() %>" orderable="false"><fmt:message key="label.canceled"/></liferay-ui:search-container-column-text>
 					<%
 				}else{
 					%>
 						<liferay-ui:search-container-column-text name="label.status" orderable="false"><fmt:message key="label.active"/></liferay-ui:search-container-column-text>
-				<%}%>
+				<%}%> --%>
 				
 				<liferay-ui:search-container-column-text name="Accion">
 				

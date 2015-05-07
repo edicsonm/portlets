@@ -66,18 +66,16 @@
  	  }
  	);
    
-   YUI().use(
- 		  'aui-datepicker',
- 		  function(Y) {
- 		    new Y.DatePicker(
- 		      {
- 		        trigger: '#<portlet:namespace />toDateTransactions',
- 		        popover: {
- 		          zIndex: 1
- 		        }
- 		      });
- 		  }
- 		);
+   YUI().use('aui-datepicker', function(Y) {
+	    new Y.DatePicker(
+	      {
+	        trigger: '#<portlet:namespace />toDateTransactions',
+	        popover: {
+	          zIndex: 1
+	        }
+	      });
+	  }
+	);
      
    function GetContent() {
        var url='<%=viewContentURL %>';

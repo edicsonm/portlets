@@ -138,30 +138,6 @@ public class FormCustomer extends MVCPortlet {
 		actionResponse.setRenderParameter("jspPage", "/jsp/customer.jsp");
 	}
 
-	@Override
-	public void doEdit(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
-		System.out.println("Ejecuta doEdit");
-		super.doEdit(renderRequest, renderResponse);
-	}
-
-	@Override
-	public void doHelp(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
-		System.out.println("Ejecuta doHelp");
-		super.doHelp(renderRequest, renderResponse);
-	}
-
-	@Override
-	public void doPreview(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
-		System.out.println("Ejecuta doPreview");
-		super.doPreview(renderRequest, renderResponse);
-	}
-
-	@Override
-	public void doPrint(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
-		System.out.println("Ejecuta doPrint");
-		super.doPrint(renderRequest, renderResponse);
-	}
-
 	public void cancelSubscription(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
 //		System.out.println("Ejecuta cancelSubscription: " + actionRequest.getParameter("idSubscription"));
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
@@ -258,13 +234,20 @@ public class FormCustomer extends MVCPortlet {
 		subscriptionVO.setCustomerId(merchantCustomerVO.getCustomerId());
 		subscriptionVO.setPlanId(actionRequest.getParameter("plan"));
 		subscriptionVO.setQuantity(actionRequest.getParameter("quantity"));
-		subscriptionVO.setCancelAtPeriodEnd(actionRequest.getParameter("cancelAtPeriodEnd"));
+		
+		/*subscriptionVO.setCancelAtPeriodEnd(actionRequest.getParameter("cancelAtPeriodEnd"));
 		subscriptionVO.setStatus(actionRequest.getParameter("status"));
-		subscriptionVO.setApplicationFeePercent(actionRequest.getParameter("applicationFeePercent"));
+		subscriptionVO.setApplicationFeePercent(actionRequest.getParameter("applicationFeePercent"));*/
+		
 		subscriptionVO.setStart(actionRequest.getParameter("start"));
-		Date date;
+		
+		subscriptionVO.setTrialStart(actionRequest.getParameter("trialStartDay"));
+		subscriptionVO.setTrialEnd(actionRequest.getParameter("trialEndDay"));
+		
+		/*Date date;
 		
 		try {
+			
 			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("trialStartDay"));
 			subscriptionVO.setTrialStart(Utilities.getDateFormat(5).format(date));
 			
@@ -276,9 +259,7 @@ public class FormCustomer extends MVCPortlet {
 			
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+		}*/
 		
 		if(Utilities.isNullOrEmpty(actionRequest.getParameter("taxPercent"))){
 			subscriptionVO.setTaxPercent("0");
@@ -338,8 +319,50 @@ public class FormCustomer extends MVCPortlet {
 
 	@Override
 	public void serveResource(ResourceRequest resourceRequest, ResourceResponse resourceResponse) throws IOException, PortletException {
-		System.out.println("Ejecuta serveResource");
-		/*super.serveResource(resourceRequest, resourceResponse);*/
+		HttpServletRequest request = PortalUtil.getHttpServletRequest(resourceRequest);
+		HttpServletResponse response = PortalUtil.getHttpServletResponse(resourceResponse);
+		
+		HttpSession session = request.getSession();
+		String action = resourceRequest.getParameter("action");
+		
+		if (action.equals("trialStartDate")) {
+			ArrayList<PlanVO> listPlans = (ArrayList<PlanVO>)session.getAttribute("listPlans");
+			PlanVO planVO = (PlanVO)listPlans.get(listPlans.indexOf(new PlanVO((String)resourceRequest.getParameter("planId"))));
+			
+			response.setContentType("application/json");
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("trialEnd", BBUtils.getCurrentDate(6,Integer.parseInt(planVO.getTrialPeriodDays())));
+			jsonObject.put("start", BBUtils.getCurrentDate(6,Integer.parseInt(planVO.getTrialPeriodDays()) + 1));
+			PrintWriter writer = resourceResponse.getWriter();
+			writer.write(jsonObject.toString());
+			writer.flush();
+			writer.close();
+			
+			/*Para una respuesta HTML*/
+//			resourceResponse.setContentType("text/html");
+//			PrintWriter printWriter = resourceResponse.getWriter();
+//			printWriter.print(BBUtils.getCurrentDate(6,Integer.parseInt(planVO.getTrialPeriodDays())));
+//			printWriter.flush();
+//			printWriter.close();
+			super.serveResource(resourceRequest, resourceResponse);
+			/*Para incluir una pagina HTML en un div*/
+//			include("/jsp/include.jsp", resourceRequest, resourceResponse, PortletRequest.RESOURCE_PHASE);
+		}
+	}
+	
+	public void saveCard(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+		System.out.println("name: " + actionRequest.getParameter("name"));
+		
+		if(actionRequest.getParameter("name").equalsIgnoreCase("si")){
+			SessionMessages.add(actionRequest, "CardCreatedSuccessfully");
+		}else{
+			SessionErrors.add(actionRequest,"ErrorCreatingCard");
+			SessionMessages.add(actionRequest, PortalUtil.getPortletId(actionRequest) + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+		}
+		
+		actionResponse.setRenderParameter("mvcPath", "/jsp/addCard.jsp");
+		actionResponse.setRenderParameter("message", "Hi you have performed ACTION REQUEST in iframe dialog.. thenk you..");
+		
 	}
 	
 }

@@ -55,9 +55,4 @@
 
 <%
 	String email = (String)renderRequest.getParameter("email");
-	String cardNumber = (String)renderRequest.getParameter("cardNumber");
-	String brand = (String)renderRequest.getParameter("brand");
-	String merchant = (String)renderRequest.getParameter("merchant");
-	String countryCard = (String)renderRequest.getParameter("countryCard");
-	String currency = (String)renderRequest.getParameter("currency");
 %>

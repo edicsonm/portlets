@@ -49,13 +49,13 @@
 					<div id="columna1-2">
 						<dl class="property-list">
 							<dt><fmt:message key="label.trialStart"/></dt>
-							<dd><c:out value="${Utils:formatDate(3,subscriptionVO.trialStart,5)}"/></dd>
+							<dd><c:out value="${Utils:formatDate(2,subscriptionVO.trialStart,5)}"/></dd>
 						</dl>
 					</div>
 					<div id="columna2-2">
 						<dl class="property-list">
 							<dt><fmt:message key="label.trialEnd"/></dt>
-							<dd><c:out value="${Utils:formatDate(3,subscriptionVO.trialEnd,5)}"/></dd>
+							<dd><c:out value="${Utils:formatDate(2,subscriptionVO.trialEnd,5)}"/></dd>
 						</dl>
 					</div>
 				</div>
@@ -63,7 +63,7 @@
 					<div id="columna1-2">
 						<dl class="property-list">
 							<dt><fmt:message key="label.start"/></dt>
-							<dd><c:out value="${Utils:formatDate(3,subscriptionVO.start,5)}"/></dd>
+							<dd><c:out value="${Utils:formatDate(2,subscriptionVO.start,5)}"/></dd>
 						</dl>
 					</div>
 					<div id="columna2-2">
