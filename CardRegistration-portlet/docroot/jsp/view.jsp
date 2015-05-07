@@ -78,24 +78,21 @@
 
 <script>
 
-$( "#time" ).load("<%= testURL %>");
+<%-- $( "#time" ).load("<%= testURL %>"); --%>
 
-$("#test-button").click(function() {
+<%-- $("#test-button").click(function() {
     $.ajax({
    	  method: "POST",
    	  url: "<%= testURL %>",
    	  data: { name: "John", location: "Boston" }
    	})
 	  .done(function( msg ) {
-		  /* alert('msg: ' + msg) */
-		<%-- $("#time").load("<%= testURL %>"); --%>
 		$("#time").html(msg);
 	  });
-})
+}) --%>
 </script>
-<aui:script>
-function saludar(){
-    /* alert("Hola Edicson "); */
-    $( "#time" ).load("<%= testURL %>");
-}
+<aui:script use="aui-base"> 
+	window.recharge = function() {
+		$( "#time" ).load("<%= testURL %>");
+	};
 </aui:script>

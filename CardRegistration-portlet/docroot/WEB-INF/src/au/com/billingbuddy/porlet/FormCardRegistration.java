@@ -38,11 +38,15 @@ public class FormCardRegistration extends MVCPortlet {
 	}*/
 
 	public void saveCard(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
+		HttpSession session = request.getSession();
 		System.out.println("name: " + actionRequest.getParameter("name"));
 		if(actionRequest.getParameter("name").equalsIgnoreCase("si")){
 			SessionMessages.add(actionRequest, "CardCreatedSuccessfully");
+			session.setAttribute("answer","true");
 		}else{
 			SessionErrors.add(actionRequest,"ErrorCreatingCard");
+			session.setAttribute("answer","false");
 			SessionMessages.add(actionRequest, PortalUtil.getPortletId(actionRequest) + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 		}
 		

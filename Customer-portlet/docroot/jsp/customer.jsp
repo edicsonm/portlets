@@ -1,4 +1,3 @@
-<%-- <%@page import="com.sun.org.apache.xalan.internal.xsltc.compiler.sym"%> --%>
 <%@page import="au.com.billingbuddy.vo.objects.SubscriptionVO"%>
 <%
 /**
@@ -35,10 +34,10 @@
 <liferay-ui:success key="subscriptionSavedSuccessfully" message="label.subscriptionSavedSuccessfully" />
 <liferay-ui:success key="subscriptionCanceledSuccessfully" message="label.subscriptionCanceledSuccessfully" />
 
-<liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLCards">
+<%-- <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLCards">
 	<portlet:param name="accion" value="renderURLCards"/>
 	<portlet:param name="jspPage" value="/jsp/customer.jsp" />
-</liferay-portlet:renderURL>
+</liferay-portlet:renderURL> --%>
 
 <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLTransactions">
 	<portlet:param name="accion" value="renderURLTransactionsByDay"/>
@@ -73,6 +72,17 @@
 <portlet:renderURL var="addCard" windowState="<%=LiferayWindowState.POP_UP.toString()%>">
 <portlet:param name="mvcPath" value="/jsp/addCard.jsp" />
 </portlet:renderURL>
+
+<portlet:resourceURL var="listCards">
+	<portlet:param name="action" value="listCards" />
+    <portlet:param name="jspPage" value="/jsp/cards.jsp" />
+</portlet:resourceURL>
+
+
+<liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLCards">
+	<portlet:param name="accion" value="renderURLCards"/>
+	<portlet:param name="jspPage" value="/jsp/customer.jsp" />
+</liferay-portlet:renderURL>
 
 <aui:script>
 	Liferay.provide(
@@ -248,10 +258,10 @@ AUI().use(
 		'aui-io-plugin-deprecated',
 		'liferay-util-window',
 		'aui-dialog-iframe-deprecated',
-		function(A) {A.one('#<portlet:namespace />addCard').on('click',
+		function(A) {
+			A.one('#<portlet:namespace />addCard').on('click',
 					function(event) {
-						var popUpWindow = Liferay.Util.Window
-								.getWindow(
+						var popUpWindow = Liferay.Util.Window.getWindow(
 										{
 											dialog : {
 												centered : true,
@@ -261,8 +271,7 @@ AUI().use(
 												resizable : false,
 												width : 500
 											}
-										})
-								.plug(
+										}).plug(
 										A.Plugin.DialogIframe,
 										{
 											autoLoad : true,
@@ -270,12 +279,45 @@ AUI().use(
 											uri : '<%=addCard.toString()%>'
 										}).render();
 						popUpWindow.show();
-						popUpWindow.titleNode.html('<fmt:message key="label.createCard"/>');
-						popUpWindow.io.start();
-
+						popUpWindow.titleNode.html('<fmt:message key="label.addACard"/>');
+						/* popUpWindow.io.start(); */
 					});
 				});
 </aui:script>
+
+<aui:script>
+AUI().use(
+		'aui-base',
+		'aui-io-plugin-deprecated',
+		'liferay-util-window',
+		'aui-dialog-iframe-deprecated',
+		function(A) {
+			A.one('#<portlet:namespace />addSubscription').on('click',
+					function(event) {
+						var popUpWindow = Liferay.Util.Window.getWindow(
+										{
+											dialog : {
+												centered : true,
+												constrain2view : true,
+												//cssClass: 'yourCSSclassName',
+												modal : true,
+												resizable : false,
+												width : 500
+											}
+										}).plug(
+										A.Plugin.DialogIframe,
+										{
+											autoLoad : true,
+											iframeCssClass : 'dialog-iframe',
+											uri : '<%=addCard.toString()%>'
+										}).render();
+						popUpWindow.show();
+						popUpWindow.titleNode.html('<fmt:message key="label.addACard"/>');
+						/* popUpWindow.io.start(); */
+					});
+				});
+</aui:script>
+
 <%
 	
 	String orderByColTransactions = ParamUtil.getString(request, "orderByColTransactions", "creationTime");
@@ -327,11 +369,6 @@ AUI().use(
 %>
 
 <aui:form action="<%=submitForm %>" method="post">
-<div id="time">
-	<%
-		out.print(Calendar.getInstance().getTime());
-	%>
-</div>
 <%-- <div id="myToggler">
   <h4 class="header toggler-header-collapsed"><p id="sub-legend" class="description"><fmt:message key="label.cards"/></p></h4>
   	<div class="content toggler-content-collapsed">
@@ -391,26 +428,27 @@ AUI().use(
 			</div>
 			
 			<p id="sub-legend" class="description"><fmt:message key="label.cards"/></p>
-			<liferay-ui:search-container curParam="Cards" deltaConfigurable="true" totalVar="totalVarCards" deltaParam="deltaCards" delta="2" iteratorURL="<%=renderURLCards%>" emptyResultsMessage="label.empty">
-			    <liferay-ui:search-container-results resultsVar="resultsCards" totalVar="totalCards" results="<%= new ArrayList(ListUtil.subList(listCardsByCustomer, searchContainer.getStart(), searchContainer.getEnd()))%>" total="<%=listCardsByCustomer.size() %>"/>
-				<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.CardVO" rowVar="posi" indexVar="indice" keyProperty="id" modelVar="cardVO">
-				
-				<portlet:renderURL var="popupURLCardDetails" windowState="<%= LiferayWindowState.POP_UP.toString() %>" >
-					<portlet:param name="jspPage" value="/jsp/cardDetails.jsp"/>
-					<portlet:param name="idCard" value="<%=cardVO.getId()%>"/>
-				</portlet:renderURL>
-				
-				<liferay-ui:search-container-column-text name="label.iterator" value="${cardVO.id}" orderable="false"/>
-				<liferay-ui:search-container-column-text name="label.cardNumber">
-					<a onclick="showDetailsCard('<%= popupURLCardDetails.toString() %>')" href="#">${Utils:printCardNumber(cardVO.number)}</a>
-				</liferay-ui:search-container-column-text>
-				<liferay-ui:search-container-column-text name="label.brand" value="${Utils:printString(cardVO.brand)}" orderable="false"/>
-				<liferay-ui:search-container-column-text name="label.expire" value="${cardVO.expMonth} - ${cardVO.expYear}"  orderable="false"/>
-			   </liferay-ui:search-container-row>
-			   <liferay-ui:search-iterator />
-			</liferay-ui:search-container>
-			
-			<button type="button" name="<portlet:namespace />addCard" id="<portlet:namespace />addCard" class="btn btn-primary"><liferay-ui:message key="label.addCard"/></button>
+			<div id="divCards" >
+				<liferay-ui:search-container curParam="Cards" deltaConfigurable="true" totalVar="totalVarCards" deltaParam="deltaCards" delta="2" iteratorURL="<%=renderURLCards%>" emptyResultsMessage="label.empty">
+				    <liferay-ui:search-container-results resultsVar="resultsCards" totalVar="totalCards" results="<%= new ArrayList(ListUtil.subList(listCardsByCustomer, searchContainer.getStart(), searchContainer.getEnd()))%>" total="<%=listCardsByCustomer.size() %>"/>
+					<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.CardVO" rowVar="posi" indexVar="indice" keyProperty="id" modelVar="cardVO">
+					
+					<portlet:renderURL var="popupURLCardDetails" windowState="<%= LiferayWindowState.POP_UP.toString() %>" >
+						<portlet:param name="jspPage" value="/jsp/cardDetails.jsp"/>
+						<portlet:param name="idCard" value="<%=cardVO.getId()%>"/>
+					</portlet:renderURL>
+					
+					<liferay-ui:search-container-column-text name="label.iterator" value="${cardVO.id}" orderable="false"/>
+					<liferay-ui:search-container-column-text name="label.cardNumber">
+						<a onclick="showDetailsCard('<%= popupURLCardDetails.toString() %>')" href="#">${Utils:printCardNumber(cardVO.number)}</a>
+					</liferay-ui:search-container-column-text>
+					<liferay-ui:search-container-column-text name="label.brand" value="${Utils:printString(cardVO.brand)}" orderable="false"/>
+					<liferay-ui:search-container-column-text name="label.expire" value="${cardVO.expMonth} - ${cardVO.expYear}"  orderable="false"/>
+				   </liferay-ui:search-container-row>
+				   <liferay-ui:search-iterator />
+				</liferay-ui:search-container>
+			</div>
+			<button type="button" name="<portlet:namespace />addCard" id="<portlet:namespace />addCard" class="btn btn-primary"><liferay-ui:message key="label.addACard"/></button>
 			
 			<p id="sub-legend" class="description"><fmt:message key="label.transactions"/></p>
 			<liferay-ui:search-container curParam="Transactions" deltaConfigurable="true" totalVar="totalVarTransactions" deltaParam="deltaTransactions" delta="5" iteratorURL="<%=renderURLTransactions%>" emptyResultsMessage="label.empty">
@@ -523,3 +561,10 @@ AUI().use(
 	</div>
 </fieldset>
 </aui:form>
+
+<aui:script use="aui-base"> 
+	/* $( "#divCards" ).load("<%= listCards %>"); */
+	window.recharge = function() {
+		$("#divCards").load("<%= listCards %>");
+	};
+</aui:script>

@@ -14,7 +14,13 @@
  */
 --%>
 <%@ include file="init.jsp" %>
-
+<% 
+	boolean answer = false;
+	if(session.getAttribute("answer") != null && String.valueOf(session.getAttribute("answer")).equalsIgnoreCase("true")){
+		answer = true;
+	}
+	
+%>
 <fmt:setBundle basename="Language"/>
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
@@ -44,8 +50,18 @@
 </aui:form>
 <script>
 </script>
+
 <aui:script>
-	Liferay.Util.getOpener().saludar();
+var answer = "<%=answer%>";
+AUI().use('aui-base','aui-io-request', function(A){
+	if(answer != 'false'){
+		Liferay.Util.getOpener().recharge();
+	}
+});
+</aui:script>
+
+<aui:script>
+	/* Liferay.Util.getOpener().saludar(); */
 	
 	/* Liferay.Util.getOpener().document.getElementById('time').load("<%= testURL %>"); */
 	/* var declineComment  = Liferay.Util.getOpener().document.getElementById('time'); */
