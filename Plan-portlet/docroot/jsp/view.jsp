@@ -50,7 +50,7 @@
 	if(listPlans == null) listPlans = new ArrayList<PlanVO>();
 %>
 
-<portlet:actionURL var="listCurrencies" name="listCurrencies"/>
+<portlet:actionURL var="listElementsAddPlan" name="listElementsAddPlan"/>
 
 <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURL" />
 
@@ -69,6 +69,10 @@
 			</liferay-ui:search-container-results>
 			<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.PlanVO" rowVar="posi" indexVar="indice" keyProperty="id" modelVar="planVO">
 				
+				<c:if test="<%= RoleServiceUtil.hasUserRole(user.getUserId(), user.getCompanyId(), \"MerchantAdministrator\", true) %>">
+					<liferay-ui:search-container-column-text name="label.merchantName" property="merchantVO.name" orderable="false" />
+				</c:if>
+				
 				<liferay-portlet:renderURL varImpl="rowURL">
 						<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
 						<portlet:param name="jspPage" value="/jsp/viewPlan.jsp" />
@@ -82,7 +86,7 @@
 				<liferay-ui:search-container-column-text name="Accion">
 					<liferay-ui:icon-menu>
 						
-						<portlet:actionURL var="editURL" name="listCurrenciesEditPlan">
+						<portlet:actionURL var="editURL" name="listElementsEditPlan">
 								<portlet:param name="mvcPath" value="/jsp/editPlan.jsp" />
 								<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
 								<portlet:param name="idPlan" value="<%=String.valueOf(planVO.getId())%>"/>
@@ -101,6 +105,6 @@
 			</liferay-ui:search-container-row>
 			<liferay-ui:search-iterator />
 		</liferay-ui:search-container>
-		<a href="<%= listCurrencies %>"><fmt:message key="label.newPlan"/></a>
+		<a href="<%= listElementsAddPlan %>"><fmt:message key="label.newPlan"/></a>
 	</div>
 </aui:form>

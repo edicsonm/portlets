@@ -22,6 +22,7 @@
 <% 
 	PlanVO planVO = (PlanVO)session.getAttribute("planVO");
 	ArrayList<CurrencyVO> listCurrencies = (ArrayList<CurrencyVO>)session.getAttribute("listCurrencies");
+	ArrayList<MerchantVO> listMerchants = (ArrayList<MerchantVO>)session.getAttribute("listMerchants");
 %>
 
 <portlet:actionURL name="savePlan" var="submitForm">
@@ -35,10 +36,19 @@
 <aui:form  action="<%= submitForm %>" method="post">
 	<fieldset class="fieldset">
 		<legend class="fieldset-legend">
-			<span class="legend"><fmt:message key="label.informationPlan"/> </span>
+			<span class="legend"><fmt:message key="label.informationPlan"/></span>
 		</legend>
 		<div class="">
 			<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
+			
+			<c:if test="<%= RoleServiceUtil.hasUserRole(user.getUserId(), user.getCompanyId(), \"MerchantAdministrator\", true) %>">
+				<aui:select name="merchant" helpMessage="help.merchant" required="true"  label="label.merchant" id="merchant">
+					<c:forEach var="merchantVO" items="${listMerchants}">
+						<aui:option value="${merchantVO.id}" label="${merchantVO.name}" selected="${merchantVO.id==planVO.merchantId}"/>
+					</c:forEach>
+				</aui:select>
+			</c:if>
+			
 			<div class="control-group">
 				<aui:input label="label.name" helpMessage="help.name" showRequiredLabel="false" type="text" required="true" name="name" value="${planVO.name}">
 					</aui:input>

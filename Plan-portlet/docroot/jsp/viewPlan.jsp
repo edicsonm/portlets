@@ -36,20 +36,22 @@
 		<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
 		<div class="details">
 			<div id="contenedor">
+				
 				<div id="contenidos">
 					<div id="columna1-2">
+						<dl class="property-list">
+							<dt><fmt:message key="label.merchantName"/></dt>
+							<dd><c:out value="${planVO.merchantVO.name}"/></dd>
+						</dl>
+					</div>
+					<div id="columna2-2">
 						<dl class="property-list">
 							<dt><fmt:message key="label.name"/></dt>
 							<dd><c:out value="${planVO.name}"/></dd>
 						</dl>
 					</div>
-					<div id="columna2-2">
-						<dl class="property-list">
-							<dt><fmt:message key="label.amount"/></dt>
-							<dd><c:out value="${planVO.amount}"/></dd>
-						</dl>
-					</div>
 				</div>
+				
 				<div id="contenidos">
 					<div id="columna1-2">
 						<dl class="property-list">
@@ -59,8 +61,8 @@
 					</div>
 					<div id="columna2-2">
 						<dl class="property-list">
-							<dt><fmt:message key="label.statementDescriptor"/></dt>
-							<dd><c:out value="${planVO.statementDescriptor}"/></dd>
+							<dt><fmt:message key="label.amount"/></dt>
+							<dd><c:out value="${planVO.amount}"/></dd>
 						</dl>
 					</div>
 				</div>
@@ -81,11 +83,15 @@
 				<div id="contenidos">
 					<div id="columna1-2">
 						<dl class="property-list">
-							<dt><fmt:message key="label.trialPeriodDays"/></dt>
-							<dd><c:out value="${planVO.trialPeriodDays}"/></dd>
+							<dt><fmt:message key="label.statementDescriptor"/></dt>
+							<dd><c:out value="${planVO.statementDescriptor}"/></dd>
 						</dl>
 					</div>
 					<div id="columna2-2">
+						<dl class="property-list">
+							<dt><fmt:message key="label.trialPeriodDays"/></dt>
+							<dd><c:out value="${planVO.trialPeriodDays}"/></dd>
+						</dl>
 					</div>
 				</div>
 			</div>

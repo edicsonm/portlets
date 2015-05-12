@@ -36,6 +36,7 @@ import au.com.billingbuddy.vo.objects.CardVO;
 import au.com.billingbuddy.vo.objects.ChargeVO;
 import au.com.billingbuddy.vo.objects.CountryVO;
 import au.com.billingbuddy.vo.objects.CurrencyVO;
+import au.com.billingbuddy.vo.objects.MerchantCustomerCardVO;
 import au.com.billingbuddy.vo.objects.MerchantCustomerVO;
 import au.com.billingbuddy.vo.objects.MerchantVO;
 import au.com.billingbuddy.vo.objects.PlanVO;
@@ -104,6 +105,8 @@ public class FormCustomer extends MVCPortlet {
 		
 		CardVO cardVO = new CardVO();
 		cardVO.setCustomerId(merchantCustomerVO.getCustomerId());
+		cardVO.setMerchantCustomerId(merchantCustomerVO.getId());
+		System.out.println("cardVO.getMerchantCustomerId(): " + cardVO.getMerchantCustomerId());
 		
 		try {
 			
@@ -126,9 +129,16 @@ public class FormCustomer extends MVCPortlet {
 			session.setAttribute("listChargesRefundedByCustomer", listChargesRefundedByCustomer);
 			
 			SubscriptionVO subscriptionVO = new SubscriptionVO();
-			subscriptionVO.setCustomerId(merchantCustomerVO.getCustomerId());
+			subscriptionVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
+			subscriptionVO.setMerchantCustomerCardVO(new MerchantCustomerCardVO());
+			subscriptionVO.getMerchantCustomerCardVO().setMerchantCustomerVO(merchantCustomerVO);
+			
 			ArrayList<SubscriptionVO> listSubscriptions = procesorFacade.listSubscriptions(subscriptionVO);
 			session.setAttribute("listSubscriptionsByCustomer", listSubscriptions);
+			
+			for (SubscriptionVO subscriptionVO2 : listSubscriptions) {
+				System.out.println("Number: "+subscriptionVO2.getCardVO().getNumber());
+			}
 			
 		} catch (ProcesorFacadeException e) {
 			e.printStackTrace();
@@ -141,7 +151,6 @@ public class FormCustomer extends MVCPortlet {
 	}
 
 	public void cancelSubscription(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
-//		System.out.println("Ejecuta cancelSubscription: " + actionRequest.getParameter("idSubscription"));
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 		HttpSession session = request.getSession();
 		
@@ -179,12 +188,10 @@ public class FormCustomer extends MVCPortlet {
 
 	@Override
 	public void render(RenderRequest renderRequest, RenderResponse renderResponse) throws PortletException, IOException {
-//		System.out.println("Ejecuta render");
+		
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
 		HttpSession session = request.getSession();
-//		System.out.println("accion: " + request.getParameter("accion"));
 		if(request.getParameter("accion") != null && request.getParameter("accion").equalsIgnoreCase("refundDetails")) {
-			
 			String idCharge = request.getParameter("idCharge");
 			ChargeVO chargeVO = new ChargeVO();
 			chargeVO.setId(idCharge);
@@ -207,9 +214,10 @@ public class FormCustomer extends MVCPortlet {
 				SessionErrors.add(renderRequest,e.getErrorCode());
 			}
 		}else if(request.getParameter("accion") != null && request.getParameter("accion").equalsIgnoreCase("addSubscription")){
-			System.out.println("Ejecuta la opcion addSubscription .... ");
 			try {
-				ArrayList<PlanVO> listPlans = procesorFacade.listPlans(new PlanVO());
+				PlanVO planVO = new PlanVO();
+				planVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
+				ArrayList<PlanVO> listPlans = procesorFacade.listPlans(planVO);
 				session.setAttribute("listPlans", listPlans);
 				session.removeAttribute("subscriptionVO");
 			} catch (ProcesorFacadeException e) {
@@ -219,21 +227,198 @@ public class FormCustomer extends MVCPortlet {
 				SessionMessages.add(renderRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 				SessionErrors.add(renderRequest,e.getErrorCode());
 			}
-		}else if(request.getParameter("accion") != null && request.getParameter("accion").equalsIgnoreCase("savedSubscription")){
-			 include("/jsp/newSubscription.jsp", renderRequest, renderResponse);
+		/*}else if(request.getParameter("accion") != null && request.getParameter("accion").equalsIgnoreCase("savedSubscription")){
+			 include("/jsp/newSubscription.jsp", renderRequest, renderResponse);*/
 		}
 		super.render(renderRequest, renderResponse);
 	}
 	
+	public void processForm(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
+		HttpSession session = request.getSession();
+		if(request.getParameter("accion") != null && request.getParameter("accion").equalsIgnoreCase("addSubscription")) {
+			try {
+				ArrayList<PlanVO> listPlans = procesorFacade.listPlans(new PlanVO());
+				session.setAttribute("listPlans", listPlans);
+				session.removeAttribute("subscriptionVO");
+				actionResponse.setRenderParameter("jspPage", "/jsp/newSubscription.jsp");
+			} catch (ProcesorFacadeException e) {
+				e.printStackTrace();
+				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+				SessionErrors.add(actionRequest,e.getErrorCode());
+				actionResponse.setRenderParameter("jspPage", "/jsp/customer.jsp");
+			}
+		}
+		/*super.processAction(actionRequest, actionResponse);*/
+	}
+
+	@Override
+	public void serveResource(ResourceRequest resourceRequest, ResourceResponse resourceResponse) throws IOException, PortletException {
+		HttpServletRequest request = PortalUtil.getHttpServletRequest(resourceRequest);
+		HttpServletResponse response = PortalUtil.getHttpServletResponse(resourceResponse);
+		
+		HttpSession session = request.getSession();
+		String action = resourceRequest.getParameter("action");
+		
+		if (action != null && action.equals("trialStartDate") && resourceRequest.getParameter("planId") != null) {
+			ArrayList<PlanVO> listPlans = (ArrayList<PlanVO>)session.getAttribute("listPlans");
+			PlanVO planVO = (PlanVO)listPlans.get(listPlans.indexOf(new PlanVO((String)resourceRequest.getParameter("planId"))));
+			response.setContentType("application/json");
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("trialEnd", BBUtils.getCurrentDate(6,Integer.parseInt(planVO.getTrialPeriodDays())));
+			jsonObject.put("start", BBUtils.getCurrentDate(6,Integer.parseInt(planVO.getTrialPeriodDays()) + 1));
+			PrintWriter writer = resourceResponse.getWriter();
+			writer.write(jsonObject.toString());
+			writer.flush();
+			writer.close();
+		}else if (action != null && action.equals("listCards")) {
+			include("/jsp/cards.jsp", resourceRequest, resourceResponse, PortletRequest.RESOURCE_PHASE);
+		}else if (action != null && action.equals("listSubscriptions")) {
+			include("/jsp/subscriptions.jsp", resourceRequest, resourceResponse, PortletRequest.RESOURCE_PHASE);
+		}
+	}
+	
+	public void saveCard(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+
+		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
+		HttpSession session = request.getSession();
+		
+		MerchantCustomerVO merchantCustomerVO = (MerchantCustomerVO)session.getAttribute("merchantCustomerVO");
+		CardVO cardVO = new CardVO();
+		cardVO.setCustomerId(merchantCustomerVO.getCustomerId());
+		
+		cardVO.setName(request.getParameter("name"));
+		cardVO.setNumber(request.getParameter("number"));
+		cardVO.setLast4(request.getParameter("number").substring(request.getParameter("number").length()-4));
+		
+		cardVO.setCvv(request.getParameter("securityCode"));
+		String expirationMonth = new DecimalFormat("00").format(Double.parseDouble(request.getParameter("expirationMonth")));
+		cardVO.setExpMonth(expirationMonth.substring(expirationMonth.length()-2));
+		cardVO.setExpYear(request.getParameter("expirationYear"));
+		
+		cardVO.setAddressLine1(request.getParameter("street"));
+		cardVO.setAddressCity(request.getParameter("city"));
+		cardVO.setAddressZip(BBUtils.isNullOrEmptyWithDefaulValue((String)request.getParameter("addressZip"),"0"));
+		cardVO.setAddresState(request.getParameter("addresState"));
+		cardVO.setAddressCountry(request.getParameter("country"));
+		
+		try {
+			procesorFacade.saveCard(cardVO);
+			if(cardVO.getStatus().equalsIgnoreCase("success")) {
+				ArrayList<CardVO> listCardsByCustomer = procesorFacade.listCardsByCustomer(cardVO);
+				session.setAttribute("listCardsByCustomer", listCardsByCustomer);
+				SessionMessages.add(actionRequest, "CardCreatedSuccessfully");
+				session.removeAttribute("cardVO");
+				session.setAttribute("answerCard","true");
+			} else {
+				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+				SessionErrors.add(actionRequest, "error");
+				SessionErrors.add(actionRequest,cardVO.getMessage());
+				session.setAttribute("cardVO", cardVO);
+				session.setAttribute("answerCard","false");
+			}
+		} catch (ProcesorFacadeException e) {
+			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+			SessionErrors.add(actionRequest,e.getErrorCode());
+			session.setAttribute("cardVO", cardVO);
+			session.setAttribute("answerCard","false");
+		}
+		
+		
+		/*try {
+			procesorFacade.saveCard(cardVO);
+			session.setAttribute("listCardsByCustomer", listCardsByCustomer);
+		} catch (ProcesorFacadeException e) {
+			e.printStackTrace();
+		}*/
+		
+		/*System.out.println("name: " + actionRequest.getParameter("name"));
+		
+		if(actionRequest.getParameter("name").equalsIgnoreCase("si")) {
+			SessionMessages.add(actionRequest, "CardCreatedSuccessfully");
+			session.setAttribute("answer","true");
+		}else{
+			session.setAttribute("answer","false");
+			SessionErrors.add(actionRequest,"ErrorCreatingCard");
+			SessionMessages.add(actionRequest, PortalUtil.getPortletId(actionRequest) + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+		}*/
+		
+		actionResponse.setRenderParameter("mvcPath", "/jsp/addCard.jsp");
+	}
+	
+	public void editCard(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+		
+		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
+		HttpSession session = request.getSession();
+		
+		String idCard = (String)request.getParameter("idCard");
+		CardVO cardVO = new CardVO();
+		cardVO.setId(idCard);
+		
+		ArrayList<CardVO> listCardsByCustomer = (ArrayList<CardVO>)session.getAttribute("listCardsByCustomer");
+		int indiceCard = listCardsByCustomer.indexOf(cardVO);
+		
+		cardVO = (CardVO)listCardsByCustomer.get(indiceCard);
+		
+		cardVO.setName(request.getParameter("name"));
+		cardVO.setNumber(request.getParameter("number"));
+		cardVO.setLast4(request.getParameter("number").substring(request.getParameter("number").length()-4));
+		
+		cardVO.setCvv(request.getParameter("securityCode"));
+		String expirationMonth = new DecimalFormat("00").format(Double.parseDouble(request.getParameter("expirationMonth")));
+		cardVO.setExpMonth(expirationMonth.substring(expirationMonth.length()-2));
+		cardVO.setExpYear(request.getParameter("expirationYear"));
+		
+		cardVO.setAddressLine1(request.getParameter("street"));
+		cardVO.setAddressCity(request.getParameter("city"));
+		cardVO.setAddressZip(BBUtils.isNullOrEmptyWithDefaulValue((String)request.getParameter("addressZip"),"0"));
+		cardVO.setAddresState(request.getParameter("addresState"));
+		cardVO.setAddressCountry(request.getParameter("country"));
+		
+		try {
+			procesorFacade.updateCard(cardVO);
+			if(cardVO.getStatus().equalsIgnoreCase("success")) {
+				listCardsByCustomer = procesorFacade.listCardsByCustomer(cardVO);
+				session.setAttribute("listCardsByCustomer", listCardsByCustomer);
+				SessionMessages.add(actionRequest, "CardEditedSuccessfully");
+				session.removeAttribute("cardVO");
+				session.setAttribute("answerCard","true");
+			} else {
+				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+				SessionErrors.add(actionRequest, "error");
+				SessionErrors.add(actionRequest,cardVO.getMessage());
+				session.setAttribute("cardVO", cardVO);
+				session.setAttribute("answerCard","false");
+			}
+		} catch (ProcesorFacadeException e) {
+			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+			SessionErrors.add(actionRequest,e.getErrorCode());
+			session.setAttribute("cardVO", cardVO);
+			session.setAttribute("answerCard","false");
+		}
+		actionResponse.setRenderParameter("mvcPath", "/jsp/editCard.jsp");
+		actionResponse.setRenderParameter("idCard", actionRequest.getParameter("idCard"));
+	}
+	
 	public void saveSubscription(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
-//		System.out.println("Ejecuta saveSubscription: " + actionRequest.getParameter("parametro"));
 		
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 		HttpSession session = request.getSession();
 		
 		MerchantCustomerVO merchantCustomerVO = (MerchantCustomerVO)session.getAttribute("merchantCustomerVO");
 		SubscriptionVO subscriptionVO = new SubscriptionVO();
-		subscriptionVO.setCustomerId(merchantCustomerVO.getCustomerId());
+		subscriptionVO.setMerchantCustomerCardId(actionRequest.getParameter("card"));
+		
 		subscriptionVO.setPlanId(actionRequest.getParameter("plan"));
 		subscriptionVO.setQuantity(actionRequest.getParameter("quantity"));
 		
@@ -272,11 +457,22 @@ public class FormCustomer extends MVCPortlet {
 		try {
 			procesorFacade.saveSubscription(subscriptionVO);
 			if(subscriptionVO.getStatus().equalsIgnoreCase("success")) {
+				
+				subscriptionVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
+				subscriptionVO.setCardVO(new CardVO());
+				subscriptionVO.getCardVO().setCustomerId(merchantCustomerVO.getCustomerId());
+				
 				ArrayList<SubscriptionVO> listSubscriptions = procesorFacade.listSubscriptions(subscriptionVO);
 				session.setAttribute("listSubscriptionsByCustomer", listSubscriptions);
+				System.out.println("listSubscriptions.size(): " + listSubscriptions.size());
+				
+				for (SubscriptionVO subscriptionVO2 : listSubscriptions) {
+					System.out.println("Number: "+subscriptionVO2.getCardVO().getNumber());
+				}
+				
 				SessionMessages.add(actionRequest, "subscriptionSavedSuccessfully");
 				session.removeAttribute("subscriptionVO");
-				actionResponse.setRenderParameter("jspPage", "/jsp/customer.jsp");
+				session.setAttribute("answerSubscription","true");
 			} else {
 				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
@@ -284,7 +480,7 @@ public class FormCustomer extends MVCPortlet {
 				SessionErrors.add(actionRequest, "error");
 				SessionErrors.add(actionRequest,subscriptionVO.getMessage());
 				session.setAttribute("subscriptionVO", subscriptionVO);
-				actionResponse.setRenderParameter("jspPage", "/jsp/newSubscription.jsp");
+				session.setAttribute("answerSubscription","false");
 			}
 		} catch (ProcesorFacadeException e) {
 			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
@@ -292,150 +488,11 @@ public class FormCustomer extends MVCPortlet {
 			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 			SessionErrors.add(actionRequest,e.getErrorCode());
 			session.setAttribute("subscriptionVO", subscriptionVO);
-			actionResponse.setRenderParameter("jspPage", "/jsp/newSubscription.jsp");
+			session.setAttribute("answerSubscription","false");
+			/*e.printStackTrace();*/
+			System.out.println("e.getErrorCode(): "  +  e.getErrorCode());
 		}
-	}
-	
-	public void processForm(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
-		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
-		HttpSession session = request.getSession();
-		if(request.getParameter("accion") != null && request.getParameter("accion").equalsIgnoreCase("addSubscription")) {
-			try {
-				ArrayList<PlanVO> listPlans = procesorFacade.listPlans(new PlanVO());
-				session.setAttribute("listPlans", listPlans);
-				session.removeAttribute("subscriptionVO");
-				actionResponse.setRenderParameter("jspPage", "/jsp/newSubscription.jsp");
-			} catch (ProcesorFacadeException e) {
-				e.printStackTrace();
-				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
-				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
-				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
-				SessionErrors.add(actionRequest,e.getErrorCode());
-				actionResponse.setRenderParameter("jspPage", "/jsp/customer.jsp");
-			}
-		}
-		/*super.processAction(actionRequest, actionResponse);*/
-	}
-
-	@Override
-	public void serveResource(ResourceRequest resourceRequest, ResourceResponse resourceResponse) throws IOException, PortletException {
-		HttpServletRequest request = PortalUtil.getHttpServletRequest(resourceRequest);
-		HttpServletResponse response = PortalUtil.getHttpServletResponse(resourceResponse);
-		
-		HttpSession session = request.getSession();
-		String action = resourceRequest.getParameter("action");
-		
-		if (action != null && action.equals("trialStartDate")) {
-			ArrayList<PlanVO> listPlans = (ArrayList<PlanVO>)session.getAttribute("listPlans");
-			PlanVO planVO = (PlanVO)listPlans.get(listPlans.indexOf(new PlanVO((String)resourceRequest.getParameter("planId"))));
-			
-			response.setContentType("application/json");
-			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("trialEnd", BBUtils.getCurrentDate(6,Integer.parseInt(planVO.getTrialPeriodDays())));
-			jsonObject.put("start", BBUtils.getCurrentDate(6,Integer.parseInt(planVO.getTrialPeriodDays()) + 1));
-			PrintWriter writer = resourceResponse.getWriter();
-			writer.write(jsonObject.toString());
-			writer.flush();
-			writer.close();
-			
-			/*Para una respuesta HTML*/
-//			resourceResponse.setContentType("text/html");
-//			PrintWriter printWriter = resourceResponse.getWriter();
-//			printWriter.print(BBUtils.getCurrentDate(6,Integer.parseInt(planVO.getTrialPeriodDays())));
-//			printWriter.flush();
-//			printWriter.close();
-			super.serveResource(resourceRequest, resourceResponse);
-			/*Para incluir una pagina HTML en un div*/
-//			include("/jsp/include.jsp", resourceRequest, resourceResponse, PortletRequest.RESOURCE_PHASE);
-		
-		}else if (action != null && action.equals("listCards")) {
-			
-			include("/jsp/cards.jsp", resourceRequest, resourceResponse, PortletRequest.RESOURCE_PHASE);
-			
-			/*MerchantCustomerVO merchantCustomerVO = (MerchantCustomerVO)session.getAttribute("merchantCustomerVO");
-			CardVO cardVO = new CardVO();
-			cardVO.setCustomerId(merchantCustomerVO.getCustomerId());
-			try {
-				ArrayList<CardVO> listCardsByCustomer = procesorFacade.listCardsByCustomer(cardVO);
-				session.setAttribute("listCardsByCustomer", listCardsByCustomer);
-				include("/jsp/cards.jsp", resourceRequest, resourceResponse, PortletRequest.RESOURCE_PHASE);
-			} catch (ProcesorFacadeException e) {
-				e.printStackTrace();
-			}*/
-		}
-	}
-	
-	public void saveCard(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
-
-		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
-		HttpSession session = request.getSession();
-		
-		MerchantCustomerVO merchantCustomerVO = (MerchantCustomerVO)session.getAttribute("merchantCustomerVO");
-		CardVO cardVO = new CardVO();
-		cardVO.setCustomerId(merchantCustomerVO.getCustomerId());
-		
-		cardVO.setName(request.getParameter("name"));
-		cardVO.setNumber(request.getParameter("number"));
-		cardVO.setLast4(request.getParameter("number").substring(request.getParameter("number").length()-4));
-		
-		cardVO.setCvv(request.getParameter("securityCode"));
-		String expirationMonth = new DecimalFormat("00").format(Double.parseDouble(request.getParameter("expirationMonth")));
-		cardVO.setExpMonth(expirationMonth.substring(expirationMonth.length()-2));
-		cardVO.setExpYear(request.getParameter("expirationYear"));
-		
-		cardVO.setAddressLine1(request.getParameter("street"));
-		cardVO.setAddressCity(request.getParameter("city"));
-		cardVO.setAddressZip(BBUtils.isNullOrEmptyWithDefaulValue((String)request.getParameter("addressZip"),"0"));
-		cardVO.setAddresState(request.getParameter("addresState"));
-		cardVO.setAddressCountry(request.getParameter("country"));
-		
-		try {
-			procesorFacade.saveCard(cardVO);
-			if(cardVO.getStatus().equalsIgnoreCase("success")) {
-				ArrayList<CardVO> listCardsByCustomer = procesorFacade.listCardsByCustomer(cardVO);
-				System.out.println("listCardsByCustomer.size(): " + listCardsByCustomer.size());
-				session.setAttribute("listCardsByCustomer", listCardsByCustomer);
-				SessionMessages.add(actionRequest, "CardCreatedSuccessfully");
-				session.removeAttribute("cardVO");
-				session.setAttribute("answer","true");
-			} else {
-				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
-				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
-				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
-				SessionErrors.add(actionRequest, "error");
-				SessionErrors.add(actionRequest,cardVO.getMessage());
-				session.setAttribute("cardVO", cardVO);
-				session.setAttribute("answer","false");
-			}
-		} catch (ProcesorFacadeException e) {
-			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
-			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
-			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
-			SessionErrors.add(actionRequest,e.getErrorCode());
-			session.setAttribute("cardVO", cardVO);
-			session.setAttribute("answer","false");
-		}
-		
-		
-		/*try {
-			procesorFacade.saveCard(cardVO);
-			session.setAttribute("listCardsByCustomer", listCardsByCustomer);
-		} catch (ProcesorFacadeException e) {
-			e.printStackTrace();
-		}*/
-		
-		/*System.out.println("name: " + actionRequest.getParameter("name"));
-		
-		if(actionRequest.getParameter("name").equalsIgnoreCase("si")) {
-			SessionMessages.add(actionRequest, "CardCreatedSuccessfully");
-			session.setAttribute("answer","true");
-		}else{
-			session.setAttribute("answer","false");
-			SessionErrors.add(actionRequest,"ErrorCreatingCard");
-			SessionMessages.add(actionRequest, PortalUtil.getPortletId(actionRequest) + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
-		}*/
-		
-		actionResponse.setRenderParameter("mvcPath", "/jsp/addCard.jsp");
+		actionResponse.setRenderParameter("mvcPath", "/jsp/addSubscription.jsp");
 	}
 	
 }

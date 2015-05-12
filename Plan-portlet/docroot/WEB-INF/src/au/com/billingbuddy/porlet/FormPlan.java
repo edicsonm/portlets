@@ -37,7 +37,9 @@ public class FormPlan extends MVCPortlet {
 			HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
 			HttpSession session = request.getSession();
 			
-			ArrayList<PlanVO> listPlans = procesorFacade.listPlans(new PlanVO());
+			PlanVO planVO = new PlanVO();
+			planVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
+			ArrayList<PlanVO> listPlans = procesorFacade.listPlans(planVO);
 			session.setAttribute("listPlans", listPlans);
 		} catch (ProcesorFacadeException e) {
 			e.printStackTrace();
@@ -49,13 +51,16 @@ public class FormPlan extends MVCPortlet {
 		super.doView(renderRequest, renderResponse);
 	}
 	
-	public void listCurrencies(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+	public void listElementsAddPlan(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
 		try {
 			HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 			HttpSession session = request.getSession();
 			
 			ArrayList<CurrencyVO> listCurrencies = procesorFacade.listCurrencies();
 			session.setAttribute("listCurrencies", listCurrencies);
+			
+			ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants(new MerchantVO(String.valueOf(PortalUtil.getUserId(request))));
+			session.setAttribute("listMerchants", listMerchants);
 			
 		} catch (ProcesorFacadeException e) {
 			e.printStackTrace();
@@ -68,7 +73,7 @@ public class FormPlan extends MVCPortlet {
 	}
 	
 	
-	public void listCurrenciesEditPlan(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+	public void listElementsEditPlan(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
 		try {
 			HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 			HttpSession session = request.getSession();
@@ -79,6 +84,10 @@ public class FormPlan extends MVCPortlet {
 			
 			ArrayList<CurrencyVO> listCurrencies = procesorFacade.listCurrencies();
 			session.setAttribute("listCurrencies", listCurrencies);
+			
+			ArrayList<MerchantVO> listMerchants = procesorFacade.listMerchants(new MerchantVO(String.valueOf(PortalUtil.getUserId(request))));
+			session.setAttribute("listMerchants", listMerchants);
+			
 		} catch (ProcesorFacadeException e) {
 			e.printStackTrace();
 			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
@@ -94,6 +103,7 @@ public class FormPlan extends MVCPortlet {
 		HttpSession session = request.getSession();
 		
 		PlanVO planVO = new PlanVO();
+		planVO.setMerchantId(actionRequest.getParameter("merchant"));
 		planVO.setAmount(actionRequest.getParameter("amount"));
 		planVO.setCurrency(actionRequest.getParameter("currency"));
 		planVO.setInterval(actionRequest.getParameter("interval"));
@@ -108,18 +118,17 @@ public class FormPlan extends MVCPortlet {
 		try {
 			procesorFacade.savePlan(planVO);
 			if(planVO.getStatus().equalsIgnoreCase("success")) {
-				ArrayList<PlanVO> listPlans = procesorFacade.listPlans(new PlanVO());
+				planVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
+				ArrayList<PlanVO> listPlans = procesorFacade.listPlans(planVO);
 				session.setAttribute("listPlans", listPlans);
 				session.removeAttribute("planVO");
 				SessionMessages.add(actionRequest, "planSavedSuccessfully");
 				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
 			}else{
-				System.out.println("basicPaymentResponseModel.getMessage(): " + planVO.getMessage());
 				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 				SessionErrors.add(actionRequest, "error");
-				System.out.println("planVO.getMessage(): " + planVO.getMessage());
 				SessionErrors.add(actionRequest,planVO.getMessage());
 				session.setAttribute("planVO", planVO);
 				actionResponse.setRenderParameter("jspPage", "/jsp/newPlan.jsp");
@@ -129,9 +138,6 @@ public class FormPlan extends MVCPortlet {
 			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 			SessionErrors.add(actionRequest,e.getErrorCode());
-			System.out.println("e.getMessage(): " + e.getMessage());
-			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
-			System.out.println("e.getErrorCode(): " + e.getErrorCode());
 			session.setAttribute("planVO", planVO);
 			actionResponse.setRenderParameter("jspPage", "/jsp/newPlan.jsp");
 		}
@@ -141,6 +147,7 @@ public class FormPlan extends MVCPortlet {
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 		HttpSession session = request.getSession();
 		PlanVO planVO = (PlanVO)session.getAttribute("planVO");
+		planVO.setMerchantId(actionRequest.getParameter("merchant"));
 		planVO.setAmount(actionRequest.getParameter("amount"));
 		planVO.setCurrency(actionRequest.getParameter("currency"));
 		planVO.setInterval(actionRequest.getParameter("interval"));
@@ -155,7 +162,8 @@ public class FormPlan extends MVCPortlet {
 		try {
 			procesorFacade.updatePlan(planVO);
 			if(planVO.getStatus().equalsIgnoreCase("success")) {
-				ArrayList<PlanVO> listPlans = procesorFacade.listPlans(new PlanVO());
+				planVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
+				ArrayList<PlanVO> listPlans = procesorFacade.listPlans(planVO);
 				session.setAttribute("listPlans", listPlans);
 				SessionMessages.add(actionRequest, "planUpdatedSuccessfully");
 				session.removeAttribute("planVO");
@@ -170,17 +178,10 @@ public class FormPlan extends MVCPortlet {
 				actionResponse.setRenderParameter("jspPage", "/jsp/editPlan.jsp");
 			}
 		} catch (ProcesorFacadeException e) {
-			
 			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
-
 			SessionErrors.add(actionRequest,e.getErrorCode());
-			
-			System.out.println("e.getMessage(): " + e.getMessage());
-			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
-			System.out.println("e.getErrorCode(): " + e.getErrorCode());
-			
 			session.setAttribute("planVO", planVO);
 			actionResponse.setRenderParameter("jspPage", "/jsp/editPlan.jsp");
 		}
@@ -212,9 +213,6 @@ public class FormPlan extends MVCPortlet {
 			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 			SessionErrors.add(actionRequest,e.getErrorCode());
-			System.out.println("e.getMessage(): " + e.getMessage());
-			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
-			System.out.println("e.getErrorCode(): " + e.getErrorCode());
 			session.setAttribute("planVO", planVO);
 		}
 		actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");

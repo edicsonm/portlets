@@ -15,7 +15,20 @@
 --%>
 <%@ include file="init.jsp" %>
 
+<%@ page import="java.util.Enumeration" %>
+
 <% 
+	String idCard = (String)request.getParameter("idCard");
+	CardVO cardVO = new CardVO();
+	cardVO.setId(idCard);
+	
+	ArrayList<CardVO> listCardsByCustomer = (ArrayList<CardVO>)session.getAttribute("listCardsByCustomer");
+	int indiceSubscription = listCardsByCustomer.indexOf(cardVO);
+	
+	cardVO = (CardVO)listCardsByCustomer.get(indiceSubscription);
+	pageContext.setAttribute("cardVO", cardVO);
+		 
+		 
 	boolean answerCard = false;
 	if(session.getAttribute("answerCard") != null && String.valueOf(session.getAttribute("answerCard")).equalsIgnoreCase("true")){
 		answerCard = true;
@@ -46,18 +59,20 @@ AUI().use(
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 
-<liferay-ui:success key="CardCreatedSuccessfully" message="label.CardCreatedSuccessfully" />
-<liferay-ui:error key="ProcessorMDTR.saveCard.CardDAOException" message="error.ProcessorMDTR.saveCard.CardDAOException" />
+<liferay-ui:success key="CardEditedSuccessfully" message="label.CardEditedSuccessfully" />
+<liferay-ui:error key="ProcessorMDTR.editCard.CardDAOException" message="error.ProcessorMDTR.editCard.CardDAOException" />
 
-<portlet:actionURL name="saveCard" var="submitFormCreateCard"/>
+<portlet:actionURL name="editCard" var="submitFormEditCard">
+	<portlet:param name="idCard" value="<%=idCard %>" />
+</portlet:actionURL>
 
-<aui:form  action="<%= submitFormCreateCard %>" method="post">
+<aui:form  action="<%= submitFormEditCard %>" method="post">
 	<fieldset class="fieldset">
 		<div class="">
 			<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
 			
 			<div class="control-group">
-					<aui:input label="label.name" helpMessage="help.name" showRequiredLabel="false" required="true" name="name" value="${cardVO.name}"/>
+					<aui:input label="label.name" helpMessage="help.name"  showRequiredLabel="false" required="true" name="name" value="${cardVO.name}"/>
 			</div>
 			
 			<div class="control-group">
@@ -68,7 +83,7 @@ AUI().use(
 			</div>
 			
 			<div class="control-group">
-				<aui:input label="label.securityCode" helpMessage="help.securityCode"  showRequiredLabel="false" size="3"  type="text" required="true" name="securityCode" value="${cardVO.cvv}">
+				<aui:input label="label.securityCode" helpMessage="help.securityCode" showRequiredLabel="false" size="3"  type="text" required="true" name="securityCode" value="${cardVO.cvv}">
 					<aui:validator name="digits"/>
 					<aui:validator name="minLength" errorMessage="You must imput a number with 3 digits">3</aui:validator>
 					<aui:validator name="maxLength" errorMessage="You must imput a number with 3 digits">3</aui:validator>
@@ -121,7 +136,7 @@ AUI().use(
 				</div>
 			</div>
 			<%-- <a href="<%= goBack %>"><fmt:message key="label.goBack"/></a> --%>
-			<aui:button type="submit" name="addCard" value="label.addCard" />
+			<aui:button type="submit" name="editCard" value="label.editCard" />
 		</div>
 	</fieldset>
 </aui:form>

@@ -31,7 +31,6 @@
 
 <portlet:defineObjects />
 
-<liferay-ui:success key="subscriptionSavedSuccessfully" message="label.subscriptionSavedSuccessfully" />
 <liferay-ui:success key="subscriptionCanceledSuccessfully" message="label.subscriptionCanceledSuccessfully" />
 
 <%-- <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLCards">
@@ -55,12 +54,6 @@
 	<portlet:param name="jspPage" value="/jsp/customer.jsp" />
 </liferay-portlet:renderURL>
 
-<portlet:renderURL var="addSubscription" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
-	<portlet:param name="jspPage" value="/jsp/prueba.jsp" />
-	<%-- <portlet:param name="jspPage" value="/jsp/newSubscription.jsp" /> --%>
-	<portlet:param name="accion" value="addSubscription"/>
-</portlet:renderURL>
-
 <portlet:renderURL var="goBack">
 	<portlet:param name="jspPage" value="/jsp/view.jsp" />
 </portlet:renderURL>
@@ -70,7 +63,13 @@
 </portlet:actionURL>
 
 <portlet:renderURL var="addCard" windowState="<%=LiferayWindowState.POP_UP.toString()%>">
-<portlet:param name="mvcPath" value="/jsp/addCard.jsp" />
+	<portlet:param name="mvcPath" value="/jsp/addCard.jsp" />
+	<portlet:param name="accion" value="addCard"/>
+</portlet:renderURL>
+
+<portlet:renderURL var="addSubscription" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+	<portlet:param name="mvcPath" value="/jsp/addSubscription.jsp" />
+	<portlet:param name="accion" value="addSubscription"/>
 </portlet:renderURL>
 
 <portlet:resourceURL var="listCards">
@@ -78,6 +77,10 @@
     <portlet:param name="jspPage" value="/jsp/cards.jsp" />
 </portlet:resourceURL>
 
+<portlet:resourceURL var="listSubscriptions">
+	<portlet:param name="action" value="listSubscriptions" />
+    <portlet:param name="jspPage" value="/jsp/subscriptions.jsp" />
+</portlet:resourceURL>
 
 <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLCards">
 	<portlet:param name="accion" value="renderURLCards"/>
@@ -220,8 +223,7 @@ Liferay.provide(
 );
 </aui:script>
 
-<aui:script>
-
+<%-- <aui:script>
 Liferay.provide(
 	window,
 	'addSubscription',
@@ -251,7 +253,43 @@ Liferay.provide(
 	},
 	['liferay-util-window']
 );
+</aui:script> --%>
+<aui:script use="liferay-portlet-url,aui-io,aui-io-plugin-deprecated,liferay-util-window,aui-base">
+	Liferay.provide(
+	window,
+	'editCard',
+	function(param) {
+		var A = AUI();
+		var popUpWindow = Liferay.Util.Window.getWindow(
+				{
+					dialog : {
+						centered : true,
+						constrain2view : true,
+						//cssClass: 'yourCSSclassName',
+						modal : true,
+						resizable : false,
+						width : 500,
+						height: 470
+					}
+				}).plug(
+				A.Plugin.DialogIframe,
+				{
+					autoLoad : true,
+					iframeCssClass : 'dialog-iframe',
+					uri : param
+				}).render();
+		popUpWindow.show();
+		popUpWindow.titleNode.html('<fmt:message key="label.editCard"/>');
+		/* popUpWindow.io.start(); */
+		
+		/* A.one('#<portlet:namespace />editCard').on('click',
+				function(event) {
+				alert('event: ' + event)
+		}); */
+	});
 </aui:script>
+
+
 <aui:script>
 AUI().use(
 		'aui-base',
@@ -269,7 +307,8 @@ AUI().use(
 												//cssClass: 'yourCSSclassName',
 												modal : true,
 												resizable : false,
-												width : 500
+												width : 500,
+												height: 470
 											}
 										}).plug(
 										A.Plugin.DialogIframe,
@@ -302,17 +341,18 @@ AUI().use(
 												//cssClass: 'yourCSSclassName',
 												modal : true,
 												resizable : false,
-												width : 500
+												width : 500,
+												height: 460
 											}
 										}).plug(
 										A.Plugin.DialogIframe,
 										{
 											autoLoad : true,
 											iframeCssClass : 'dialog-iframe',
-											uri : '<%=addCard.toString()%>'
+											uri : '<%=addSubscription.toString()%>'
 										}).render();
 						popUpWindow.show();
-						popUpWindow.titleNode.html('<fmt:message key="label.addACard"/>');
+						popUpWindow.titleNode.html('<fmt:message key="label.addASubscription"/>');
 						/* popUpWindow.io.start(); */
 					});
 				});
@@ -369,46 +409,12 @@ AUI().use(
 %>
 
 <aui:form action="<%=submitForm %>" method="post">
-<%-- <div id="myToggler">
-  <h4 class="header toggler-header-collapsed"><p id="sub-legend" class="description"><fmt:message key="label.cards"/></p></h4>
-  	<div class="content toggler-content-collapsed">
-  			<liferay-ui:search-container curParam="Cards" deltaConfigurable="true" totalVar="totalVarCards" deltaParam="deltaCards" delta="2" iteratorURL="<%=renderURLCards%>" emptyResultsMessage="label.empty">
-			   <liferay-ui:search-container-results resultsVar="resultsCards" totalVar="totalCards" results="<%= new ArrayList(ListUtil.subList(listCardsByCustomer, searchContainer.getStart(), searchContainer.getEnd()))%>" total="<%=listCardsByCustomer.size() %>"/>
-				<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.CardVO" rowVar="posi" indexVar="indice" keyProperty="id" modelVar="cardVO">
-				
-				<portlet:renderURL var="popupURLCardDetails" windowState="<%= LiferayWindowState.POP_UP.toString() %>" >
-					<portlet:param name="jspPage" value="/jsp/cardDetails.jsp"/>
-					<portlet:param name="idCard" value="<%=cardVO.getId()%>"/>
-					<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
-				</portlet:renderURL>
-				
-				<liferay-ui:search-container-column-text name="label.iterator" value="${cardVO.id}" orderable="false"/>
-				<liferay-ui:search-container-column-text name="label.cardNumber">
-					<a onclick="showDetailsCard('<%= popupURLCardDetails.toString() %>')" href="#">${Utils:printCardNumber(cardVO.number)}</a>
-				</liferay-ui:search-container-column-text>
-				<liferay-ui:search-container-column-text name="label.brand" value="${Utils:printString(cardVO.brand)}" orderable="false"/>
-				<liferay-ui:search-container-column-text name="label.expire" value="${cardVO.expMonth} - ${cardVO.expYear}"  orderable="false"/>
-			   </liferay-ui:search-container-row>
-			   <liferay-ui:search-iterator />
-			</liferay-ui:search-container>
-  	</div>
-  	
-  <h4 class="header toggler-header-collapsed"><span>Animated</span> Option</h4>
-  <p class="content toggler-content-collapsed">This option has been set to <span>true</span> so that toggle transitions will animate.</p>
-  <h4 class="header toggler-header-collapsed"><span>Transition</span> Option</h4>
-  <p class="content toggler-content-collapsed">This option controls duration of transition, easing type, as well as callback functions.</p>
-  <h4 class="header toggler-header-collapsed"><span>closeAllOnExpand</span> Option</h4>
-  <p class="content toggler-content-collapsed">This option has been set to <span>true</span> so that all other toggle switches will be set to off when one switch is toggled on.</p>
-</div> --%>
-
-
 <fieldset class="fieldset">
 	<legend class="fieldset-legend">
 		<span class="legend"><fmt:message key="label.customer"/> </span>
 	</legend>
 	<div class="">
 		<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
-		<div class="details">
 			<p id="sub-legend" class="description"><fmt:message key="label.customerDetails"/></p>
 			<div id="contenedor">
 				<div id="contenidos">
@@ -428,10 +434,10 @@ AUI().use(
 			</div>
 			
 			<p id="sub-legend" class="description"><fmt:message key="label.cards"/></p>
-			<div id="divCards" >
+			<div id="divCards">
 				<liferay-ui:search-container curParam="Cards" deltaConfigurable="true" totalVar="totalVarCards" deltaParam="deltaCards" delta="2" iteratorURL="<%=renderURLCards%>" emptyResultsMessage="label.empty">
 				    <liferay-ui:search-container-results resultsVar="resultsCards" totalVar="totalCards" results="<%= new ArrayList(ListUtil.subList(listCardsByCustomer, searchContainer.getStart(), searchContainer.getEnd()))%>" total="<%=listCardsByCustomer.size() %>"/>
-					<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.CardVO" rowVar="posi" indexVar="indice" keyProperty="id" modelVar="cardVO">
+					<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.CardVO" rowVar="posi" indexVar="indiceCard" keyProperty="id" modelVar="cardVO">
 					
 					<portlet:renderURL var="popupURLCardDetails" windowState="<%= LiferayWindowState.POP_UP.toString() %>" >
 						<portlet:param name="jspPage" value="/jsp/cardDetails.jsp"/>
@@ -444,6 +450,17 @@ AUI().use(
 					</liferay-ui:search-container-column-text>
 					<liferay-ui:search-container-column-text name="label.brand" value="${Utils:printString(cardVO.brand)}" orderable="false"/>
 					<liferay-ui:search-container-column-text name="label.expire" value="${cardVO.expMonth} - ${cardVO.expYear}"  orderable="false"/>
+				    <liferay-ui:search-container-column-text name="Accion">
+					<liferay-ui:icon-menu>
+						<liferay-portlet:renderURL varImpl="editURLCard" windowState="<%=LiferayWindowState.POP_UP.toString()%>">
+							<portlet:param name="jspPage" value="/jsp/editCard.jsp" />
+							<portlet:param name="idCard" value="<%=cardVO.getId()%>"/>
+						</liferay-portlet:renderURL>
+						<%-- <liferay-ui:icon image="edit" message="label.edit" url="<%=editURLCard.toString()%>" /> --%>
+						<button type="button" onclick="editCard('<%=editURLCard.toString()%>')" name="<portlet:namespace />editCard" id="<portlet:namespace />editCard" class="btn-link"><fmt:message key="label.edit"/></button>
+					</liferay-ui:icon-menu>
+				</liferay-ui:search-container-column-text>
+				   
 				   </liferay-ui:search-container-row>
 				   <liferay-ui:search-iterator />
 				</liferay-ui:search-container>
@@ -472,62 +489,63 @@ AUI().use(
 			</liferay-ui:search-container>
 			
 			<p id="sub-legend" class="description"><fmt:message key="label.subscriptions"/></p>
-			<liferay-ui:search-container curParam="Subscriptions" deltaConfigurable="true" totalVar="totalVarSubscriptions" deltaParam="deltaSubscriptions" delta="5" iteratorURL="<%=renderURLSubscriptions%>" emptyResultsMessage="label.empty">
-			   <liferay-ui:search-container-results resultsVar="resultsSubscriptions" totalVar="totalSubscriptions" results="<%= new ArrayList(ListUtil.subList(listSubscriptionsByCustomer, searchContainer.getStart(), searchContainer.getEnd()))%>" total="<%=listSubscriptionsByCustomer.size() %>"/>
-				<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.SubscriptionVO" rowVar="posi" indexVar="indice" keyProperty="id" modelVar="subscriptionVO">
-				
-				<portlet:renderURL var="popupURLSubscriptionsDetails" windowState="<%= LiferayWindowState.POP_UP.toString() %>" >
-					<portlet:param name="jspPage" value="/jsp/subscriptionDetails.jsp"/>
-					<portlet:param name="idSubscription" value="<%=subscriptionVO.getId()%>"/>
-				</portlet:renderURL>
-				<liferay-ui:search-container-column-text name="label.iterator" value="${subscriptionVO.id}" orderable="false"/>
-				<liferay-ui:search-container-column-text name="label.plan">
-					<a onclick="showDetailsSubscriptions('<%= popupURLSubscriptionsDetails.toString() %>')" href="#">${subscriptionVO.planVO.name}</a>
-				</liferay-ui:search-container-column-text>
-				<liferay-ui:search-container-column-text name="label.start" value="${Utils:formatDate(2,subscriptionVO.start,5)}" orderable="false"/>
-				<liferay-ui:search-container-column-text name="label.quantity" property="quantity" orderable="false"/>
-				
-				
-				<liferay-ui:search-container-column-text name="label.status" orderable="false">
-					<fmt:message key="label.${subscriptionVO.status}"/>
-				</liferay-ui:search-container-column-text>
-				
-				
-				<%-- <% if(subscriptionVO.getStatus().equalsIgnoreCase("Canceled")){
-					%>
-						<liferay-ui:search-container-column-text name="label.<%=subscriptionVO.getStatus() %>" orderable="false"><fmt:message key="label.canceled"/></liferay-ui:search-container-column-text>
-					<%
-				}else{
-					%>
-						<liferay-ui:search-container-column-text name="label.status" orderable="false"><fmt:message key="label.active"/></liferay-ui:search-container-column-text>
-				<%}%> --%>
-				
-				<liferay-ui:search-container-column-text name="Accion">
-				
-				<liferay-ui:icon-menu>
-				
-					<portlet:actionURL var="cancelSubscription" name="cancelSubscription">
-						<portlet:param name="idSubscription" value="<%=subscriptionVO.getId()%>"/>
-					</portlet:actionURL>
+			<div id="divSubscriptions">
+				<liferay-ui:search-container curParam="Subscriptions" deltaConfigurable="true" totalVar="totalVarSubscriptions" deltaParam="deltaSubscriptions" delta="3" iteratorURL="<%=renderURLSubscriptions%>" emptyResultsMessage="label.empty">
+				   <liferay-ui:search-container-results resultsVar="resultsSubscriptions" totalVar="totalSubscriptions" results="<%= new ArrayList(ListUtil.subList(listSubscriptionsByCustomer, searchContainer.getStart(), searchContainer.getEnd()))%>" total="<%=listSubscriptionsByCustomer.size() %>"/>
+					<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.SubscriptionVO" rowVar="posi" indexVar="indice" keyProperty="id" modelVar="subscriptionVO">
 					
-					<% if(subscriptionVO.getStatus().equalsIgnoreCase("Canceled")){
+					<portlet:renderURL var="popupURLSubscriptionsDetails" windowState="<%= LiferayWindowState.POP_UP.toString() %>" >
+						<portlet:param name="jspPage" value="/jsp/subscriptionDetails.jsp"/>
+						<portlet:param name="idSubscription" value="<%=subscriptionVO.getId()%>"/>
+					</portlet:renderURL>
+					<liferay-ui:search-container-column-text name="label.iterator" value="${subscriptionVO.id}" orderable="false"/>
+					<liferay-ui:search-container-column-text name="label.plan">
+						<a onclick="showDetailsSubscriptions('<%= popupURLSubscriptionsDetails.toString() %>')" href="#">${subscriptionVO.planVO.name}</a>
+					</liferay-ui:search-container-column-text>
+					
+					<% 
+						System.out.println("subscriptionVO.getCardVO().getNumber(): " + subscriptionVO.getCardVO().getNumber());
+					%>
+					
+					<liferay-ui:search-container-column-text name="label.cardNumber" value="${Utils:printCardNumber(subscriptionVO.cardVO.number)}" orderable="false"/>
+					<liferay-ui:search-container-column-text name="label.start" value="${Utils:formatDate(2,subscriptionVO.start,5)}" orderable="false"/>
+					<liferay-ui:search-container-column-text name="label.quantity" property="quantity" orderable="false"/>
+					
+					<liferay-ui:search-container-column-text name="label.status" orderable="false">
+						<fmt:message key="label.${subscriptionVO.status}"/>
+					</liferay-ui:search-container-column-text>
+					
+					<%-- <% if(subscriptionVO.getStatus().equalsIgnoreCase("Canceled")){
 						%>
-							<fmt:message key="label.noAvailable"/>
+							<liferay-ui:search-container-column-text name="label.<%=subscriptionVO.getStatus() %>" orderable="false"><fmt:message key="label.canceled"/></liferay-ui:search-container-column-text>
 						<%
 					}else{
 						%>
-						    <liferay-ui:icon image="delete" onClick="return confirm('Are you sure do you want to cancel this subscription ?')" message="label.cancel" url="<%=cancelSubscription.toString()%>" />
-					<%}%>
+							<liferay-ui:search-container-column-text name="label.status" orderable="false"><fmt:message key="label.active"/></liferay-ui:search-container-column-text>
+					<%}%> --%>
 					
-				</liferay-ui:icon-menu>
-			</liferay-ui:search-container-column-text>
-				
-			   </liferay-ui:search-container-row>
-			   <liferay-ui:search-iterator />
-			</liferay-ui:search-container>
-			
-			<%-- <aui:button type="button" class="btn btn-primary" onClick="addSubscription();" name="createSubscription" value="label.createSubscription" /> --%>
-			<button type="submit" class="btn btn-primary"><liferay-ui:message key="label.createSubscription"/></button>
+					<liferay-ui:search-container-column-text name="Accion">
+						<liferay-ui:icon-menu>
+							<portlet:actionURL var="cancelSubscription" name="cancelSubscription">
+								<portlet:param name="idSubscription" value="<%=subscriptionVO.getId()%>"/>
+							</portlet:actionURL>
+							<% if(subscriptionVO.getStatus().equalsIgnoreCase("Canceled")){
+								%>
+									<fmt:message key="label.noAvailable"/>
+								<%
+							}else{
+								%>
+								    <liferay-ui:icon image="delete" onClick="return confirm('Are you sure do you want to cancel this subscription ?')" message="label.cancel" url="<%=cancelSubscription.toString()%>" />
+							<%}%>
+						</liferay-ui:icon-menu>
+					</liferay-ui:search-container-column-text>
+					
+				   </liferay-ui:search-container-row>
+				   <liferay-ui:search-iterator />
+				</liferay-ui:search-container>
+			</div>
+			<button type="button" name="<portlet:namespace />addSubscription" id="<portlet:namespace />addSubscription" class="btn btn-primary"><liferay-ui:message key="label.addASubscription"/></button>
+			<%-- <button type="submit" class="btn btn-primary"><liferay-ui:message key="label.createSubscription"/></button> --%>
 			
 			<p id="sub-legend" class="description"><fmt:message key="label.refunds"/></p>
 			<liferay-ui:search-container curParam="Refunds" deltaConfigurable="true" totalVar="totalVarRefunds" deltaParam="deltaRefunds" delta="5" iteratorURL="<%=renderURLRefunds%>" emptyResultsMessage="label.empty">
@@ -557,14 +575,19 @@ AUI().use(
 			</liferay-ui:search-container>
 			
 			<a href="<%= goBack %>"><fmt:message key="label.goBack"/></a>
-			<%-- <aui:button type="submit" name="processRefund" value="label.processRefund" /> --%>
 	</div>
 </fieldset>
 </aui:form>
 
 <aui:script use="aui-base"> 
 	/* $( "#divCards" ).load("<%= listCards %>"); */
-	window.recharge = function() {
+	
+	window.rechargeCards = function() {
 		$("#divCards").load("<%= listCards %>");
 	};
+	window.rechargeSubscriptions = function() {
+		$("#divSubscriptions").load("<%= listSubscriptions %>");
+	};
+	
+	
 </aui:script>

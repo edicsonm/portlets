@@ -44,7 +44,7 @@ public class FormSubscription extends MVCPortlet {
 	
 	@Override
 	public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
-		try {
+		/*try {
 			HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
 			HttpSession session = request.getSession();
 			
@@ -70,7 +70,7 @@ public class FormSubscription extends MVCPortlet {
 			System.out.println("e.getMessage(): " + e.getMessage());
 			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
 			System.out.println("e.getErrorCode(): " + e.getErrorCode());
-		}
+		}*/
 		super.doView(renderRequest, renderResponse);
 	}
 	
@@ -270,7 +270,7 @@ public class FormSubscription extends MVCPortlet {
 	}
 	
 	public void deleteSubscription(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
-		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
+		/*HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 		HttpSession session = request.getSession();
 		
 		ArrayList<SubscriptionVO> resultsListSubscriptions = (ArrayList<SubscriptionVO>)session.getAttribute("results");
@@ -298,7 +298,7 @@ public class FormSubscription extends MVCPortlet {
 			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
 			System.out.println("e.getErrorCode(): " + e.getErrorCode());
 			session.setAttribute("subscriptionVO", subscriptionVO);
-		}
+		}*/
 		actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
 	}
 	

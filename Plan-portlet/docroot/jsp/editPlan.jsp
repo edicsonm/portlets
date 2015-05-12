@@ -23,6 +23,7 @@
 <%
 	PlanVO planVO = (PlanVO)session.getAttribute("planVO");
 	ArrayList<CurrencyVO> listCurrencies = (ArrayList<CurrencyVO>)session.getAttribute("listCurrencies");
+	ArrayList<MerchantVO> listMerchants = (ArrayList<MerchantVO>)session.getAttribute("listMerchants");
 	request.setAttribute("planVO", planVO);
 	session.setAttribute("planVO", planVO);
 %>
@@ -42,11 +43,18 @@
 		<div class="">
 			<p class="description"><fmt:message key="label.descriptionPorlet"/></p>
 			
+			<c:if test="<%= RoleServiceUtil.hasUserRole(user.getUserId(), user.getCompanyId(), \"MerchantAdministrator\", true) %>">
+				<aui:select name="merchant" helpMessage="help.merchant" required="true"  label="label.merchant" id="merchant">
+					<c:forEach var="merchantVO" items="${listMerchants}">
+						<aui:option value="${merchantVO.id}" label="${merchantVO.name}" selected="${merchantVO.id==planVO.merchantId}"/>
+					</c:forEach>
+				</aui:select>
+			</c:if>
+			
 			<div class="control-group">
 				<aui:input label="label.name" helpMessage="help.name" showRequiredLabel="false" type="text" required="true" name="name" value="${planVO.name}">
 				</aui:input>
 			</div>
-			
 			
 			<div class="control-group">
 				<aui:input label="label.amount" helpMessage="help.amount" showRequiredLabel="false" type="text" required="true" name="amount" value="${planVO.amount}">
@@ -60,8 +68,6 @@
 			</div>
 			
 			<div class="control-group">
-				<%-- <aui:input label="label.currency" helpMessage="help.currency" showRequiredLabel="false" size="3" type="text" required="true" name="currency" value="${planVO.currency}">
-				</aui:input> --%>
 				<aui:select name="currency" onChange="searchMerchantInformation();" helpMessage="help.currency" label="label.currency" id="currency">
 					<c:forEach var="currencyVO" items="${listCurrencies}">
 						<aui:option value="${currencyVO.alphabeticCode}" label="${currencyVO.alphabeticCode}" selected="${currencyVO.alphabeticCode==planVO.currency}"/>
