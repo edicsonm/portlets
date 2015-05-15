@@ -462,13 +462,12 @@ public class FormCustomer extends MVCPortlet {
 				subscriptionVO.setCardVO(new CardVO());
 				subscriptionVO.getCardVO().setCustomerId(merchantCustomerVO.getCustomerId());
 				
+				subscriptionVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
+				subscriptionVO.setMerchantCustomerCardVO(new MerchantCustomerCardVO());
+				subscriptionVO.getMerchantCustomerCardVO().setMerchantCustomerVO(merchantCustomerVO);
+				
 				ArrayList<SubscriptionVO> listSubscriptions = procesorFacade.listSubscriptions(subscriptionVO);
 				session.setAttribute("listSubscriptionsByCustomer", listSubscriptions);
-				System.out.println("listSubscriptions.size(): " + listSubscriptions.size());
-				
-				for (SubscriptionVO subscriptionVO2 : listSubscriptions) {
-					System.out.println("Number: "+subscriptionVO2.getCardVO().getNumber());
-				}
 				
 				SessionMessages.add(actionRequest, "subscriptionSavedSuccessfully");
 				session.removeAttribute("subscriptionVO");

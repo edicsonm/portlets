@@ -20,7 +20,6 @@
 <%
 	ArrayList<SubscriptionVO> listSubscriptionsByCustomer = (ArrayList<SubscriptionVO>)session.getAttribute("listSubscriptionsByCustomer");
 	if(listSubscriptionsByCustomer == null) listSubscriptionsByCustomer = new ArrayList<SubscriptionVO>();
-	System.out.println("listSubscriptionsByCustomer.size() en ;a jsp: " + listSubscriptionsByCustomer.size());
 %>
 
 <liferay-portlet:renderURL portletConfiguration="true" varImpl="renderURLSubscriptions">
