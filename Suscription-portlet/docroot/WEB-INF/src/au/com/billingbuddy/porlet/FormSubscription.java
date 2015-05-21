@@ -191,83 +191,83 @@ public class FormSubscription extends MVCPortlet {
 		actionResponse.setRenderParameter("jspPage", "/jsp/editSubscription.jsp");
 	}	
 	
-	public void editSubscription(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
-		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
-		HttpSession session = request.getSession();
-		SubscriptionVO subscriptionVO = (SubscriptionVO)session.getAttribute("subscriptionVO");
-		subscriptionVO.setPlanId(actionRequest.getParameter("plan"));
-		subscriptionVO.setCancelAtPeriodEnd(actionRequest.getParameter("cancelAtPeriodEnd"));
-		subscriptionVO.setQuantity(actionRequest.getParameter("quantity"));
-		subscriptionVO.setStatus(actionRequest.getParameter("status"));
-		subscriptionVO.setApplicationFeePercent(actionRequest.getParameter("applicationFeePercent"));
-		subscriptionVO.setStart(actionRequest.getParameter("start"));
-		
-		Date date;
-		try {
-			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("startAt"));
-			subscriptionVO.setStart(Utilities.getDateFormat(5).format(date));
-			
-			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("endedAt"));
-			subscriptionVO.setEndedAt(Utilities.getDateFormat(5).format(date));
-			
-			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("canceledAt"));
-			subscriptionVO.setCanceledAt(Utilities.getDateFormat(5).format(date));
-			
-			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("currentPeriodStart"));
-			subscriptionVO.setCurrentPeriodStart(Utilities.getDateFormat(5).format(date));
-			
-			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("currentPeriodEnd"));
-			subscriptionVO.setCurrentPeriodEnd(Utilities.getDateFormat(5).format(date));
-			
-			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("trialStartDay"));
-			subscriptionVO.setTrialStart(Utilities.getDateFormat(5).format(date));
-			
-			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("trialEndDay"));
-			subscriptionVO.setTrialEnd(Utilities.getDateFormat(5).format(date));
-			
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
-		if(Utilities.isNullOrEmpty(actionRequest.getParameter("taxPercent"))){
-			subscriptionVO.setTaxPercent("0");
-		} else {
-			subscriptionVO.setTaxPercent(actionRequest.getParameter("taxPercent"));
-		}
-		session.setAttribute("subscriptionVO", subscriptionVO);
-		try {
-			procesorFacade.updateSubscription(subscriptionVO);
-			if(subscriptionVO.getStatus().equalsIgnoreCase("success")) {
-				ArrayList<SubscriptionVO> listSubscriptions = procesorFacade.listSubscriptions(new SubscriptionVO());
-				session.setAttribute("listSubscriptions", listSubscriptions);
-				session.removeAttribute("subscriptionVO");
-				SessionMessages.add(actionRequest, "subscriptionSavedSuccessfully");
-				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
-			} else {
-				System.out.println("basicPaymentResponseModel.getMessage(): " + subscriptionVO.getMessage());
-				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
-				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
-				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
-				SessionErrors.add(actionRequest, "error");
-				System.out.println("subscriptionVO.getMessage(): " + subscriptionVO.getMessage());
-				SessionErrors.add(actionRequest,subscriptionVO.getMessage());
-				session.setAttribute("subscriptionVO", subscriptionVO);
-				actionResponse.setRenderParameter("jspPage", "/jsp/editSubscription.jsp");
-			}
-		} catch (ProcesorFacadeException e) {
-			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
-			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
-			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
-			SessionErrors.add(actionRequest,e.getErrorCode());
-			System.out.println("e.getMessage(): " + e.getMessage());
-			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
-			System.out.println("e.getErrorCode(): " + e.getErrorCode());
-			session.setAttribute("subscriptionVO", subscriptionVO);
-			actionResponse.setRenderParameter("jspPage", "/jsp/editSubscription.jsp");
-		}
-	}
+//	public void editSubscription(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+//		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
+//		HttpSession session = request.getSession();
+//		SubscriptionVO subscriptionVO = (SubscriptionVO)session.getAttribute("subscriptionVO");
+//		subscriptionVO.setPlanId(actionRequest.getParameter("plan"));
+//		subscriptionVO.setCancelAtPeriodEnd(actionRequest.getParameter("cancelAtPeriodEnd"));
+//		subscriptionVO.setQuantity(actionRequest.getParameter("quantity"));
+//		subscriptionVO.setStatus(actionRequest.getParameter("status"));
+//		subscriptionVO.setApplicationFeePercent(actionRequest.getParameter("applicationFeePercent"));
+//		subscriptionVO.setStart(actionRequest.getParameter("start"));
+//		
+//		Date date;
+//		try {
+//			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("startAt"));
+//			subscriptionVO.setStart(Utilities.getDateFormat(5).format(date));
+//			
+//			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("endedAt"));
+//			subscriptionVO.setEndedAt(Utilities.getDateFormat(5).format(date));
+//			
+//			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("canceledAt"));
+//			subscriptionVO.setCanceledAt(Utilities.getDateFormat(5).format(date));
+//			
+//			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("currentPeriodStart"));
+//			subscriptionVO.setCurrentPeriodStart(Utilities.getDateFormat(5).format(date));
+//			
+//			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("currentPeriodEnd"));
+//			subscriptionVO.setCurrentPeriodEnd(Utilities.getDateFormat(5).format(date));
+//			
+//			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("trialStartDay"));
+//			subscriptionVO.setTrialStart(Utilities.getDateFormat(5).format(date));
+//			
+//			date = Utilities.getDateFormat(6).parse(actionRequest.getParameter("trialEndDay"));
+//			subscriptionVO.setTrialEnd(Utilities.getDateFormat(5).format(date));
+//			
+//		} catch (NumberFormatException e) {
+//			e.printStackTrace();
+//		} catch (ParseException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		if(Utilities.isNullOrEmpty(actionRequest.getParameter("taxPercent"))){
+//			subscriptionVO.setTaxPercent("0");
+//		} else {
+//			subscriptionVO.setTaxPercent(actionRequest.getParameter("taxPercent"));
+//		}
+//		session.setAttribute("subscriptionVO", subscriptionVO);
+//		try {
+//			procesorFacade.updateSubscription(subscriptionVO);
+//			if(subscriptionVO.getStatus().equalsIgnoreCase("success")) {
+//				ArrayList<SubscriptionVO> listSubscriptions = procesorFacade.listSubscriptions(new SubscriptionVO());
+//				session.setAttribute("listSubscriptions", listSubscriptions);
+//				session.removeAttribute("subscriptionVO");
+//				SessionMessages.add(actionRequest, "subscriptionSavedSuccessfully");
+//				actionResponse.setRenderParameter("jspPage", "/jsp/view.jsp");
+//			} else {
+//				System.out.println("basicPaymentResponseModel.getMessage(): " + subscriptionVO.getMessage());
+//				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+//				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+//				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+//				SessionErrors.add(actionRequest, "error");
+//				System.out.println("subscriptionVO.getMessage(): " + subscriptionVO.getMessage());
+//				SessionErrors.add(actionRequest,subscriptionVO.getMessage());
+//				session.setAttribute("subscriptionVO", subscriptionVO);
+//				actionResponse.setRenderParameter("jspPage", "/jsp/editSubscription.jsp");
+//			}
+//		} catch (ProcesorFacadeException e) {
+//			PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
+//			LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
+//			SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
+//			SessionErrors.add(actionRequest,e.getErrorCode());
+//			System.out.println("e.getMessage(): " + e.getMessage());
+//			System.out.println("e.getErrorMenssage(): " + e.getErrorMenssage());
+//			System.out.println("e.getErrorCode(): " + e.getErrorCode());
+//			session.setAttribute("subscriptionVO", subscriptionVO);
+//			actionResponse.setRenderParameter("jspPage", "/jsp/editSubscription.jsp");
+//		}
+//	}
 	
 	public void deleteSubscription(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
 		/*HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);

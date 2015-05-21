@@ -24,11 +24,32 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="co"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util"%>
+<%@taglib uri="http://www.billingbuddy.com/.com/bbtlds" prefix="Utils" %>
 
-<%@ page import="java.util.List"%>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="java.util.Date"%>
+<%@ page import="java.util.Calendar"%>
+<%@ page import="java.util.GregorianCalendar"%>
+<%@ page import="java.util.Locale"%>
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="com.liferay.portal.kernel.util.ListUtil" %>
+<%@ page import="java.util.Iterator" %>
 
+<%@ page import="com.liferay.portal.service.RoleServiceUtil" %>
+<%@page import="com.liferay.portal.kernel.dao.search.DisplayTerms" %> 
+<%@ page import="com.liferay.portal.kernel.util.CalendarFactoryUtil" %>
 <%@ page import="com.liferay.portal.kernel.dao.search.SearchContainer"%>
-<%@ page import="com.liferay.portal.kernel.scheduler.SchedulerEngineHelperUtil"%>
-<%@ page import="com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse"%>
+<%@ page import="com.liferay.portal.kernel.util.ListUtil" %>
+<%@ page import="com.liferay.portal.kernel.util.ParamUtil" %>
+
+<%@ page import="com.liferay.portal.kernel.json.JSONFactoryUtil" %>
+<%@ page import="com.liferay.portal.kernel.json.JSONObject" %>
+
+<%@ page import="au.com.billingbuddy.vo.objects.SubmittedProcessLogVO" %>
+
+<portlet:defineObjects />
+<liferay-theme:defineObjects />
+
+<%
+	String processName = (String)renderRequest.getParameter("processName");
+	String statusProcess = (String)renderRequest.getParameter("statusProcess");
+%>

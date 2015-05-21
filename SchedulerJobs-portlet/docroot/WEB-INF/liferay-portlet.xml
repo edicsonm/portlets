@@ -5,7 +5,10 @@
 	<portlet>
 		<portlet-name>SchedulerJobs</portlet-name>
 		<icon>/icon.png</icon>
-        
+		<user-notification-definitions>au/com/billingbuddy/jobs/dockbar-user-notification-definitions.xml</user-notification-definitions>
+        <user-notification-handler-class>au.com.billingbuddy.jobs.MessageListenerDemo</user-notification-handler-class>
+        <!-- <user-notification-definitions>au/com/billingbuddy/jobs/dockbar-user-notification-definitions.xml</user-notification-definitions>
+        <user-notification-handler-class>au.com.billingbuddy.jobs.MessageListenerDemo</user-notification-handler-class> -->
         <!-- <scheduler-entry>
             <scheduler-description>Scheduler Subscriptions</scheduler-description>
             <scheduler-event-listener-class>au.com.billingbuddy.jobs.MessageListenerDemo</scheduler-event-listener-class>
@@ -17,11 +20,11 @@
             </trigger>
         </scheduler-entry> -->
         
-        <friendly-url-mapper-class>com.liferay.portal.kernel.portlet.DefaultFriendlyURLMapper</friendly-url-mapper-class>
+        <!-- <friendly-url-mapper-class>com.liferay.portal.kernel.portlet.DefaultFriendlyURLMapper</friendly-url-mapper-class>
 		<friendly-url-mapping>SchedulerJobs</friendly-url-mapping>
 		<friendly-url-routes>au/com/billingbuddy/porlet/urlRoutes/friendly-url-routes.xml</friendly-url-routes>
 		<show-portlet-access-denied>false</show-portlet-access-denied>
-		<action-url-redirect>true</action-url-redirect>
+		<action-url-redirect>true</action-url-redirect> -->
         
 		<header-portlet-css>/css/main.css</header-portlet-css>
 		<footer-portlet-javascript>/js/main.js</footer-portlet-javascript>

@@ -54,10 +54,12 @@
 			<div class="fila">
 				<liferay-ui:search-container orderByType="<%=orderByType %>" orderByCol="<%=orderByCol %>"  displayTerms="<%= new DisplayTerms(renderRequest) %>" emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURLCharges%>">
 					<liferay-ui:search-form  page="/jsp/customer_search.jsp" servletContext="<%= application %>"/>
-				   <liferay-ui:search-container-results>
+				   <liferay-ui:search-container-results 
+				   			results="<%= new ArrayList(ListUtil.subList(listCustomersMerchant, searchContainer.getStart(), searchContainer.getEnd()))%>"
+				   			total="<%=listCustomersMerchant.size() %>">
 				      <%
-						results = new ArrayList(ListUtil.subList(listCustomersMerchant, searchContainer.getStart(), searchContainer.getEnd()));
-						total = listCustomersMerchant.size();
+						/* results = new ArrayList(ListUtil.subList(listCustomersMerchant, searchContainer.getStart(), searchContainer.getEnd())); */
+						/* total = listCustomersMerchant.size(); */
 						pageContext.setAttribute("results", results);
 						pageContext.setAttribute("total", total);
 						session.setAttribute("results", results);

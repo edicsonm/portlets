@@ -44,27 +44,28 @@ import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.service.ServiceContextThreadLocal;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
 
 public class FormSchedulerJobs extends MVCPortlet {
 	
-	private static Log _log = LogFactoryUtil.getLog(FormSchedulerJobs.class);
+	private static Log log = LogFactoryUtil.getLog(FormSchedulerJobs.class);
 	 
 	private static final String _CRON_PATTERN = "0/10 * * ? * *";
 	private static final String _GROUP_NAME = "The Group Name";
 	private static final String _JOB_NAME = "The Job Name";
  
-	private static String _portletId;
+	private static String portletId;
 	private static SchedulerEntry _schedulerEntry;
+	private ProcesorFacade procesorFacade = ProcesorFacade.getInstance();
 	
 	@Override
 	public void init() throws PortletException {
 		super.init();
-		System.out.println("Ejecuta el metodo init() ... ");
 		LiferayPortletConfig portletConfig = (LiferayPortletConfig)getPortletConfig();
-		_portletId = portletConfig.getPortletId();
-		
+		portletId = portletConfig.getPortletId();
 		/*		
 		// Scheduler #1
 		_schedulerEntry = new SchedulerEntryImpl();
@@ -81,18 +82,16 @@ public class FormSchedulerJobs extends MVCPortlet {
 		
 		Message message = new Message();
 		message.put(SchedulerEngine.MESSAGE_LISTENER_CLASS_NAME, MessageListenerDemo.class.getName());
-		message.put(SchedulerEngine.PORTLET_ID, _portletId);
+		message.put(SchedulerEngine.PORTLET_ID, portletId);
 		Trigger trigger = new CronTrigger(_JOB_NAME, _GROUP_NAME, _CRON_PATTERN);
 		try {
 			SchedulerEngineHelperUtil.schedule(trigger, StorageType.PERSISTED, "Test Schedule",DestinationNames.SCHEDULER_DISPATCH, message, 0);
-			_log.info(_JOB_NAME + " scheduled for " + _portletId);
+			log.info(_JOB_NAME + " scheduled for " + portletId);
 		}catch (SchedulerException se) {
-			_log.error(se);
+			log.error(se);
 		}
 	}
 
-	private ProcesorFacade procesorFacade = ProcesorFacade.getInstance();
-	
 	@Override
 	public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
