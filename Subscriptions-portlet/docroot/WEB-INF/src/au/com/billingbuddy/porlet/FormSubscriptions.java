@@ -66,19 +66,24 @@ public class FormSubscriptions extends MVCPortlet {
 		
 		resourceResponse.setContentType("application/json");
 		PrintWriter writer = resourceResponse.getWriter();
-		JSONObject json = JSONFactoryUtil.createJSONObject();
+		org.json.simple.JSONObject jSONObjectParameters = new org.json.simple.JSONObject();
 		try {
-			if(administrationFacade.reprocessErrorFile(submittedProcessLogVO)){
-				writer.print("File reprocessed successfully");
-				json.put("answer", true);
+			jSONObjectParameters.put("fileName", resourceRequest.getParameter("errorFileLocation"));
+			jSONObjectParameters.put("idSubmittedProcessLog", resourceRequest.getParameter("idSubmittedProcessLog"));
+			jSONObjectParameters = administrationFacade.reprocessErrorFile(jSONObjectParameters);
+			System.out.println("answer --->"+ jSONObjectParameters.get("answer"));
+			boolean answer = (jSONObjectParameters.get("answer") != null && jSONObjectParameters.get("answer").toString().equalsIgnoreCase("true") ? true : false );
+			System.out.println("answer en la clase " + answer);
+			if(answer){
+				jSONObjectParameters.put("answer", true);
 			}else{
-				json.put("answer", false);
+				jSONObjectParameters.put("answer", false);
 			}
 		} catch (AdministrationFacadeException e) {
-			json.put("answer", false);
-			json.put("detail", e.getMessage());
+			jSONObjectParameters.put("answer", false);
+			jSONObjectParameters.put("detail", e.getMessage());
 		}
-		writer.write(json.toString());
+		writer.write(jSONObjectParameters.toString());
 		writer.flush();
         writer.close();
 	}

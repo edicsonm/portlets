@@ -20,7 +20,6 @@
 <liferay-theme:defineObjects />
 <fmt:setBundle basename="Language"/>
 <%
-	
 	String idSubmittedProcessLog = (String)request.getParameter("idSubmittedProcessLog");
 	
 	SubmittedProcessLogVO submittedProcessLogVO = new SubmittedProcessLogVO();
@@ -39,7 +38,8 @@
 	System.out.println("ReprocessErrorFile: " + ReprocessErrorFile);
 	
 	/* if(ReprocessUnpaids)informationJSON.remove("ReprocessUnpaids"); */
-	if(ReprocessErrorFile)informationJSON.remove("ReprocessErrorFile");
+	/* if(ReprocessErrorFile)informationJSON.remove("ReprocessErrorFile"); */
+	informationJSON.remove("ReprocessErrorFile"); 
 	String errorFileLocation = null;
 %>
 <portlet:renderURL var="goBackSubmittedProcessLog">
@@ -87,33 +87,32 @@
 						</div>
 					</div>
 				</div>
-				<p id="sub-legend" class="description"><fmt:message key="label.processActions"/></p>
-				<hr>
-					<div id="msgid"></div>
-					<fieldset>
-						<% if(ReprocessErrorFile){%>
-						<div class="alert alert-error"><fmt:message key="label.alertReprocessFile"/></div>
-						<div id="ProcessActionsContainer" class="btn-toolbar well clearfix">
-							<div class="btn-group scheduler-job-actions pull-left">
-								<button class="btn btn-large btn-primary icon-play" id="reprocessErrorFile" onclick="" name="reprocessErrorFile" type="button" value="reprocessErrorFile">&nbsp;<fmt:message key="label.reprocessErrorFile"/></button>
-							</div>	
-						</div>
-						<% 
-							errorFileLocation = informationJSON.getJSONObject("InformationErrorFileExist").getString("FileLocation");
-						}%>
-						<%-- <div id="ProcessActionsContainer" class="btn-toolbar well clearfix">
-							<% if(ReprocessUnpaids){%>
-								<div class="btn-group scheduler-job-actions pull-left">
-									<button class="btn btn-large btn-primary icon-play" id="reprocessUnpaids" onclick="" name="reprocessUnpaids" type="button" value="reprocessUnpaids">&nbsp;<fmt:message key="label.reprocessUnpaids"/></button>
-								</div>
-							<% }%>
-							<% if(ReprocessErrorFile){%>
+				<% if(ReprocessErrorFile){%>
+					<p id="sub-legend" class="description"><fmt:message key="label.processActions"/></p>
+					<hr>
+						<div id="msgid"></div>
+						<fieldset>
+							
+							<div class="alert alert-error"><fmt:message key="label.alertReprocessFile"/></div>
+							<div id="ProcessActionsContainer" class="btn-toolbar well clearfix">
 								<div class="btn-group scheduler-job-actions pull-left">
 									<button class="btn btn-large btn-primary icon-play" id="reprocessErrorFile" onclick="" name="reprocessErrorFile" type="button" value="reprocessErrorFile">&nbsp;<fmt:message key="label.reprocessErrorFile"/></button>
 								</div>	
-							<% }%>
-						</div> --%>
-					</fieldset>
+							</div>
+							<%-- <div id="ProcessActionsContainer" class="btn-toolbar well clearfix">
+								<% if(ReprocessUnpaids){%>
+									<div class="btn-group scheduler-job-actions pull-left">
+										<button class="btn btn-large btn-primary icon-play" id="reprocessUnpaids" onclick="" name="reprocessUnpaids" type="button" value="reprocessUnpaids">&nbsp;<fmt:message key="label.reprocessUnpaids"/></button>
+									</div>
+								<% }%>
+								<% if(ReprocessErrorFile){%>
+									<div class="btn-group scheduler-job-actions pull-left">
+										<button class="btn btn-large btn-primary icon-play" id="reprocessErrorFile" onclick="" name="reprocessErrorFile" type="button" value="reprocessErrorFile">&nbsp;<fmt:message key="label.reprocessErrorFile"/></button>
+									</div>	
+								<% }%>
+							</div> --%>
+						</fieldset>
+				<%errorFileLocation = informationJSON.getJSONObject("InformationErrorFileExist").getString("FileLocation");}%>
 				
 				<p id="sub-legend" class="description"><fmt:message key="label.processInformation"/></p>
 				<hr>
@@ -155,6 +154,7 @@ $('#processInformation').jsonViewer(<%=informationJSON.toString()%>);
 			    	},
 			    	success: function(id, response) {
 			    		var json = Y.JSON.parse(response.responseText);
+			    		alert(response.responseText);
 			    		if(json.answer){
 			    			$("#msgid").attr("class", "alert alert-success");
 			    			$("#msgid").html('<fmt:message key="label.successReprocessErrorFile"/>');
@@ -163,9 +163,11 @@ $('#processInformation').jsonViewer(<%=informationJSON.toString()%>);
 			    			$("#msgid").html('<fmt:message key="label.unsuccessReprocessErrorFile"/>');
 			    		}
 			    		if(json.detail){
-			    			$("#msgid").append("<br>"+json.detail);
+			    			$("#msgid").append("<br><fmt:message key="label.errorDetails"/>: "+json.detail);
 			    		}
-			    		
+		    			$("#msgid").append("<br><fmt:message key="label.unProcessed"/>: "+json.unProcessed);
+		    			$("#msgid").append("<br><fmt:message key="label.processed"/>: "+json.processed);
+		    			$("#msgid").append("<br><fmt:message key="label.totalRegistries"/>: "+json.totalRegistries);
 			    		/* $("#msgid").attr("class", "alert alert-success");
 			    		$("#msgid").html("The reprocessing process has finished. Thanks for waiting."); */
 			    		

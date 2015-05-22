@@ -54,25 +54,17 @@
 			<div class="fila">
 				<liferay-ui:search-container orderByType="<%=orderByType %>" orderByCol="<%=orderByCol %>"  displayTerms="<%= new DisplayTerms(renderRequest) %>" emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURLCharges%>">
 					<liferay-ui:search-form  page="/jsp/customer_search.jsp" servletContext="<%= application %>"/>
-				   <liferay-ui:search-container-results 
+				   <liferay-ui:search-container-results  resultsVar="results" totalVar="total" 
 				   			results="<%= new ArrayList(ListUtil.subList(listCustomersMerchant, searchContainer.getStart(), searchContainer.getEnd()))%>"
 				   			total="<%=listCustomersMerchant.size() %>">
-				      <%
-						/* results = new ArrayList(ListUtil.subList(listCustomersMerchant, searchContainer.getStart(), searchContainer.getEnd())); */
-						/* total = listCustomersMerchant.size(); */
-						pageContext.setAttribute("results", results);
-						pageContext.setAttribute("total", total);
-						session.setAttribute("results", results);
-				       %>
 					</liferay-ui:search-container-results>
-					
+					<%session.setAttribute("results", results);%>
 					<liferay-ui:search-container-row className="au.com.billingbuddy.vo.objects.MerchantCustomerVO" rowVar="posi" indexVar="indice" keyProperty="id" modelVar="merchantCustomerVO">
 						<portlet:actionURL var="rowURLCustomer" name="listCustomerInformation">
 							<portlet:param name="indice" value="<%=String.valueOf(indice)%>"/>
 							<portlet:param name="jspPage" value="/jsp/customer.jsp" />
 							<portlet:param name="customerID" value="<%=String.valueOf(merchantCustomerVO.getId())%>"/>
 						</portlet:actionURL>
-					
 					<c:if test="<%= RoleServiceUtil.hasUserRole(user.getUserId(), user.getCompanyId(), \"BillingBuddyAdministrator\", true) %>">
 						<liferay-ui:search-container-column-text name="label.merchant" property="merchantVO.name" orderable="true" orderableProperty="merchantVO.name"/>
 					</c:if>

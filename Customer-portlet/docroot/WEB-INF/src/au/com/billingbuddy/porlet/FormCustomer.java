@@ -106,7 +106,6 @@ public class FormCustomer extends MVCPortlet {
 		CardVO cardVO = new CardVO();
 		cardVO.setCustomerId(merchantCustomerVO.getCustomerId());
 		cardVO.setMerchantCustomerId(merchantCustomerVO.getId());
-		System.out.println("cardVO.getMerchantCustomerId(): " + cardVO.getMerchantCustomerId());
 		
 		try {
 			
@@ -135,10 +134,6 @@ public class FormCustomer extends MVCPortlet {
 			
 			ArrayList<SubscriptionVO> listSubscriptions = procesorFacade.listSubscriptions(subscriptionVO);
 			session.setAttribute("listSubscriptionsByCustomer", listSubscriptions);
-			
-			for (SubscriptionVO subscriptionVO2 : listSubscriptions) {
-				System.out.println("Number: "+subscriptionVO2.getCardVO().getNumber());
-			}
 			
 		} catch (ProcesorFacadeException e) {
 			e.printStackTrace();
