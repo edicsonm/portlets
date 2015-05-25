@@ -80,7 +80,7 @@ public class FormSchedulerJobs extends MVCPortlet {
 			_log.error(se);
 		}*/
 		
-		Message message = new Message();
+		/*Message message = new Message();
 		message.put(SchedulerEngine.MESSAGE_LISTENER_CLASS_NAME, MessageListenerDemo.class.getName());
 		message.put(SchedulerEngine.PORTLET_ID, portletId);
 		Trigger trigger = new CronTrigger(_JOB_NAME, _GROUP_NAME, _CRON_PATTERN);
@@ -89,7 +89,7 @@ public class FormSchedulerJobs extends MVCPortlet {
 			log.info(_JOB_NAME + " scheduled for " + portletId);
 		}catch (SchedulerException se) {
 			log.error(se);
-		}
+		}*/
 	}
 
 	@Override

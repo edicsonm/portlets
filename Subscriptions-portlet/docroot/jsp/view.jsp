@@ -70,7 +70,7 @@
 		<span class="legend"><fmt:message key="label.informationSubmittedProcessLogs"/> </span>
 	</legend>
 	<div class="">
-			<liferay-ui:search-container orderByType="<%=orderByType %>" orderByCol="<%=orderByCol %>" displayTerms="<%= new DisplayTerms(renderRequest) %>" emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURLSubmittedProcessLogs%>">
+			<liferay-ui:search-container orderByType="<%=orderByType %>" orderByCol="<%=orderByCol %>" displayTerms="<%= new DisplayTerms(renderRequest) %>" emptyResultsMessage="label.empty" delta="10" iteratorURL="<%=renderURLSubmittedProcessLogs%>">
 				<div id="contenedor">
 					<div id="contenidos">
 						<div id=columna1-3>
@@ -111,7 +111,7 @@
 					
 					<liferay-ui:search-container-column-text name="label.processName" property="processName" orderable="false" orderableProperty="processName" href="<%= rowURLSubmittedProcessLog %>"/>
 					<liferay-ui:search-container-column-text name="label.startTime" property="startTime" orderable="false" orderableProperty="startTime"/>
-					<liferay-ui:search-container-column-text name="label.endTime" property="endTime" orderable="false" orderableProperty="endTime"/>
+					<liferay-ui:search-container-column-text name="label.endTime" value="${Utils:printString(submittedProcessLogVOAUX.endTime)}" orderable="false" orderableProperty="endTime"/>
 					<liferay-ui:search-container-column-text name="label.statusProcess" property="statusProcess" orderable="false" orderableProperty="statusProcess"/>
 					
 				</liferay-ui:search-container-row>

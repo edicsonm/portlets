@@ -28,7 +28,9 @@
 	ArrayList<SubmittedProcessLogVO> listSubmittedProcessLogs = (ArrayList<SubmittedProcessLogVO>)session.getAttribute("listSubmittedProcessLogs");
 	int indiceSubmittedProcessLog = listSubmittedProcessLogs.indexOf(submittedProcessLogVO);
 	submittedProcessLogVO = (SubmittedProcessLogVO)listSubmittedProcessLogs.get(indiceSubmittedProcessLog);
+	session.setAttribute("submittedProcessLogVO", submittedProcessLogVO);
 	pageContext.setAttribute("submittedProcessLogVO", submittedProcessLogVO);
+	
 	JSONObject informationJSON = JSONFactoryUtil.createJSONObject(submittedProcessLogVO.getInformation());
 	
 	/* boolean ReprocessUnpaids = Boolean.parseBoolean(informationJSON.getString("ReprocessUnpaids")); */
@@ -46,7 +48,11 @@
 	<portlet:param name="jspPage" value="/jsp/view.jsp" />
 </portlet:renderURL>
 
-<portlet:resourceURL var="reprocessErrorFile"/>
+<%-- <portlet:resourceURL var="reprocessErrorFile">
+	<portlet:param name="action" value="reprocessErrorFile" />
+</portlet:resourceURL> --%>
+
+<portlet:resourceURL var="showDetailsReprocessErrorFile"/>
 
 <aui:form method="post">
 	<fieldset class="fieldset">
@@ -87,19 +93,21 @@
 						</div>
 					</div>
 				</div>
-				<% if(ReprocessErrorFile){%>
+				
+				<div id="detailsProcessActionsContainer">
+				</div>
+				<%-- <% if(ReprocessErrorFile){%>
 					<p id="sub-legend" class="description"><fmt:message key="label.processActions"/></p>
 					<hr>
 						<div id="msgid"></div>
 						<fieldset>
-							
-							<div class="alert alert-error"><fmt:message key="label.alertReprocessFile"/></div>
+							<div id="alertReprocessFile" class="alert alert-error"><fmt:message key="label.alertReprocessFile"/></div>
 							<div id="ProcessActionsContainer" class="btn-toolbar well clearfix">
 								<div class="btn-group scheduler-job-actions pull-left">
 									<button class="btn btn-large btn-primary icon-play" id="reprocessErrorFile" onclick="" name="reprocessErrorFile" type="button" value="reprocessErrorFile">&nbsp;<fmt:message key="label.reprocessErrorFile"/></button>
 								</div>	
 							</div>
-							<%-- <div id="ProcessActionsContainer" class="btn-toolbar well clearfix">
+							<div id="ProcessActionsContainer" class="btn-toolbar well clearfix">
 								<% if(ReprocessUnpaids){%>
 									<div class="btn-group scheduler-job-actions pull-left">
 										<button class="btn btn-large btn-primary icon-play" id="reprocessUnpaids" onclick="" name="reprocessUnpaids" type="button" value="reprocessUnpaids">&nbsp;<fmt:message key="label.reprocessUnpaids"/></button>
@@ -110,7 +118,7 @@
 										<button class="btn btn-large btn-primary icon-play" id="reprocessErrorFile" onclick="" name="reprocessErrorFile" type="button" value="reprocessErrorFile">&nbsp;<fmt:message key="label.reprocessErrorFile"/></button>
 									</div>	
 								<% }%>
-							</div> --%>
+							</div>
 						</fieldset>
 				<%errorFileLocation = informationJSON.getJSONObject("InformationErrorFileExist").getString("FileLocation");}%>
 				
@@ -119,7 +127,7 @@
 				<div id="contenedor">
 					 <pre id="processInformation"></pre>
 					 <!-- <div id="processInformation"></div> -->
-				</div>
+				</div> --%>
 				
 			</div>
 			<a href="<%= goBackSubmittedProcessLog %>"><fmt:message key="label.goBack"/></a>
@@ -127,7 +135,10 @@
 	</fieldset>
 </aui:form>
 <aui:script>
-$('#processInformation').jsonViewer(<%=informationJSON.toString()%>);
+
+/* $('#processInformation').jsonViewer(<%=informationJSON.toString()%>); */
+$("#detailsProcessActionsContainer").load("<%= showDetailsReprocessErrorFile %>");
+
 /* YUI().use("node", "io", "dump", "json-parse","json-stringify", function (Y) {
 	var target = Y.one('#processInformation');
 	var processInformation = <%=submittedProcessLogVO.getInformation()%>
@@ -137,13 +148,13 @@ $('#processInformation').jsonViewer(<%=informationJSON.toString()%>);
     target.jsonViewer(jsonStr);
 }); */
 </aui:script>
-
+<%-- 
 <script>
 	YUI().use('json-parse','io','event', function (Y) {
 		Y.one("#reprocessErrorFile").on("click", function (e) {	
 			Y.io('<%=reprocessErrorFile%>', {
 			/* Y.io.postJSON */
-			<%--  Y.io.postJSON('<%=reprocessErrorFile%>', {  --%>
+			 Y.io.postJSON('<%=reprocessErrorFile%>', { 
 			    method: 'POST', 
 			   /*  headers: {'Content-Type': 'application/json'}, */
 			    data: {<portlet:namespace/>errorFileLocation: "<%=errorFileLocation%>", <portlet:namespace/>idSubmittedProcessLog:"<%=submittedProcessLogVO.getId()%>"},
@@ -154,7 +165,7 @@ $('#processInformation').jsonViewer(<%=informationJSON.toString()%>);
 			    	},
 			    	success: function(id, response) {
 			    		var json = Y.JSON.parse(response.responseText);
-			    		alert(response.responseText);
+			    		/* alert(response.responseText); */
 			    		if(json.answer){
 			    			$("#msgid").attr("class", "alert alert-success");
 			    			$("#msgid").html('<fmt:message key="label.successReprocessErrorFile"/>');
@@ -165,9 +176,12 @@ $('#processInformation').jsonViewer(<%=informationJSON.toString()%>);
 			    		if(json.detail){
 			    			$("#msgid").append("<br><fmt:message key="label.errorDetails"/>: "+json.detail);
 			    		}
-		    			$("#msgid").append("<br><fmt:message key="label.unProcessed"/>: "+json.unProcessed);
-		    			$("#msgid").append("<br><fmt:message key="label.processed"/>: "+json.processed);
-		    			$("#msgid").append("<br><fmt:message key="label.totalRegistries"/>: "+json.totalRegistries);
+			    		$("#msgid").append("<br><fmt:message key="label.totalRegistries"/>: "+json.totalRegistries);
+			    		$("#msgid").append("<br><fmt:message key="label.processed"/>: "+json.processed);
+			    		$("#msgid").append("<br><fmt:message key="label.unProcessed"/>: "+json.unProcessed);
+			    		
+			    		$("#alertReprocessFile").remove();
+			    		$("#ProcessActionsContainer").remove();
 			    		/* $("#msgid").attr("class", "alert alert-success");
 			    		$("#msgid").html("The reprocessing process has finished. Thanks for waiting."); */
 			    		
@@ -211,5 +225,5 @@ $('#processInformation').jsonViewer(<%=informationJSON.toString()%>);
 			});
 		});
 	});
-</script>
+</script> --%>
 

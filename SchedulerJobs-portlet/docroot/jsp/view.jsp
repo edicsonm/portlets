@@ -69,7 +69,7 @@
 	</fieldset>
 	
 	<div class="">
-		<div id="contenedor">
+		<div id="contenedor">		
 			<liferay-ui:search-container emptyResultsMessage="label.empty" delta="30" iteratorURL="<%=renderURLSchedulerJobs%>">
 				<liferay-ui:search-container-results resultsVar="resultsCards" totalVar="totalCards" results="<%= new ArrayList(ListUtil.subList(schedulerJobsList, searchContainer.getStart(), searchContainer.getEnd()))%>" total="<%=schedulerJobsList.size() %>"/>
 				<liferay-ui:search-container-row className="com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse" rowVar="posi" indexVar="indice" keyProperty="jobName" modelVar="schedulerResponse">

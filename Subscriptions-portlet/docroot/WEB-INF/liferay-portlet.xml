@@ -9,7 +9,7 @@
 		<friendly-url-mapping>Suscription</friendly-url-mapping>
 		<friendly-url-routes>au/com/billingbuddy/porlet/urlRoutes/friendly-url-routes.xml</friendly-url-routes>
 		<show-portlet-access-denied>false</show-portlet-access-denied>
-		<action-url-redirect>true</action-url-redirect>
+		<!-- <action-url-redirect>true</action-url-redirect> -->
 		<header-portlet-css>/css/main.css</header-portlet-css>
         <header-portlet-css>/css/jquery.json-viewer.css</header-portlet-css>
 		<footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
