@@ -3,13 +3,28 @@ package au.com.billingbuddy.porlet.utilities;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.RenderRequest;
 
 import org.apache.commons.beanutils.BeanComparator;
 
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.model.Company;
+import com.liferay.portal.model.Role;
+import com.liferay.portal.model.User;
+import com.liferay.portal.service.CompanyLocalServiceUtil;
+import com.liferay.portal.service.RoleLocalServiceUtil;
+import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.service.UserLocalServiceUtil;
+import com.liferay.portal.service.UserNotificationEventLocalServiceUtil;
+
+import au.com.billingbuddy.jobs.MessageListenerDemo;
+import au.com.billingbuddy.jobs.ProcessSubscriptions;
 import au.com.billingbuddy.vo.objects.ChargeVO;
 import au.com.billingbuddy.vo.objects.MerchantCustomerVO;
 import au.com.billingbuddy.vo.objects.RefundVO;
@@ -105,6 +120,28 @@ public class Methods {
 				chargeVOB.getCardVO().setBrand("");
 			}
 			return chargeVOA.getCardVO().getBrand().compareTo(chargeVOB.getCardVO().getBrand());
+		}
+	}
+	
+	public static void sendNotification(String notificationText){
+		try {
+			Company company = CompanyLocalServiceUtil.getCompanyByMx("billingbuddy.com");
+			Role role = RoleLocalServiceUtil.getRole(company.getCompanyId(), "BillingBuddyAdministrator");
+			List<User> users = UserLocalServiceUtil.getRoleUsers(role.getRoleId());
+			for (User user : users) {
+				JSONObject payloadJSON = JSONFactoryUtil.createJSONObject();
+				payloadJSON.put("userId", user.getUserId());
+				payloadJSON.put("notificationText", notificationText);
+				ServiceContext serviceContext = new ServiceContext();
+				serviceContext.setScopeGroupId(user.getGroupId());
+				UserNotificationEventLocalServiceUtil.addUserNotificationEvent(
+						user.getUserId(),
+						ProcessSubscriptions.PORTLET_ID,
+						(new Date()).getTime(), user.getUserId(),
+						payloadJSON.toString(), false, serviceContext);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	

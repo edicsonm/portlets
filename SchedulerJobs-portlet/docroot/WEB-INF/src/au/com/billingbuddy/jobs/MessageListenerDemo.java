@@ -58,9 +58,7 @@ public class MessageListenerDemo extends BaseUserNotificationHandler implements 
 //		for (Map.Entry<String, Object> entry : map.entrySet()){
 //		    System.out.println(entry.getKey() + " / " + entry.getValue()+ " / " + entry.getClass());
 //		}
-		
 		try {
-			
 			Company company = CompanyLocalServiceUtil.getCompanyByMx("billingbuddy.com");
 			Role role = RoleLocalServiceUtil.getRole(company.getCompanyId(), "BillingBuddyAdministrator");
 			List<User> users = UserLocalServiceUtil.getRoleUsers(role.getRoleId());
