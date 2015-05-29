@@ -3,7 +3,9 @@ package au.com.billingbuddy.jobs;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.scheduler.SchedulerEngineHelperUtil;
+import com.liferay.portal.kernel.scheduler.SchedulerEngineUtil;
 import com.liferay.portal.kernel.scheduler.SchedulerException;
 import com.liferay.portal.kernel.scheduler.StorageType;
 import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
@@ -32,4 +34,27 @@ public class SchedulerUtils {
 //		}
         return schedulerJobsList;
     }
+	
+	public static void triggerScheduledJobs() throws SchedulerException {
+		ArrayList<SchedulerResponse> schedulerJobsList = (ArrayList<SchedulerResponse>) SchedulerEngineHelperUtil.getScheduledJobs(BBProcessGroupName, StorageType.MEMORY);
+		schedulerJobsList.addAll(SchedulerEngineHelperUtil.getScheduledJobs(BBProcessGroupName, StorageType.MEMORY_CLUSTERED));
+		schedulerJobsList.addAll(SchedulerEngineHelperUtil.getScheduledJobs(BBProcessGroupName, StorageType.PERSISTED));
+		for (SchedulerResponse schedulerResponse : schedulerJobsList) {
+			System.out.println("State: "+SchedulerEngineHelperUtil.getJobState(schedulerResponse).toString());
+			if(!SchedulerEngineHelperUtil.getJobState(schedulerResponse).toString().equalsIgnoreCase("UNSCHEDULED")){
+				System.out.println("Proxima ejecucion"+SchedulerEngineHelperUtil.getNextFireTime(schedulerResponse));
+				SchedulerEngineHelperUtil.delete(
+						schedulerResponse.getJobName(),
+						schedulerResponse.getGroupName(),
+						schedulerResponse.getStorageType());
+				
+				SchedulerEngineHelperUtil.schedule(schedulerResponse.getTrigger(),
+						schedulerResponse.getStorageType(),
+						schedulerResponse.getDescription(),
+						DestinationNames.SCHEDULER_DISPATCH,
+						schedulerResponse.getMessage(), 0);
+			}
+		}
+  }
+	
 }

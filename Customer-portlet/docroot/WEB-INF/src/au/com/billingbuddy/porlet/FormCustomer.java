@@ -106,7 +106,6 @@ public class FormCustomer extends MVCPortlet {
 		CardVO cardVO = new CardVO();
 		cardVO.setCustomerId(merchantCustomerVO.getCustomerId());
 		cardVO.setMerchantCustomerId(merchantCustomerVO.getId());
-		
 		try {
 			
 			ArrayList<CardVO> listCardsByCustomer = procesorFacade.listCardsByCustomer(cardVO);
@@ -146,6 +145,7 @@ public class FormCustomer extends MVCPortlet {
 	}
 
 	public void cancelSubscription(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
+		
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 		HttpSession session = request.getSession();
 		
@@ -155,10 +155,14 @@ public class FormCustomer extends MVCPortlet {
 		ArrayList<SubscriptionVO> listSubscriptionsByCustomer = (ArrayList<SubscriptionVO>)session.getAttribute("listSubscriptionsByCustomer");
 		int indiceSubscription = listSubscriptionsByCustomer.indexOf(subscriptionVO);
 		subscriptionVO = (SubscriptionVO)listSubscriptionsByCustomer.get(indiceSubscription);
-		
 		try {
 			procesorFacade.cancelSubscription(subscriptionVO);
 			if(subscriptionVO.getStatus().equalsIgnoreCase("success")) {
+				subscriptionVO = (SubscriptionVO)listSubscriptionsByCustomer.get(indiceSubscription);
+				subscriptionVO = new SubscriptionVO();
+				subscriptionVO.setUserId(String.valueOf(PortalUtil.getUserId(request)));
+				subscriptionVO.setMerchantCustomerCardVO(new MerchantCustomerCardVO());
+				subscriptionVO.getMerchantCustomerCardVO().setMerchantCustomerVO((MerchantCustomerVO)session.getAttribute("merchantCustomerVO"));
 				ArrayList<SubscriptionVO> listSubscriptions = procesorFacade.listSubscriptions(subscriptionVO);
 				session.setAttribute("listSubscriptionsByCustomer", listSubscriptions);
 				SessionMessages.add(actionRequest, "subscriptionCanceledSuccessfully");
@@ -348,7 +352,6 @@ public class FormCustomer extends MVCPortlet {
 	}
 	
 	public void editCard(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
-		
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 		HttpSession session = request.getSession();
 		
@@ -379,12 +382,15 @@ public class FormCustomer extends MVCPortlet {
 		try {
 			procesorFacade.updateCard(cardVO);
 			if(cardVO.getStatus().equalsIgnoreCase("success")) {
+				MerchantCustomerVO merchantCustomerVO = (MerchantCustomerVO)session.getAttribute("merchantCustomerVO");
+				cardVO.setMerchantCustomerId(merchantCustomerVO.getId());
 				listCardsByCustomer = procesorFacade.listCardsByCustomer(cardVO);
 				session.setAttribute("listCardsByCustomer", listCardsByCustomer);
 				SessionMessages.add(actionRequest, "CardEditedSuccessfully");
 				session.removeAttribute("cardVO");
 				session.setAttribute("answerCard","true");
 			} else {
+				System.out.println("Viene a editar la tarjeta error");
 				PortletConfig portletConfig = (PortletConfig)actionRequest.getAttribute(JavaConstants.JAVAX_PORTLET_CONFIG);
 				LiferayPortletConfig liferayPortletConfig = (LiferayPortletConfig) portletConfig;
 				SessionMessages.add(actionRequest, liferayPortletConfig.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);

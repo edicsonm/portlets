@@ -120,7 +120,6 @@ AUI().use(
 			<div class="btn-group refresh pull-right clearfix"></div>
 		</div>
 	</fieldset>
-	
 	<div class="">
 		<div id="contenedor">
 			<div id="divScheduledJobs">

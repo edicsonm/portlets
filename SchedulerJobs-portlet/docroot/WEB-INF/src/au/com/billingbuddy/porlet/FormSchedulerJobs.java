@@ -5,7 +5,10 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -25,6 +28,7 @@ import org.json.simple.JSONObject;
 import au.com.billigbuddy.utils.BBUtils;
 import au.com.billigbuddy.utils.VO.ScheduledJobVO;
 import au.com.billingbuddy.business.objects.ProcesorFacade;
+import au.com.billingbuddy.business.objects.ProcessSubscriptionFacade;
 import au.com.billingbuddy.exceptions.objects.ProcesorFacadeException;
 import au.com.billingbuddy.jobs.MessageListenerDemo;
 import au.com.billingbuddy.jobs.SchedulerUtils;
@@ -36,8 +40,11 @@ import au.com.billingbuddy.vo.objects.PlanVO;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.messaging.Destination;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
+import com.liferay.portal.kernel.messaging.MessageBusUtil;
+import com.liferay.portal.kernel.messaging.ParallelDestination;
 import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
 import com.liferay.portal.kernel.scheduler.CronTrigger;
 import com.liferay.portal.kernel.scheduler.SchedulerEngine;
@@ -90,6 +97,13 @@ public class FormSchedulerJobs extends MVCPortlet {
 		System.out.println("Ejecuta el init del portlet FormSchedulerJobs ... ");
 		LiferayPortletConfig portletConfig = (LiferayPortletConfig)getPortletConfig();
 		portletId = portletConfig.getPortletId();
+		
+		/*try {
+			SchedulerUtils.triggerScheduledJobs();
+		} catch (SchedulerException e) {
+			e.printStackTrace();
+		}*/
+		
 		/*		
 		// Scheduler #1
 		_schedulerEntry = new SchedulerEntryImpl();
@@ -118,6 +132,11 @@ public class FormSchedulerJobs extends MVCPortlet {
 
 	@Override
 	public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
+		
+		System.out.println("Obteniendo hilos ... ");
+		ProcessSubscriptionFacade.getInstance().printThreads();
+		System.out.println("Obtiene hilos ... ");
+		
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(renderRequest);
 		HttpSession session = request.getSession();
 		try {
@@ -132,7 +151,6 @@ public class FormSchedulerJobs extends MVCPortlet {
 	public void addScheduledJob(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException {
 		HttpServletRequest request = PortalUtil.getHttpServletRequest(actionRequest);
 		HttpSession session = request.getSession();
-		System.out.println("Ejecuta el metodo ... addScheduledJob");
 		
 		ScheduledJobVO scheduledJobVO = new ScheduledJobVO();
 		scheduledJobVO.setName(actionRequest.getParameter("name"));
@@ -158,6 +176,7 @@ public class FormSchedulerJobs extends MVCPortlet {
 			message.put(SchedulerEngine.MESSAGE_LISTENER_CLASS_NAME, scheduledJobVO.getListener().getName());
 			message.put(SchedulerEngine.PORTLET_ID, portletId);
 			Trigger trigger = new CronTrigger(scheduledJobVO.getName(), SchedulerUtils.BBProcessGroupName, scheduledJobVO.getCronPattern());
+			
 			SchedulerEngineHelperUtil.schedule(trigger, StorageType.valueOf(scheduledJobVO.getStorageType()), scheduledJobVO.getDescription(), DestinationNames.SCHEDULER_DISPATCH, message, 0);
 			Methods.sendNotification("Has been created a new Job to execute the Subscriptions Process.");
 			/*if(scheduledJobVO.getStorageType().equalsIgnoreCase("PERSISTED")){
@@ -195,6 +214,7 @@ public class FormSchedulerJobs extends MVCPortlet {
 			session.setAttribute("scheduledJobVO", scheduledJobVO);
 			session.setAttribute("answerScheduledJob","false");
 		}
+		
 		actionResponse.setRenderParameter("mvcPath", "/jsp/addScheduledJob.jsp");
 	}
 	
@@ -232,14 +252,14 @@ public class FormSchedulerJobs extends MVCPortlet {
 								schedulerResponse.getStorageType());
 						SessionMessages.add(actionRequest, "jobUnschedulesSuccessfully");
 					} else if (actionRequest.getParameter("jobAction").equalsIgnoreCase("delete")) {
-						SchedulerEngineHelperUtil.pause(
+						/*SchedulerEngineHelperUtil.pause(
 								schedulerResponse.getJobName(),
 								schedulerResponse.getGroupName(),
 								schedulerResponse.getStorageType());
 						SchedulerEngineHelperUtil.unschedule(
 								schedulerResponse.getJobName(),
 								schedulerResponse.getGroupName(),
-								schedulerResponse.getStorageType());
+								schedulerResponse.getStorageType());*/
 						SchedulerEngineHelperUtil.delete(
 								schedulerResponse.getJobName(),
 								schedulerResponse.getGroupName(),

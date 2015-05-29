@@ -502,11 +502,6 @@ AUI().use(
 					<liferay-ui:search-container-column-text name="label.plan">
 						<a onclick="showDetailsSubscriptions('<%= popupURLSubscriptionsDetails.toString() %>')" href="#">${subscriptionVO.planVO.name}</a>
 					</liferay-ui:search-container-column-text>
-					
-					<% 
-						System.out.println("subscriptionVO.getCardVO().getNumber(): " + subscriptionVO.getCardVO().getNumber());
-					%>
-					
 					<liferay-ui:search-container-column-text name="label.cardNumber" value="${Utils:printCardNumber(subscriptionVO.cardVO.number)}" orderable="false"/>
 					<liferay-ui:search-container-column-text name="label.start" value="${Utils:formatDate(2,subscriptionVO.start,5)}" orderable="false"/>
 					<liferay-ui:search-container-column-text name="label.quantity" property="quantity" orderable="false"/>
